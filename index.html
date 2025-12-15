@@ -8,101 +8,122 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #333; --primary: #000080; }
+        :root { --bg-color: #f8f9fa; --text-color: #333; --primary: #000080; --accent: #FF9933; }
         body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
         
         /* 🇮🇳 HEADER */
         .crm-header { 
-            background: linear-gradient(-45deg, #FF9933, #FFFFFF, #138808, #FF9933);
-            background-size: 400% 400%; animation: flagWave 10s ease infinite;
-            padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000080;
+            background: linear-gradient(90deg, #FF9933, #FFFFFF, #138808);
+            padding: 12px 20px; position: sticky; top: 0; z-index: 1000; 
+            display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-bottom: 2px solid #000080;
         }
-        @keyframes flagWave { 0% {background-position:0% 50%} 50% {background-position:100% 50%} 100% {background-position:0% 50%} }
-        .crm-header h5 { margin: 0; font-weight: 700; color: #000080; text-transform: uppercase; }
+        .crm-header h5 { margin: 0; font-weight: 700; color: #000080; letter-spacing: 1px; }
 
-        .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); box-shadow: 0 -5px 20px rgba(0,0,0,0.1); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; border-top: 3px solid #FF9933; }
-        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; } .nav-item.active { color: var(--primary); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; margin-bottom: 2px; }
+        .section-view { display: none; padding-top: 15px; } .section-view.active-view { display: block; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #fff; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
+        .nav-item { text-align: center; color: #999; text-decoration: none; font-size: 0.75em; } .nav-item.active { color: var(--primary); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; margin-bottom: 2px; }
         
-        /* TASK UI */
-        .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid #ddd; }
-        .task-card.overdue { border-left-color: #dc3545; } .task-card.today { border-left-color: #198754; } .task-card.future { border-left-color: #0d6efd; }
-        .task-header { display: flex; justify-content: space-between; }
-        .task-actions { display: flex; gap: 10px; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
-        .btn-action { flex: 1; font-size: 0.85em; padding: 5px; border-radius: 6px; background: #f8f9fa; color: #333; text-align: center; text-decoration: none; border: 1px solid #eee; }
-
-        /* LIST UI */
-        .client-row { background: white; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; }
-        .photo-thumb { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #eee; }
-
-        /* REPORT UI */
-        .report-btn { padding: 20px; border-radius: 12px; color: white; text-align: center; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .bg-gradient-blue { background: linear-gradient(135deg, #000080, #1a237e); }
-        .bg-gradient-green { background: linear-gradient(135deg, #138808, #2e7d32); }
-
-        /* PRINT CSS (FIXED) */
-        .print-container { display: none; background: white; color: black; padding: 30px; position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh; z-index: 9999; }
-        @media print { 
-            .no-print { display: none !important; } 
-            .print-container { display: none; } /* Hide all initially */
-            .print-container.active { display: block !important; } /* Show only active */
-            body { background: white; }
+        /* PROFESSIONAL CARD UI */
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); margin-bottom: 15px; background: #fff; }
+        
+        /* TASK CARDS */
+        .task-card {
+            background: #fff; border-radius: 10px; padding: 15px; margin-bottom: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; border-left: 5px solid #ccc;
         }
+        .task-card.today { border-left-color: #198754; } /* Green */
+        .task-card.late { border-left-color: #dc3545; }  /* Red */
+        .task-card.future { border-left-color: #0d6efd; } /* Blue */
+        
+        .task-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .task-name { font-weight: 600; font-size: 1.1em; }
+        .task-date { font-size: 0.8em; font-weight: bold; padding: 3px 8px; border-radius: 20px; background: #eee; color: #555; }
+        .task-actions a { text-decoration: none; font-weight: 500; font-size: 0.9em; display: inline-block; padding: 5px 15px; border-radius: 5px; background: #f0f2f5; color: #333; margin-right: 5px; }
+        
+        /* LIST UI */
+        .client-item {
+            background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .client-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid #eee; }
+        .client-details h6 { margin: 0; font-weight: 600; font-size: 1em; }
+        .client-details p { margin: 0; font-size: 0.8em; color: #666; }
+        .client-meta { text-align: right; }
+        .amount-tag { color: #198754; font-weight: bold; font-size: 0.9em; }
+
+        /* FULL SCREEN REPORT PREVIEW (FIXED) */
+        #reportOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 2000; overflow-y: auto; display: none;
+            padding: 20px;
+        }
+        .report-paper {
+            max-width: 800px; margin: 0 auto; background: white; padding: 20px;
+            border: 1px solid #eee; 
+        }
+        
+        /* PRINT CSS */
+        @media print { 
+            .no-print, .bottom-nav, .crm-header, .section-view { display: none !important; } 
+            #reportOverlay { display: block !important; position: static; height: auto; overflow: visible; padding: 0; }
+            .report-paper { border: none; padding: 0; }
+            .print-btn-area { display: none !important; }
+        }
+        
         .report-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85em; }
         .report-table th, .report-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .report-table th { background: #f2f2f2; color: #000080; }
-        .ai-tip { background: #f8f9fa; border-left: 4px solid #FF9933; padding: 10px; margin-bottom: 10px; font-size: 0.9em; }
-        
-        .cart-item { display: flex; justify-content: space-between; padding: 5px; border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
 
     <div class="crm-header no-print">
-        <div class="d-flex align-items-center"><i class="fas fa-flag-checkered me-2" style="color:#000080;"></i><h5>RCM Pro</h5></div>
+        <div class="d-flex align-items-center"><i class="fas fa-flag me-2" style="color:#FF9933;"></i><h5>RCM Pro</h5></div>
         <div>
             <input type="file" id="importFile" style="display: none;" onchange="importBackup(this)">
-            <button class="btn btn-sm btn-light fw-bold text-dark" onclick="downloadBackup()"><i class="fas fa-cloud-download-alt"></i> Backup</button>
+            <button class="btn btn-sm btn-light fw-bold text-dark border" onclick="downloadBackup()">Backup</button>
         </div>
     </div>
 
     <div class="container no-print">
         
         <div id="view-add" class="section-view active-view">
-            <div class="card p-4 border-0">
-                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">New Entry</h6><button class="btn btn-sm btn-outline-warning text-dark" onclick="loadProducts()">Sync</button></div>
+            <div class="card p-4">
+                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">New Entry</h6><button class="btn btn-sm btn-warning text-dark" onclick="loadProducts()">Sync</button></div>
                 <form id="crmForm" class="row g-3">
                     <div class="col-12 text-center">
                         <label class="small text-muted d-block">Photo (GPS)</label>
                         <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
-                        <img id="photoPreview" src="https://via.placeholder.com/100x100?text=Camera" class="rounded-circle shadow-sm" style="width:80px;height:80px;object-fit:cover;cursor:pointer;" onclick="document.getElementById('meetingPhoto').click()">
+                        <img id="photoPreview" src="https://via.placeholder.com/100x100?text=Click" class="rounded-circle shadow-sm" style="width:80px;height:80px;object-fit:cover;cursor:pointer;" onclick="document.getElementById('meetingPhoto').click()">
                         <div id="photoStatus" class="small mt-1 text-success fw-bold"></div>
                         <canvas id="photoCanvas" class="d-none"></canvas>
                     </div>
                     
                     <div class="col-6"><select class="form-select form-select-sm fw-bold text-danger" id="leadType"><option value="Hot">🔥 Hot</option><option value="Warm">🤔 Warm</option><option value="Cold">❄️ Cold</option></select></div>
                     <div class="col-6"><input type="date" class="form-control form-control-sm" id="entryDate"></div>
-                    <div class="col-12"><input type="text" class="form-control" id="clientName" placeholder="Name" required></div>
-                    <div class="col-6"><input type="tel" class="form-control" id="clientPhone" placeholder="Mobile" required></div>
+                    <div class="col-12"><input type="text" class="form-control" id="clientName" placeholder="Client Name" required></div>
+                    <div class="col-6"><input type="tel" class="form-control" id="clientPhone" placeholder="Mobile No." required></div>
                     <div class="col-6"><input type="text" class="form-control" id="proposerName" placeholder="Proposer"></div>
                     
                     <div class="col-12">
                         <div class="input-group input-group-sm mb-2">
                             <select class="form-select" id="productDropdown"><option value="">Loading...</option></select>
-                            <button type="button" class="btn btn-success" onclick="addProductToCart()"><i class="fas fa-plus"></i></button>
+                            <button type="button" class="btn btn-success" onclick="addProductToCart()">Add</button>
                         </div>
                         <div id="selectedProductsList" class="small mb-2 bg-light p-2 rounded"></div>
                         <div class="fw-bold text-end text-primary">Total: ₹<span id="displayTotalAmount">0</span></div>
                     </div>
 
                     <div class="col-12"><label class="small text-muted">Follow-up</label><select class="form-select form-select-sm border-warning" id="followUpTiming"><option value="24h">24 Hours</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="15d">15 Days</option><option value="1m">1 Month</option></select></div>
-                    <div class="col-12 mt-3"><button type="submit" class="btn btn-primary w-100 shadow-sm" id="saveBtn">Save</button></div>
+                    <div class="col-12 mt-3"><button type="submit" class="btn btn-primary w-100 shadow-sm" id="saveBtn">Save Record</button></div>
                 </form>
             </div>
         </div>
 
         <div id="view-followup" class="section-view">
-            <h6 class="text-muted text-uppercase small mb-3 ps-2">Your Schedule</h6>
+            <h6 class="text-uppercase text-muted small mb-3 ps-2">Scheduled Tasks</h6>
             <div id="followUpList"></div>
         </div>
 
@@ -115,42 +136,30 @@
         </div>
 
         <div id="view-report" class="section-view">
-            <div class="card p-4 border-0">
-                <h5 class="text-primary fw-bold mb-4 text-center">Reports Hub</h5>
-                <div class="report-btn bg-gradient-blue" onclick="prepareReport('followup')">
-                    <i class="fas fa-calendar-check fa-2x mb-2"></i><br>
-                    <span class="fw-bold">Follow-up Diary</span><br><small class="opacity-75">Tasks & Plans</small>
-                </div>
-                <div class="report-btn bg-gradient-green" onclick="prepareReport('growth')">
-                    <i class="fas fa-chart-line fa-2x mb-2"></i><br>
-                    <span class="fw-bold">AI Growth Report</span><br><small class="opacity-75">Analysis & Strategy</small>
+            <div class="card p-4 text-center">
+                <h5 class="text-primary fw-bold mb-4">Select Report</h5>
+                <div class="d-grid gap-3">
+                    <button class="btn btn-outline-primary py-3 shadow-sm" onclick="showReportPreview('followup')">
+                        <i class="fas fa-calendar-alt fa-2x mb-2"></i><br><b>Follow-up Diary</b>
+                    </button>
+                    <button class="btn btn-outline-success py-3 shadow-sm" onclick="showReportPreview('growth')">
+                        <i class="fas fa-chart-line fa-2x mb-2"></i><br><b>Business Analysis</b>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="printFollowup" class="print-container">
-        <div class="text-center mb-4"><h2 style="color:#000080;">📅 फॉलो-अप रिपोर्ट</h2><p class="text-muted">Generated: <span class="printDate"></span></p></div>
-        <table class="report-table">
-            <thead><tr><th>Client</th><th>Given Product</th><th>Next Date</th><th>Status</th></tr></thead>
-            <tbody id="followupTableBody"></tbody>
-        </table>
-    </div>
-
-    <div id="printGrowth" class="print-container">
-        <div class="text-center mb-4"><h2 style="color:#138808;">🚀 Business Analysis</h2><p class="text-muted">Generated: <span class="printDate"></span></p></div>
-        <div class="row text-center mb-4 border-bottom pb-3">
-            <div class="col-4"><h5>Clients</h5><h3 id="aiClients">0</h3></div>
-            <div class="col-4"><h5>Avg Bill</h5><h3 class="text-success">₹<span id="aiTicket">0</span></h3></div>
-            <div class="col-4"><h5>Pending</h5><h3 class="text-danger" id="aiPending">0</h3></div>
+    <div id="reportOverlay">
+        <div class="print-btn-area text-center mb-4 sticky-top bg-white p-3 shadow-sm">
+            <button class="btn btn-secondary me-2" onclick="document.getElementById('reportOverlay').style.display='none'">Back</button>
+            <button class="btn btn-danger fw-bold" onclick="window.print()">🖨️ Print / Save PDF</button>
         </div>
-        <h4 style="color:#000080;">🤖 Action Plan</h4>
-        <div id="aiAdviceContent" class="mb-4"></div>
-        <h4 style="color:#000080;">🔥 Focus List (Hot Leads)</h4>
-        <table class="report-table"><thead><tr><th>Name</th><th>Mobile</th><th>Product</th></tr></thead><tbody id="hotLeadsList"></tbody></table>
+        <div id="reportContent" class="report-paper">
+            </div>
     </div>
 
-    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold">Update</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><select id="msgTemplate" class="form-select mb-3 bg-light border-0"><option value="">Script</option><option value="feedback">Feedback</option><option value="offer">Offer</option></select><textarea id="updateRemark" class="form-control mb-3 bg-light border-0" placeholder="Note"></textarea><input type="date" id="nextDateManual" class="form-control mb-3 bg-light border-0"><button class="btn btn-primary w-100 rounded-pill" onclick="saveUpdate()">Mark Updated</button></div></div></div></div>
+    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold">Update Status</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><select id="msgTemplate" class="form-select mb-3 bg-light border-0"><option value="">Script</option><option value="feedback">Feedback</option><option value="offer">Offer</option></select><textarea id="updateRemark" class="form-control mb-3 bg-light border-0" placeholder="Note"></textarea><input type="date" id="nextDateManual" class="form-control mb-3 bg-light border-0"><button class="btn btn-primary w-100 rounded-pill" onclick="saveUpdate()">Mark Updated</button></div></div></div></div>
 
     <div class="bottom-nav no-print">
         <a class="nav-item active" onclick="switchTab('view-add', this)"><i class="fas fa-plus-circle"></i> Add</a>
@@ -162,13 +171,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const SHEET_ID = "1eR5THz-4AV3HkfnNJ5Un48ksz0I0jrepJSED3qHFg6k";
-        const DEFAULT_PRODUCTS = [{name: "RCM Tea", price: 120}, {name: "Health Guard Oil", price: 200}, {name: "Nutricharge", price: 350}, {name: "Soap", price: 35}];
         let processedPhotoData = null; let currentCart = [];
 
         document.getElementById('entryDate').valueAsDate = new Date();
         document.addEventListener('DOMContentLoaded', () => { loadProducts(); loadClients(); loadFollowUps(); });
 
-        // --- 1. TASK UI ---
+        // --- 1. PROFESSIONAL TASK LIST ---
         function loadFollowUps() {
             let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]");
             const list = document.getElementById('followUpList'); list.innerHTML = '';
@@ -177,27 +185,31 @@
             clients.filter(c => c.status === 'Pending').sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp)).forEach(c => {
                 let nextDate = new Date(c.nextFollowUp);
                 let diff = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
-                let statusInfo = diff < 0 ? {cls:'overdue', badge:'bg-danger', text:`${Math.abs(diff)} Days Late`} : (diff===0 ? {cls:'today', badge:'bg-success', text:'Today'} : {cls:'future', badge:'bg-secondary', text:`${diff} Days Left`});
-
+                let typeClass = diff < 0 ? 'late' : (diff === 0 ? 'today' : 'future');
+                let statusText = diff < 0 ? `${Math.abs(diff)} Days Late` : (diff === 0 ? 'Today' : `${diff} Days Left`);
+                
                 if(diff <= 0 || c.leadType === 'Hot') {
                     list.innerHTML += `
-                    <div class="task-card ${statusInfo.cls}">
-                        <div class="task-header">
-                            <div><div class="fw-bold">${c.name}</div><small class="text-muted">${c.product || 'No Product'}</small></div>
-                            <div class="text-end"><span class="badge ${statusInfo.badge}">${statusInfo.text}</span><div class="small mt-1">${c.nextFollowUp}</div></div>
+                    <div class="task-card ${typeClass}">
+                        <div class="task-top">
+                            <div>
+                                <div class="task-name">${c.name}</div>
+                                <small class="text-muted">${c.product || 'No Product'}</small>
+                            </div>
+                            <div class="task-date">${statusText}</div>
                         </div>
                         <div class="task-actions">
-                            <a href="tel:${c.phone}" class="btn-action"><i class="fas fa-phone text-primary"></i> Call</a>
-                            <a href="#" onclick="openUpdateModal(${c.id})" class="btn-action"><i class="fas fa-check text-success"></i> Done</a>
-                            <a href="https://wa.me/91${c.phone}" class="btn-action"><i class="fab fa-whatsapp text-success"></i> Msg</a>
+                            <a href="tel:${c.phone}"><i class="fas fa-phone text-primary"></i> Call</a>
+                            <a href="#" onclick="openUpdateModal(${c.id})"><i class="fas fa-check text-success"></i> Done</a>
+                            <a href="https://wa.me/91${c.phone}"><i class="fab fa-whatsapp text-success"></i> Msg</a>
                         </div>
                     </div>`;
                 }
             });
-            if(list.innerHTML === '') list.innerHTML = '<div class="text-center text-muted mt-5"><i class="fas fa-check-circle fa-3x mb-3"></i><br>No pending tasks!</div>';
+            if(list.innerHTML === '') list.innerHTML = '<div class="text-center text-muted mt-5">No pending tasks today!</div>';
         }
 
-        // --- 2. LIST UI ---
+        // --- 2. PROFESSIONAL CLIENT LIST ---
         function loadClients() {
             const term = document.getElementById('searchInput').value.toLowerCase();
             const container = document.getElementById('clientListContainer'); container.innerHTML = '';
@@ -205,64 +217,65 @@
                 let img = c.photo ? c.photo : 'https://via.placeholder.com/50?text=U';
                 let prod = c.product.length > 20 ? c.product.substring(0, 20) + '...' : c.product;
                 container.innerHTML += `
-                <div class="client-row">
-                    <div class="d-flex align-items-center"><img src="${img}" class="photo-thumb"><div class="ms-2"><h6>${c.name}</h6><small class="text-muted">${prod}</small></div></div>
-                    <div class="text-end"><div class="fw-bold text-success">₹${c.amount || 0}</div><button onclick="deleteClient(${c.id})" class="btn btn-sm text-danger"><i class="fas fa-trash"></i></button></div>
+                <div class="client-item">
+                    <div class="d-flex align-items-center">
+                        <img src="${img}" class="client-img">
+                        <div class="client-details">
+                            <h6>${c.name}</h6>
+                            <p>${prod}</p>
+                        </div>
+                    </div>
+                    <div class="client-meta">
+                        <div class="amount-tag">₹${c.amount || 0}</div>
+                        <button onclick="deleteClient(${c.id})" class="btn btn-sm text-danger border-0 p-0 mt-1"><i class="fas fa-trash"></i></button>
+                    </div>
                 </div>`;
             });
         }
 
-        // --- 3. FIXED REPORT LOGIC (IMPORTANT) ---
-        function prepareReport(type) {
+        // --- 3. FOOLPROOF REPORT GENERATION (PREVIEW FIRST) ---
+        function showReportPreview(type) {
             let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]");
-            document.querySelectorAll('.printDate').forEach(e => e.innerText = new Date().toLocaleString());
-            
-            // Hide all first
-            document.querySelectorAll('.print-container').forEach(e => e.classList.remove('active'));
+            let content = '';
+            let date = new Date().toLocaleString();
 
             if(type === 'followup') {
-                const tbody = document.getElementById('followupTableBody'); tbody.innerHTML = '';
-                if(clients.length === 0) tbody.innerHTML = '<tr><td colspan="4" class="text-center">No Data</td></tr>';
-                else {
-                    clients.sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
-                    clients.forEach(c => {
-                        if(c.status === 'Pending') {
-                            let diff = Math.ceil((new Date(c.nextFollowUp) - new Date().setHours(0,0,0,0)) / 86400000);
-                            let status = diff < 0 ? `<span style="color:red">${Math.abs(diff)} Days Late</span>` : (diff===0 ? `<span style="color:orange">Today</span>` : `${diff} Days Left`);
-                            tbody.innerHTML += `<tr><td><b>${c.name}</b><br>${c.phone}</td><td>${c.product}</td><td>${c.nextFollowUp}</td><td>${status}</td></tr>`;
-                        }
-                    });
-                }
-                document.getElementById('printFollowup').classList.add('active');
+                content = `<div class="text-center mb-4"><h2 style="color:#000080;">Follow-up Diary</h2><p>${date}</p></div>
+                <table class="report-table"><thead><tr><th>Client</th><th>Product</th><th>Due Date</th><th>Status</th></tr></thead><tbody>`;
+                
+                clients.sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
+                clients.forEach(c => {
+                    if(c.status === 'Pending') {
+                        let diff = Math.ceil((new Date(c.nextFollowUp) - new Date().setHours(0,0,0,0)) / 86400000);
+                        let status = diff < 0 ? `<span style="color:red">Late</span>` : (diff===0 ? `<span style="color:orange">Today</span>` : `Future`);
+                        content += `<tr><td><b>${c.name}</b><br>${c.phone}</td><td>${c.product}</td><td>${c.nextFollowUp}</td><td>${status}</td></tr>`;
+                    }
+                });
+                content += `</tbody></table>`;
             } 
             else if(type === 'growth') {
-                let totalSales = 0, pending = 0, hot = 0;
-                const hotList = document.getElementById('hotLeadsList'); hotList.innerHTML = '';
-                clients.forEach(c => {
-                    totalSales += parseInt(c.amount || 0);
-                    if(c.status === 'Pending') pending++;
-                    if(c.leadType === 'Hot') { hot++; hotList.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.product}</td></tr>`; }
-                });
-                document.getElementById('aiClients').innerText = clients.length;
-                document.getElementById('aiTicket').innerText = Math.round(totalSales / (clients.length || 1));
-                document.getElementById('aiPending').innerText = pending;
-                let advice = "";
-                if(pending > 5) advice += `<div class="ai-tip">⚠️ <b>Pending Alert:</b> ${pending} calls remaining. Focus on follow-ups first.</div>`;
-                if(hot > 0) advice += `<div class="ai-tip">🔥 <b>Hot Leads:</b> You have ${hot} hot prospects. Call them today.</div>`;
-                if(!advice) advice = `<div class="ai-tip">✅ <b>All Good:</b> Keep prospecting new clients.</div>`;
-                document.getElementById('aiAdviceContent').innerHTML = advice;
-                document.getElementById('printGrowth').classList.add('active');
+                let total = 0, pending = 0;
+                clients.forEach(c => { total += parseInt(c.amount||0); if(c.status==='Pending') pending++; });
+                let avg = Math.round(total / (clients.length||1));
+                
+                content = `<div class="text-center mb-4"><h2 style="color:#138808;">Business Analysis</h2><p>${date}</p></div>
+                <div class="row text-center mb-4 border-bottom pb-3">
+                    <div class="col-4"><h5>Clients</h5><h3>${clients.length}</h3></div>
+                    <div class="col-4"><h5>Avg Bill</h5><h3 class="text-success">₹${avg}</h3></div>
+                    <div class="col-4"><h5>Pending</h5><h3 class="text-danger">${pending}</h3></div>
+                </div>
+                <h4>Action Plan</h4>
+                <div class="p-3 mb-4 bg-light border-start border-primary border-4">
+                    ${pending > 5 ? '⚠️ High Pending Calls! Clear them first.' : '✅ Good workflow! Keep prospecting.'}
+                    <br>${avg < 500 ? '💰 Upsell combo packs to increase average bill.' : '🚀 Sales are healthy.'}
+                </div>`;
             }
 
-            // DELAY PRINT TO ALLOW DOM UPDATE
-            setTimeout(() => {
-                window.print();
-                // Hide again after printing (optional cleanup)
-                setTimeout(() => document.querySelectorAll('.print-container').forEach(e => e.classList.remove('active')), 1000);
-            }, 500);
+            document.getElementById('reportContent').innerHTML = content;
+            document.getElementById('reportOverlay').style.display = 'block';
         }
 
-        // --- CART ---
+        // --- CART & PHOTO ---
         function addProductToCart() {
             const dropdown = document.getElementById('productDropdown'); const selectedOpt = dropdown.options[dropdown.selectedIndex];
             if(!dropdown.value) return;
@@ -270,15 +283,16 @@
         }
         function renderCart() {
             const list = document.getElementById('selectedProductsList'); let total = 0; list.innerHTML = '';
-            currentCart.forEach((item, index) => { total += item.price; list.innerHTML += `<div class="cart-item"><span>${item.name}</span><span class="text-danger" onclick="removeProduct(${index})" style="cursor:pointer">x</span></div>`; });
+            currentCart.forEach((item, index) => { total += item.price; list.innerHTML += `<div class="d-flex justify-content-between"><span>${item.name}</span><span class="text-danger" onclick="removeProduct(${index})">x</span></div>`; });
             document.getElementById('displayTotalAmount').innerText = total;
         }
         function removeProduct(i) { currentCart.splice(i, 1); renderCart(); }
         
         function handlePhoto(input) {
             const file = input.files[0]; if(!file) return;
-            const status = document.getElementById('photoStatus'); status.innerText = "GPS...";
-            navigator.geolocation.getCurrentPosition(pos => processImage(file, `Lat: ${pos.coords.latitude.toFixed(4)}, Long: ${pos.coords.longitude.toFixed(4)}`), err => processImage(file, "No GPS"));
+            document.getElementById('photoStatus').innerText = "Processing...";
+            navigator.geolocation.getCurrentPosition(pos => processImage(file, `Loc: ${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`), 
+            err => processImage(file, "No GPS"));
         }
         function processImage(file, loc) {
             const reader = new FileReader(); reader.onload = e => {
@@ -313,7 +327,7 @@
             };
             let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]"); clients.unshift(client);
             localStorage.setItem('rcmClients', JSON.stringify(clients));
-            alert('Saved!'); this.reset(); currentCart=[]; renderCart(); processedPhotoData=null; document.getElementById('photoPreview').src='https://via.placeholder.com/100x100?text=Camera';
+            alert('Saved!'); this.reset(); currentCart=[]; renderCart(); processedPhotoData=null; document.getElementById('photoPreview').src='https://via.placeholder.com/100x100?text=Click';
             loadClients(); loadFollowUps();
         });
 
