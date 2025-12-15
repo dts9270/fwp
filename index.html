@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Task Master)</title>
+    <title>RCM Pro (Final)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
         }
         body { background-color: var(--bg); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
         
-        /* 🇮🇳 TIRANGA HEADER */
+        /* 🇮🇳 HEADER */
         .app-header { 
             background: linear-gradient(180deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%);
             padding: 15px 20px; border-bottom: 4px solid var(--chakra);
@@ -29,33 +29,48 @@
         }
         .header-title { font-weight: 800; color: var(--chakra); margin: 0; letter-spacing: 1px; }
 
-        /* TASK CARD UI */
+        /* CARDS */
         .task-card {
             background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.05); border-left: 5px solid #ccc;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05); border-left: 6px solid #ccc;
         }
-        .task-card.late { border-left-color: #dc3545; } /* Red */
-        .task-card.today { border-left-color: var(--saffron); } /* Orange */
-        .task-card.future { border-left-color: var(--green); } /* Green */
+        .task-card.late { border-left-color: #dc3545; } 
+        .task-card.today { border-left-color: var(--saffron); } 
+        .task-card.future { border-left-color: var(--green); }
+
+        .client-card {
+            background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee;
+        }
 
         .btn-whatsapp {
-            background-color: #25D366; color: white; border: none; padding: 6px 12px; 
-            border-radius: 20px; font-size: 0.85em; font-weight: bold; width: 100%; margin-top: 10px;
-            display: flex; align-items: center; justify-content: center; gap: 5px;
+            background-color: #25D366; color: white; border: none; padding: 8px 12px; 
+            border-radius: 20px; font-size: 0.9em; font-weight: bold; width: 100%; margin-top: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .btn-update {
             border: 1px solid var(--chakra); color: var(--chakra); background: transparent;
             padding: 5px 15px; border-radius: 20px; font-size: 0.8em; font-weight: bold;
         }
 
+        /* ACTIONS IN LIST */
+        .action-btn {
+            width: 35px; height: 35px; border-radius: 50%; border: none; 
+            display: flex; align-items: center; justify-content: center; margin-left: 5px;
+        }
+        .btn-edit { background: #e3f2fd; color: #0d47a1; }
+        .btn-del { background: #ffebee; color: #c62828; }
+        .btn-call-list { background: #e8f5e9; color: #1b5e20; }
+
         /* ADD FORM & CART */
         .card { border: none; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; background: white; }
         .cart-box { background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; margin-top: 10px; }
-        
+        .cart-item { display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; padding: 5px 0; font-size: 0.9em; }
+
         /* REPORT BUTTONS */
         .report-btn {
             background: white; border: 1px solid #ddd; padding: 15px; border-radius: 10px;
-            text-align: center; cursor: pointer; transition: 0.2s;
+            text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .report-btn:active { background: #eee; }
 
@@ -71,9 +86,11 @@
         #reportOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto; padding: 20px; }
         .report-paper { border: 2px solid var(--chakra); padding: 20px; margin-top: 20px; min-height: 500px; }
         .report-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
-        .report-table th { background: var(--saffron); color: white; padding: 8px; }
+        .report-table th { background: var(--saffron); color: white; padding: 8px; text-align: left; }
         .report-table td { border-bottom: 1px solid #ddd; padding: 8px; }
         
+        .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--chakra); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
         @media print { .no-print { display: none !important; } #reportOverlay { display: block !important; position: static; } .print-btn-area { display: none; } }
     </style>
 </head>
@@ -88,20 +105,27 @@
 
     <div class="container px-3 no-print">
         
-        <div id="view-add" class="section-view active-view">
+        <div id="view-tasks" class="section-view active-view">
+            <h6 class="text-muted fw-bold mb-3">📅 पेंडिंग फॉलो-अप (Tasks)</h6>
+            <div id="taskListContainer"></div>
+        </div>
+
+        <div id="view-add" class="section-view">
             <div class="card p-4">
-                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">नवीन एंट्री (New Entry)</h6><button class="btn btn-sm btn-warning" onclick="loadProducts()">Refresh</button></div>
+                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">नवीन एंट्री (New Entry)</h6><button class="btn btn-sm btn-warning" onclick="resetForm()">Clear</button></div>
                 <form id="crmForm" class="row g-3">
-                    <div class="col-12 text-center">
-                        <label class="small text-muted">Photo (GPS)</label>
+                    <input type="hidden" id="editModeId"> <div class="col-12 text-center">
+                        <label class="small text-muted">Click to take Photo</label>
                         <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
-                        <img id="photoPreview" src="https://via.placeholder.com/80?text=Cam" onclick="document.getElementById('meetingPhoto').click()" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--saffron);">
+                        <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/1042/1042390.png" onclick="document.getElementById('meetingPhoto').click()" style="width:100px;height:100px;object-fit:cover;border-radius:10px;border:2px dashed var(--chakra);padding:5px;cursor:pointer;">
                         <div id="photoStatus" class="small text-success fw-bold"></div>
                     </div>
                     
-                    <div class="col-12"><input type="text" class="form-control" id="cName" placeholder="Customer Name" required></div>
+                    <div class="col-12"><input type="text" class="form-control" id="cName" placeholder="Client Name" required></div>
                     <div class="col-6"><input type="tel" class="form-control" id="cPhone" placeholder="Mobile"></div>
                     <div class="col-6"><input type="date" class="form-control" id="cDate"></div>
+                    
+                    <div class="col-12"><input type="text" class="form-control" id="cProposer" placeholder="Proposer Name (प्रपोजर)"></div>
                     
                     <div class="col-12">
                         <div class="input-group mb-2">
@@ -109,22 +133,12 @@
                             <button type="button" class="btn btn-primary" onclick="addToCart()">Add</button>
                         </div>
                         <div id="cartList" class="cart-box small text-muted">No items</div>
-                        <div class="fw-bold text-end mt-2">Total: ₹<span id="cartTotal">0</span></div>
+                        <div class="fw-bold text-end mt-2 text-primary">Total Bill: ₹<span id="cartTotal">0</span></div>
                     </div>
 
                     <div class="col-12 mt-3"><button type="button" class="btn btn-success w-100 fw-bold shadow" onclick="saveClient()">Save Data</button></div>
                 </form>
             </div>
-        </div>
-
-        <div id="view-tasks" class="section-view">
-            <h6 class="text-muted fw-bold mb-3">📅 पेंडिंग फॉलो-अप (Tasks)</h6>
-            <div id="taskListContainer"></div>
-        </div>
-
-        <div id="view-list" class="section-view">
-            <input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="Search...">
-            <div id="clientListContainer"></div>
         </div>
 
         <div id="view-reports" class="section-view">
@@ -147,7 +161,14 @@
                 <button class="btn btn-light border w-100 mt-2" onclick="document.getElementById('importFile').click()">📤 Restore Data</button>
             </div>
         </div>
+
+        <div id="view-list" class="section-view">
+            <input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="Search...">
+            <div id="clientListContainer"></div>
+        </div>
     </div>
+
+    <button class="fab-btn no-print" onclick="switchTab('view-add', document.querySelectorAll('.nav-item')[1]); resetForm();"><i class="fas fa-plus"></i></button>
 
     <div class="modal fade" id="updateModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -155,12 +176,16 @@
                 <div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update Task</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <input type="hidden" id="editClientId">
-                    <label class="small text-muted">Next Date (जर काम बाकी असेल):</label>
+                    
+                    <label class="small text-muted fw-bold">Next Date (जर काम बाकी असेल):</label>
                     <input type="date" id="nextDateManual" class="form-control mb-3 border-primary">
-                    <textarea id="updateRemark" class="form-control mb-3" placeholder="Note (Optional)"></textarea>
+                    
+                    <textarea id="updateRemark" class="form-control mb-3" placeholder="Remark (काय बोलणे झाले?)"></textarea>
+                    
                     <div class="d-grid gap-2">
-                        <button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Reschedule (पुढची तारीख)</button>
-                        <button class="btn btn-success" onclick="saveUpdate('complete')">✅ Mark Completed (झाले)</button>
+                        <button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Set Next Date</button>
+                        <div class="text-center text-muted small">- OR -</div>
+                        <button class="btn btn-success" onclick="saveUpdate('complete')">✅ Mark Completed (Done)</button>
                     </div>
                 </div>
             </div>
@@ -176,8 +201,8 @@
     </div>
 
     <div class="bottom-nav no-print">
-        <a class="nav-item active" onclick="switchTab('view-add', this)"><i class="fas fa-plus-circle"></i> Add</a>
-        <a class="nav-item" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i> Tasks</a>
+        <a class="nav-item active" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i> Tasks</a>
+        <a class="nav-item" onclick="switchTab('view-add', this)"><i class="fas fa-plus-circle"></i> Add</a>
         <a class="nav-item" onclick="switchTab('view-list', this)"><i class="fas fa-users"></i> List</a>
         <a class="nav-item" onclick="switchTab('view-reports', this)"><i class="fas fa-chart-pie"></i> Reports</a>
     </div>
@@ -201,10 +226,24 @@
             const today = new Date(); today.setHours(0,0,0,0);
 
             clients.forEach(c => {
-                // List Item
-                listContainer.innerHTML += `<div class="card p-3 mb-2 shadow-sm d-flex flex-row justify-content-between"><div><strong>${c.name}</strong><br><small>${c.product}</small></div><div class="text-end text-success fw-bold">₹${c.amount}<br><a href="tel:${c.phone}"><i class="fas fa-phone text-dark"></i></a></div></div>`;
+                // LIST ITEM (With Edit/Delete)
+                listContainer.innerHTML += `
+                <div class="client-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="m-0 fw-bold text-dark">${c.name}</h6>
+                            <small class="text-muted">Proposer: ${c.proposer || '-'}</small><br>
+                            <small class="text-primary">${c.product}</small>
+                        </div>
+                        <div class="d-flex">
+                            <a href="tel:${c.phone}" class="action-btn btn-call-list"><i class="fas fa-phone"></i></a>
+                            <button onclick="editClient(${c.id})" class="action-btn btn-edit"><i class="fas fa-pencil-alt"></i></button>
+                            <button onclick="deleteClient(${c.id})" class="action-btn btn-del"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>`;
 
-                // Task Item
+                // TASK ITEM (Only Pending)
                 if(c.status === 'Pending') {
                     let nextDate = new Date(c.nextFollowUp);
                     let diff = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
@@ -223,9 +262,94 @@
                     </div>`;
                 }
             });
-            if(taskContainer.innerHTML === '') taskContainer.innerHTML = "<div class='text-center text-muted mt-5'>No Pending Tasks!</div>";
+            if(taskContainer.innerHTML === '') taskContainer.innerHTML = "<div class='text-center text-muted mt-5'>No Pending Tasks! 🎉</div>";
         }
 
+        // --- 2. ADD / EDIT LOGIC ---
+        function saveClient() {
+            let name = document.getElementById('cName').value; if(!name) return alert("Name needed");
+            let id = document.getElementById('editModeId').value; // Check if Editing
+            
+            let amt = currentCart.reduce((s,i)=>s+i.price,0); 
+            let pStr = currentCart.map(i=>i.name).join(", ");
+            if(!pStr && id) { 
+                // Keep old product if editing and cart is empty, or allow empty
+                let old = JSON.parse(localStorage.getItem('rcmClients')).find(x=>x.id==id);
+                pStr = old ? old.product : "No Product";
+                amt = old ? old.amount : 0;
+            } else if (!pStr) {
+                pStr = "No Product";
+            }
+
+            let clientObj = {
+                id: id ? parseInt(id) : Date.now(), // Keep old ID if editing
+                name: name,
+                phone: document.getElementById('cPhone').value,
+                proposer: document.getElementById('cProposer').value,
+                product: pStr,
+                amount: amt,
+                nextFollowUp: document.getElementById('cDate').value || new Date().toISOString().split('T')[0],
+                status: 'Pending',
+                photo: processedPhotoData || (id ? JSON.parse(localStorage.getItem('rcmClients')).find(x=>x.id==id).photo : null),
+                history: id ? JSON.parse(localStorage.getItem('rcmClients')).find(x=>x.id==id).history : []
+            };
+
+            let db = JSON.parse(localStorage.getItem('rcmClients') || "[]");
+            
+            if(id) {
+                // Update existing
+                let index = db.findIndex(x => x.id == id);
+                db[index] = clientObj;
+                alert("Client Updated!");
+            } else {
+                // Add new
+                db.unshift(clientObj);
+                alert("New Entry Saved!");
+            }
+            
+            localStorage.setItem('rcmClients', JSON.stringify(db));
+            resetForm();
+            loadData();
+            switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]);
+        }
+
+        function editClient(id) {
+            let db = JSON.parse(localStorage.getItem('rcmClients'));
+            let c = db.find(x => x.id == id);
+            if(c) {
+                document.getElementById('editModeId').value = c.id;
+                document.getElementById('cName').value = c.name;
+                document.getElementById('cPhone').value = c.phone;
+                document.getElementById('cProposer').value = c.proposer || '';
+                document.getElementById('cDate').value = c.nextFollowUp;
+                if(c.photo) document.getElementById('photoPreview').src = c.photo;
+                
+                // Switch to Add Tab
+                switchTab('view-add', document.querySelectorAll('.nav-item')[1]);
+                window.scrollTo(0,0);
+            }
+        }
+
+        function deleteClient(id) {
+            if(confirm("Are you sure you want to delete this client?")) {
+                let db = JSON.parse(localStorage.getItem('rcmClients'));
+                db = db.filter(x => x.id !== id);
+                localStorage.setItem('rcmClients', JSON.stringify(db));
+                loadData();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('crmForm').reset();
+            document.getElementById('editModeId').value = '';
+            document.getElementById('photoPreview').src = "https://cdn-icons-png.flaticon.com/512/1042/1042390.png";
+            currentCart = [];
+            document.getElementById('cartList').innerHTML = "No items";
+            document.getElementById('cartTotal').innerText = "0";
+            processedPhotoData = null;
+        }
+
+        // --- 3. TASKS UPDATE ---
         function openUpdateModal(id) {
             document.getElementById('editClientId').value = id;
             document.getElementById('nextDateManual').value = ""; 
@@ -256,11 +380,7 @@
             }
         }
 
-        function sendReminder(phone, name, product) {
-            window.open(`https://wa.me/91${phone}?text=नमस्कार ${name}, आपल्या *${product}* बद्दल फॉलो-अप कॉल करायचा होता.`, '_blank');
-        }
-
-        // --- 2. REPORTS ---
+        // --- 4. REPORTS & UTILS ---
         function generateReport(type) {
             let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]");
             let html = `<div style="text-align:center;margin-bottom:20px;"><h2>RCM Report</h2><p>${new Date().toLocaleString()}</p></div>`;
@@ -269,7 +389,7 @@
                 html += `<h4>📅 Follow-up Diary</h4><table class="report-table"><thead><tr><th>Client</th><th>Product</th><th>Date</th><th>Status</th></tr></thead><tbody>`;
                 clients.sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
                 clients.forEach(c => {
-                    let st = c.status === 'Done' ? '<span class="text-success">Done ✅</span>' : '<span class="text-danger">Pending</span>';
+                    let st = c.status === 'Done' ? '<span class="text-success fw-bold">Completed ✅</span>' : '<span class="text-danger">Pending ⏳</span>';
                     html += `<tr><td><b>${c.name}</b><br>${c.phone}</td><td>${c.product}</td><td>${c.nextFollowUp}</td><td>${st}</td></tr>`;
                 });
                 html += `</tbody></table>`;
@@ -277,26 +397,16 @@
             else if(type === 'growth') {
                 let total = clients.reduce((s,c)=>s+parseInt(c.amount||0),0);
                 html += `<h4>📊 Analysis</h4><p><strong>Clients:</strong> ${clients.length}</p><p><strong>Total Sales:</strong> ₹${total.toLocaleString()}</p>`;
-                html += `<h4>🔥 Hot Leads</h4><ul>` + clients.filter(c=>c.leadType==='Hot').map(c=>`<li>${c.name} - ${c.phone}</li>`).join('') + `</ul>`;
+                html += `<h4>🔥 All Leads</h4><ul>` + clients.map(c=>`<li>${c.name} (${c.status})</li>`).join('') + `</ul>`;
             }
             document.getElementById('reportContent').innerHTML = html;
             document.getElementById('reportOverlay').style.display = 'block';
         }
 
-        // --- 3. CART & SAVE ---
-        function loadProducts() { const dd=document.getElementById('cProd'); fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(c=>{dd.innerHTML='<option value="">Select</option>';c.split('\n').forEach(r=>{let x=r.replace(/"/g,'').split(',');if(x[0]&&x[0].length>2){let o=document.createElement('option');o.value=x[0];o.dataset.price=x[1]||0;o.text=x[0];dd.add(o);}});}).catch(()=>{}); }
-        function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); renderCart(); }
-        function renderCart() { let t=0; document.getElementById('cartList').innerHTML=currentCart.map(i=>{t+=i.price; return `<span>${i.name}</span>`}).join(", "); document.getElementById('cartTotal').innerText=t; }
+        function sendReminder(phone, name, product) { window.open(`https://wa.me/91${phone}?text=नमस्कार ${name}, आपल्या *${product}* बद्दल फॉलो-अप कॉल करायचा होता.`, '_blank'); }
+        function loadProducts() { const dd = document.getElementById('cProd'); fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(c=>{ dd.innerHTML='<option value="">Select</option>'; c.split('\n').forEach(r=>{let x=r.replace(/"/g,'').split(','); if(x[0]&&x[0].length>2){let o=document.createElement('option');o.value=x[0];o.dataset.price=x[1]||0;o.text=x[0];dd.add(o);}});}).catch(()=>{}); }
+        function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); let t=0; document.getElementById('cartList').innerHTML=currentCart.map(i=>{t+=i.price; return `<div class="cart-item"><span>${i.name}</span><span>₹${i.price}</span></div>`}).join(""); document.getElementById('cartTotal').innerText=t; }
         
-        function saveClient() {
-            let name = document.getElementById('cName').value; if(!name) return alert("Name needed");
-            let amt = currentCart.reduce((s,i)=>s+i.price,0); let pStr = currentCart.map(i=>i.name).join(", ")||"No Product";
-            let c = { id:Date.now(), name:name, phone:document.getElementById('cPhone').value, leadType:document.getElementById('cType').value, product:pStr, amount:amt, nextFollowUp:document.getElementById('cDate').value||new Date().toISOString().split('T')[0], status:'Pending', photo:processedPhotoData, history:[] };
-            let db = JSON.parse(localStorage.getItem('rcmClients')||"[]"); db.unshift(c); localStorage.setItem('rcmClients',JSON.stringify(db));
-            bootstrap.Modal.getInstance(document.getElementById('addModal')).hide(); document.getElementById('addForm').reset(); currentCart=[]; loadData();
-        }
-
-        // --- UTILS ---
         function switchTab(viewId, el) { document.querySelectorAll('.section-view').forEach(d => d.classList.remove('active-view')); document.getElementById(viewId).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         function downloadBackup() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([localStorage.getItem('rcmClients')],{type:"application/json"})); a.download="Backup.json"; a.click(); }
         function importBackup(i) { const r=new FileReader(); r.onload=e=>{ if(confirm("Restore?")){localStorage.setItem('rcmClients', e.target.result); location.reload();} }; r.readAsText(i.files[0]); }
