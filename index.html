@@ -3,197 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Platinum Plus</title>
+    <title>RCM Pro UI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #f4f6f9; --card-bg: #ffffff; --text-color: #333; --primary: #000080; }
-        [data-theme="dark"] { --bg-color: #121212; --card-bg: #1e1e1e; --text-color: #fff; --primary: #FF9933; }
-        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Poppins', sans-serif; padding-bottom: 80px; }
+        :root { --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #333; --primary: #000080; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
         
         /* 🇮🇳 HEADER ANIMATION */
         .crm-header { 
             background: linear-gradient(-45deg, #FF9933, #FFFFFF, #138808, #FF9933);
             background-size: 400% 400%; animation: flagWave 10s ease infinite;
-            padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000080;
+            padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000080; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         @keyframes flagWave { 0% {background-position:0% 50%} 50% {background-position:100% 50%} 100% {background-position:0% 50%} }
-        .crm-header h5 { margin: 0; font-weight: 700; color: #000080; text-transform: uppercase; }
+        .crm-header h5 { margin: 0; font-weight: 700; color: #000080; text-transform: uppercase; letter-spacing: 1px; }
 
-        .card { background-color: var(--card-bg); border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); border: none; margin-bottom: 20px; }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); box-shadow: 0 -5px 20px rgba(0,0,0,0.1); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; border-top: 3px solid #FF9933; }
-        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.8em; } .nav-item.active { color: var(--primary); font-weight: bold; } .nav-item i { font-size: 1.4em; display: block; margin-bottom: 4px; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); box-shadow: 0 -5px 20px rgba(0,0,0,0.1); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; border-top: 3px solid #FF9933; }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; } .nav-item.active { color: var(--primary); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; margin-bottom: 2px; }
         
-        .photo-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 2px solid #ddd; margin-right: 10px; }
-        .cart-item { background: rgba(0,0,0,0.05); border-left: 3px solid #138808; padding: 8px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 0.85em; }
+        /* --- PROFESSIONAL TASK CARDS UI --- */
+        .task-card {
+            background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid #ddd; position: relative;
+        }
+        .task-card.overdue { border-left-color: #dc3545; } /* Red for Late */
+        .task-card.today { border-left-color: #198754; }   /* Green for Today */
+        .task-card.future { border-left-color: #0d6efd; }  /* Blue for Future */
         
-        /* REPORT SPECIFIC STYLES */
-        .report-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .report-btn { padding: 15px; border-radius: 10px; text-align: center; color: white; cursor: pointer; transition: 0.2s; border: none; }
-        .btn-followup { background: linear-gradient(135deg, #000080, #1a237e); }
-        .btn-growth { background: linear-gradient(135deg, #138808, #2e7d32); }
-        .btn-sales { background: linear-gradient(135deg, #FF9933, #e65100); }
+        .task-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .task-name { font-weight: 600; font-size: 1.1em; color: #333; }
+        .task-badge { font-size: 0.7em; padding: 3px 8px; border-radius: 20px; color: white; font-weight: 500; }
+        .badge-late { background: #dc3545; }
+        .badge-today { background: #198754; }
+        .badge-future { background: #6c757d; }
         
-        /* PRINT STYLES */
+        .task-actions { display: flex; gap: 10px; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+        .btn-action { flex: 1; font-size: 0.85em; padding: 5px; border-radius: 6px; border: 1px solid #eee; background: #f8f9fa; color: #333; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        
+        /* --- PROFESSIONAL LIST UI --- */
+        .client-row { background: white; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; }
+        .client-info h6 { margin: 0; font-weight: 600; }
+        .client-info small { color: #666; }
+        .client-amount { font-weight: 700; color: #198754; font-size: 0.9em; }
+        .photo-thumb { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #eee; }
+
+        /* REPORTS */
+        .report-btn { padding: 20px; border-radius: 12px; color: white; text-align: center; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .bg-gradient-blue { background: linear-gradient(135deg, #000080, #1a237e); }
+        .bg-gradient-green { background: linear-gradient(135deg, #138808, #2e7d32); }
+        
+        /* PRINT CSS */
         .print-container { display: none; background: white; color: black; padding: 30px; position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh; z-index: 9999; }
         @media print { .no-print { display: none !important; } .print-container.active { display: block !important; } body { background: white; } }
+        .report-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85em; }
+        .report-table th, .report-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .report-table th { background: #f2f2f2; color: #000080; }
         
-        .report-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9em; }
-        .report-table th, .report-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        .report-table th { background-color: #f2f2f2; color: #000080; }
-        
-        .strategy-box { border: 2px dashed #000080; padding: 15px; background: #f8f9fa; margin-top: 20px; border-radius: 10px; }
-        .ai-tip { display: flex; align-items: center; margin-bottom: 10px; }
-        .ai-tip i { font-size: 1.5em; margin-right: 10px; color: #FF9933; }
-        
-        /* PIN Screen */
-        #pinScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000080; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
-        .pin-input { width: 50px; height: 50px; font-size: 24px; text-align: center; margin: 5px; border-radius: 10px; border: none; }
+        /* MISC */
+        .cart-item { background: #fff; padding: 5px 10px; margin-bottom: 5px; border-radius: 5px; border: 1px solid #eee; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
-    <div id="pinScreen">
-        <h3 class="mb-4"><i class="fas fa-shield-alt"></i> RCM Secure</h3>
-        <div class="d-flex">
-            <input type="password" class="pin-input text-dark" id="pin1" maxlength="1" onkeyup="moveNext(this, 'pin2')">
-            <input type="password" class="pin-input text-dark" id="pin2" maxlength="1" onkeyup="moveNext(this, 'pin3')">
-            <input type="password" class="pin-input text-dark" id="pin3" maxlength="1" onkeyup="moveNext(this, 'pin4')">
-            <input type="password" class="pin-input text-dark" id="pin4" maxlength="1" onkeyup="checkPin()">
-        </div>
-        <small class="mt-3 text-white-50">PIN: 1234</small>
-    </div>
-
     <div class="crm-header no-print">
-        <div class="d-flex align-items-center"><i class="fas fa-flag-checkered me-2" style="color:#000080;"></i><h5>RCM Platinum+</h5></div>
+        <div class="d-flex align-items-center"><i class="fas fa-flag-checkered me-2" style="color:#000080;"></i><h5>RCM Pro</h5></div>
         <div>
-            <button class="btn btn-sm btn-dark me-1" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
             <input type="file" id="importFile" style="display: none;" onchange="importBackup(this)">
-            <button class="btn btn-sm btn-outline-primary fw-bold" style="color:#000080; border-color:#000080;" onclick="document.getElementById('importFile').click()">Rest</button>
-            <button class="btn btn-sm btn-primary fw-bold text-white" onclick="downloadBackup()">Back</button>
+            <button class="btn btn-sm btn-light fw-bold text-dark" onclick="downloadBackup()"><i class="fas fa-cloud-download-alt"></i> Backup</button>
         </div>
     </div>
 
     <div class="container no-print">
         
         <div id="view-add" class="section-view active-view">
-            <div class="card p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="text-primary fw-bold">नवीन एंट्री</h6>
-                    <button class="btn btn-sm btn-warning text-dark fw-bold" onclick="loadProducts()">Refresh</button>
-                </div>
+            <div class="card p-4 border-0">
+                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">New Entry</h6><button class="btn btn-sm btn-outline-warning text-dark" onclick="loadProducts()">Refresh</button></div>
                 <form id="crmForm" class="row g-3">
-                    <div class="col-12 bg-light p-2 border rounded">
-                        <label class="small text-muted ms-1 fw-bold"><i class="fas fa-camera"></i> मिटिंग फोटो</label>
-                        <input type="file" class="form-control mb-1" id="meetingPhoto" accept="image/*" capture="environment">
-                        <div id="photoStatus" class="fw-bold small mt-1"></div>
-                        <img id="photoPreview" style="display:none; width: 100px; height: 100px; object-fit: cover; border-radius: 10px; margin-top: 5px;">
-                        <canvas id="photoCanvas" style="display: none;"></canvas>
+                    <div class="col-12 text-center">
+                        <label for="meetingPhoto" class="d-block mb-2 text-muted small">Capture Photo</label>
+                        <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
+                        <img id="photoPreview" src="https://via.placeholder.com/100x100?text=Camera" class="rounded-circle shadow-sm" style="width:80px;height:80px;object-fit:cover;cursor:pointer;" onclick="document.getElementById('meetingPhoto').click()">
+                        <div id="photoStatus" class="small mt-1 text-success fw-bold"></div>
+                        <canvas id="photoCanvas" class="d-none"></canvas>
                     </div>
                     
-                    <div class="col-6"><label class="small text-muted">Type</label><select class="form-select fw-bold text-danger" id="leadType"><option value="Hot">🔥 Hot</option><option value="Warm">🤔 Warm</option><option value="Cold">❄️ Cold</option></select></div>
-                    <div class="col-6"><label class="small text-muted">Date</label><input type="date" class="form-control" id="entryDate"></div>
-                    <div class="col-12"><input type="text" class="form-control" id="clientName" placeholder="Client Name" required></div>
-                    <div class="col-6"><input type="tel" class="form-control" id="clientPhone" placeholder="Mobile" required></div>
+                    <div class="col-6"><select class="form-select form-select-sm fw-bold text-danger" id="leadType"><option value="Hot">🔥 Hot Lead</option><option value="Warm">🤔 Warm</option><option value="Cold">❄️ Cold</option></select></div>
+                    <div class="col-6"><input type="date" class="form-control form-control-sm" id="entryDate"></div>
+                    <div class="col-12"><input type="text" class="form-control" id="clientName" placeholder="Customer Name" required></div>
+                    <div class="col-6"><input type="tel" class="form-control" id="clientPhone" placeholder="Mobile No." required></div>
                     <div class="col-6"><input type="text" class="form-control" id="proposerName" placeholder="Proposer"></div>
                     
-                    <div class="col-12 p-2 rounded border">
-                        <label class="small text-muted fw-bold">Products</label>
-                        <div class="input-group mb-2">
+                    <div class="col-12">
+                        <div class="input-group input-group-sm mb-2">
                             <select class="form-select" id="productDropdown"><option value="">Loading...</option></select>
                             <button type="button" class="btn btn-success" onclick="addProductToCart()"><i class="fas fa-plus"></i></button>
                         </div>
-                        <div id="selectedProductsList" class="mt-2 text-muted text-center small">No items.</div>
-                        <div class="alert alert-primary mt-2 p-2 fw-bold text-center">Total: ₹<span id="displayTotalAmount">0</span></div>
+                        <div id="selectedProductsList" class="small mb-2"></div>
+                        <div class="fw-bold text-end text-primary">Total: ₹<span id="displayTotalAmount">0</span></div>
                     </div>
 
-                    <div class="col-12"><label class="small text-muted">Next Follow-up</label><select class="form-select border-warning" id="followUpTiming"><option value="24h">24h</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="15d">15 Days</option><option value="1m">1 Month</option></select></div>
-                    <div class="col-12 mt-3"><button type="submit" class="btn btn-primary w-100 fw-bold shadow" id="saveBtn">SAVE DATA</button></div>
+                    <div class="col-12"><label class="small text-muted">Next Follow-up</label><select class="form-select form-select-sm border-warning" id="followUpTiming"><option value="24h">24 Hours</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="15d">15 Days</option><option value="1m">1 Month</option></select></div>
+                    <div class="col-12 mt-3"><button type="submit" class="btn btn-primary w-100 shadow-sm" id="saveBtn">Save Record</button></div>
                 </form>
             </div>
         </div>
 
         <div id="view-followup" class="section-view">
-            <div class="card p-3 border-warning border-3 border-top-0 border-start-0 border-end-0">
-                <h6 class="text-uppercase text-muted fw-bold small mb-3">आजचे टार्गेट</h6>
-                <div id="followUpList" class="list-group list-group-flush"></div>
-            </div>
+            <h6 class="text-muted text-uppercase small mb-3 ps-2">Your Schedule</h6>
+            <div id="followUpList"></div>
         </div>
 
         <div id="view-list" class="section-view">
-            <div class="card p-3">
-                <h6 class="text-uppercase text-muted fw-bold small mb-3">ग्राहक यादी</h6>
-                <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search...">
-                <div class="table-responsive">
-                    <table class="table align-middle"><thead class="table-light"><tr><th>Client</th><th>Bill</th><th class="text-end">Act</th></tr></thead><tbody id="clientTableBody"></tbody></table>
-                </div>
+            <div class="input-group mb-3 shadow-sm">
+                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search customer...">
             </div>
+            <div id="clientListContainer"></div>
         </div>
 
         <div id="view-report" class="section-view">
-            <div class="card p-4">
-                <div class="mb-4 text-center"><h5 class="text-primary mb-0 fw-bold">📊 रिपोर्ट्स हब</h5><small class="text-muted">तुम्हाला कोणता रिपोर्ट पाहिजे?</small></div>
-                
-                <div class="report-btn-grid">
-                    <div class="report-btn btn-followup shadow" onclick="printReport('followup')">
-                        <i class="fas fa-calendar-alt fa-2x mb-2"></i><br>फॉलो-अप डायरी<br><small>(Dates & Plan)</small>
-                    </div>
-                    <div class="report-btn btn-growth shadow" onclick="printReport('growth')">
-                        <i class="fas fa-chart-line fa-2x mb-2"></i><br>AI ग्रोथ स्ट्रॅटेजी<br><small>(Analysis & Tips)</small>
-                    </div>
+            <div class="card p-4 border-0">
+                <h5 class="text-primary fw-bold mb-4 text-center">Reports Hub</h5>
+                <div class="report-btn bg-gradient-blue" onclick="printReport('followup')">
+                    <i class="fas fa-calendar-check fa-2x mb-2"></i><br>
+                    <span class="fw-bold">Follow-up Diary</span><br><small class="opacity-75">Pending & Upcoming Tasks</small>
                 </div>
-                
-                <div class="p-3 bg-light rounded text-center border mt-3">
-                    <h6 class="text-muted">Quick Summary</h6>
-                    <div class="row">
-                        <div class="col-6"><h3 class="mb-0" id="repTotalClient">0</h3><small>Clients</small></div>
-                        <div class="col-6"><h3 class="mb-0 text-success">₹<span id="repTotalSale">0</span></h3><small>Total Sales</small></div>
-                    </div>
+                <div class="report-btn bg-gradient-green" onclick="printReport('growth')">
+                    <i class="fas fa-chart-line fa-2x mb-2"></i><br>
+                    <span class="fw-bold">Business Analysis</span><br><small class="opacity-75">Growth & Strategy</small>
+                </div>
+                <div class="text-center mt-3 p-3 bg-light rounded">
+                    <small class="text-muted">Total Sales</small>
+                    <h2 class="text-success fw-bold">₹<span id="repTotalSale">0</span></h2>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="printFollowup" class="print-container">
-        <div class="text-center mb-4"><h2 style="color:#000080;">📅 फॉलो-अप डायरी</h2><p class="text-muted">Generated: <span class="printDate"></span></p></div>
+        <div class="text-center mb-4"><h2 style="color:#000080;">📅 फॉलो-अप रिपोर्ट</h2><p class="text-muted">Date: <span class="printDate"></span></p></div>
         <table class="report-table">
             <thead>
                 <tr>
-                    <th>ग्राहक (Client)</th>
-                    <th>दिलेला प्रॉडक्ट (Product)</th>
-                    <th>कधी दिला? (Given Date)</th>
-                    <th>पुढची तारीख (Next Date)</th>
-                    <th>बाकी दिवस (Status)</th>
+                    <th width="30%">Customer</th>
+                    <th width="20%">Given Product</th>
+                    <th width="20%">Next Date</th>
+                    <th width="30%">Status / Days Left</th>
                 </tr>
             </thead>
             <tbody id="followupTableBody"></tbody>
         </table>
-        <div class="text-center mt-5"><p>--- RCM Follow-up Planner ---</p></div>
     </div>
 
     <div id="printGrowth" class="print-container">
-        <div class="text-center mb-4"><h2 style="color:#138808;">🚀 AI बिझनेस ग्रोथ रिपोर्ट</h2><p class="text-muted">Generated: <span class="printDate"></span></p></div>
+        <div class="text-center mb-4"><h2 style="color:#138808;">🚀 Business Growth Report</h2><p class="text-muted">Date: <span class="printDate"></span></p></div>
         
-        <div class="row text-center mb-4">
-            <div class="col-4 border p-2"><h5>Conversion</h5><h3 class="text-primary" id="aiConversion">0%</h3></div>
-            <div class="col-4 border p-2"><h5>Avg Ticket</h5><h3 class="text-success">₹<span id="aiTicket">0</span></h3></div>
-            <div class="col-4 border p-2"><h5>Pending</h5><h3 class="text-danger" id="aiPending">0</h3></div>
+        <div class="row text-center mb-4 border-bottom pb-3">
+            <div class="col-4"><h5>Clients</h5><h3 id="aiClients">0</h3></div>
+            <div class="col-4"><h5>Avg Bill</h5><h3 class="text-success">₹<span id="aiTicket">0</span></h3></div>
+            <div class="col-4"><h5>Pending</h5><h3 class="text-danger" id="aiPending">0</h3></div>
         </div>
 
-        <h4 style="color:#000080; border-bottom:2px solid #ddd;">🤖 AI सल्ला (Action Plan)</h4>
-        <div class="strategy-box">
-            <div id="aiAdviceContent"></div>
-        </div>
+        <h4 style="color:#000080;">🤖 Action Plan (AI Advice)</h4>
+        <div id="aiAdviceContent" class="p-3 mb-4" style="background:#f8f9fa; border-left:4px solid #000080;"></div>
 
-        <h4 class="mt-4" style="color:#000080; border-bottom:2px solid #ddd;">🔥 हॉट लीड्स (Focus List)</h4>
-        <ul id="hotLeadsList" class="list-group list-group-flush mt-2"></ul>
-
-        <div class="text-center mt-5"><p>--- RCM Business Intelligence ---</p></div>
+        <h4 style="color:#000080;">🔥 Hot Leads (Focus List)</h4>
+        <table class="report-table">
+            <thead><tr><th>Name</th><th>Mobile</th><th>Product</th></tr></thead>
+            <tbody id="hotLeadsList"></tbody>
+        </table>
     </div>
 
-    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow"><div class="modal-header bg-light py-2"><h6 class="modal-title text-dark">Update</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body text-dark"><input type="hidden" id="editClientId"><select id="msgTemplate" class="form-select mb-3" onchange="sendWhatsAppScript()"><option value="">Script</option><option value="feedback">Feedback</option><option value="offer">Offer</option></select><textarea id="updateRemark" class="form-control mb-3" placeholder="Remark"></textarea><input type="date" id="nextDateManual" class="form-control mb-3"><button class="btn btn-success w-100" onclick="saveUpdate()">Update</button></div></div></div></div>
+    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold">Update Status</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><select id="msgTemplate" class="form-select mb-3 bg-light border-0"><option value="">Select Script</option><option value="feedback">Feedback</option><option value="offer">New Offer</option></select><textarea id="updateRemark" class="form-control mb-3 bg-light border-0" placeholder="Note (e.g. Call done)"></textarea><input type="date" id="nextDateManual" class="form-control mb-3 bg-light border-0"><button class="btn btn-primary w-100 rounded-pill" onclick="saveUpdate()">Mark Updated</button></div></div></div></div>
 
     <div class="bottom-nav no-print">
         <a class="nav-item active" onclick="switchTab('view-add', this)"><i class="fas fa-plus-circle"></i> Add</a>
@@ -210,126 +194,212 @@
 
         document.getElementById('entryDate').valueAsDate = new Date();
         document.addEventListener('DOMContentLoaded', () => { 
-            if(localStorage.getItem('rcmTheme') === 'dark') document.body.setAttribute('data-theme', 'dark');
             loadProducts(); loadClients(); loadFollowUps(); updateSummary();
         });
 
-        // --- REPORT LOGIC ---
+        // --- 1. TASK UI (PROFESSIONAL CARDS) ---
+        function loadFollowUps() {
+            let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]");
+            const list = document.getElementById('followUpList');
+            list.innerHTML = '';
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            // Sort: Pending first, then by date
+            clients.filter(c => c.status === 'Pending').sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp)).forEach(c => {
+                let nextDate = new Date(c.nextFollowUp);
+                let diff = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
+                
+                let cardClass = 'future';
+                let badgeClass = 'badge-future';
+                let statusText = `${diff} Days Left`;
+
+                if(diff < 0) { cardClass = 'overdue'; badgeClass = 'badge-late'; statusText = `${Math.abs(diff)} Days Overdue`; }
+                else if(diff === 0) { cardClass = 'today'; badgeClass = 'badge-today'; statusText = 'Today'; }
+
+                // Only show relevant tasks (Today, Past, or Hot Leads)
+                if(diff <= 0 || c.leadType === 'Hot') {
+                    list.innerHTML += `
+                    <div class="task-card ${cardClass}">
+                        <div class="task-header">
+                            <div>
+                                <div class="task-name">${c.name}</div>
+                                <span class="badge bg-light text-dark border">${c.product || 'No Product'}</span>
+                            </div>
+                            <div class="text-end">
+                                <span class="task-badge ${badgeClass}">${statusText}</span>
+                                <div class="small text-muted mt-1">${c.nextFollowUp}</div>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <a href="tel:${c.phone}" class="btn-action"><i class="fas fa-phone me-2 text-primary"></i> Call</a>
+                            <a href="#" onclick="openUpdateModal(${c.id})" class="btn-action"><i class="fas fa-check-circle me-2 text-success"></i> Update</a>
+                            <a href="https://wa.me/91${c.phone}" class="btn-action"><i class="fab fa-whatsapp me-2 text-success"></i> Msg</a>
+                        </div>
+                    </div>`;
+                }
+            });
+            if(list.innerHTML === '') list.innerHTML = '<div class="text-center text-muted mt-5"><i class="fas fa-mug-hot fa-3x mb-3"></i><br>No tasks for today!</div>';
+        }
+
+        // --- 2. LIST UI (CLEAN TABLE) ---
+        function loadClients() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('clientListContainer');
+            container.innerHTML = '';
+            
+            JSON.parse(localStorage.getItem('rcmClients') || "[]").filter(c => c.name.toLowerCase().includes(term)).forEach(c => {
+                let img = c.photo ? c.photo : 'https://via.placeholder.com/50?text=U';
+                let prod = c.product.length > 20 ? c.product.substring(0, 20) + '...' : c.product;
+                
+                container.innerHTML += `
+                <div class="client-row">
+                    <div class="d-flex align-items-center">
+                        <img src="${img}" class="photo-thumb">
+                        <div class="client-info">
+                            <h6>${c.name}</h6>
+                            <small>${prod}</small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="client-amount">₹${c.amount || 0}</div>
+                        <button onclick="deleteClient(${c.id})" class="btn btn-sm text-danger border-0"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        // --- 3. FIXED REPORT LOGIC ---
         function printReport(type) {
             let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]");
             document.querySelectorAll('.printDate').forEach(e => e.innerText = new Date().toLocaleString());
             document.querySelectorAll('.print-container').forEach(e => e.classList.remove('active'));
 
-            if (type === 'followup') {
-                const tbody = document.getElementById('followupTableBody'); tbody.innerHTML = '';
-                // Sort by Next Date
-                clients.sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
+            if(type === 'followup') {
+                const tbody = document.getElementById('followupTableBody');
+                tbody.innerHTML = '';
                 
-                clients.forEach(c => {
-                    if(c.status !== 'Done') {
-                        let givenDate = c.id ? new Date(c.id).toLocaleDateString() : '-'; // Assuming ID is timestamp
-                        let nextDate = new Date(c.nextFollowUp);
-                        let diff = Math.ceil((nextDate - new Date().setHours(0,0,0,0)) / 86400000);
-                        let statusColor = diff < 0 ? 'color:red;font-weight:bold;' : (diff===0 ? 'color:orange;font-weight:bold;' : 'color:green;');
-                        let statusText = diff < 0 ? `${Math.abs(diff)} Days Late` : (diff===0 ? "Today" : `${diff} Days Left`);
-                        
-                        tbody.innerHTML += `<tr><td><b>${c.name}</b><br><small>${c.phone}</small></td><td>${c.product}</td><td>${givenDate}</td><td>${c.nextFollowUp}</td><td style="${statusColor}">${statusText}</td></tr>`;
-                    }
-                });
+                if(clients.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">No Data Available</td></tr>';
+                } else {
+                    clients.sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
+                    clients.forEach(c => {
+                        if(c.status === 'Pending') {
+                            let diff = Math.ceil((new Date(c.nextFollowUp) - new Date().setHours(0,0,0,0)) / 86400000);
+                            let statusHtml = diff < 0 ? `<span style="color:red;font-weight:bold">${Math.abs(diff)} Days Late</span>` : (diff===0 ? `<span style="color:orange;font-weight:bold">Today</span>` : `${diff} Days Left`);
+                            let givenDate = c.id ? new Date(c.id).toLocaleDateString() : '-';
+                            
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td><b>${c.name}</b><br><small>${c.phone}</small></td>
+                                    <td>${c.product}</td>
+                                    <td>${c.nextFollowUp}</td>
+                                    <td>${statusHtml}</td>
+                                </tr>`;
+                        }
+                    });
+                }
                 document.getElementById('printFollowup').classList.add('active');
             } 
-            else if (type === 'growth') {
-                let totalSales = 0; let pending = 0; let hot = 0;
-                clients.forEach(c => { totalSales += parseInt(c.amount || 0); if(c.status === 'Pending') pending++; if(c.leadType === 'Hot') hot++; });
-                
-                let avgTicket = Math.round(totalSales / (clients.length || 1));
-                let conversion = Math.round(((clients.length - pending) / (clients.length || 1)) * 100);
+            else if(type === 'growth') {
+                let totalSales = 0, pending = 0, hot = 0;
+                const hotList = document.getElementById('hotLeadsList');
+                hotList.innerHTML = '';
 
-                document.getElementById('aiTicket').innerText = avgTicket;
-                document.getElementById('aiPending').innerText = pending;
-                document.getElementById('aiConversion').innerText = conversion + "%";
-
-                // AI Advice Logic
-                let adviceHTML = "";
-                if(pending > 10) adviceHTML += `<div class="ai-tip"><i class="fas fa-exclamation-triangle"></i><div><strong>पेंडिंग कॉल्स धोकादायक आहेत:</strong> ${pending} फॉलो-अप बाकी आहेत. नवीन काम थांबवा आणि जुने कॉल्स आजच पूर्ण करा.</div></div>`;
-                if(avgTicket < 500) adviceHTML += `<div class="ai-tip"><i class="fas fa-chart-line"></i><div><strong>सेल वाढवा:</strong> सरासरी बिल फक्त ₹${avgTicket} आहे. ग्राहकांना 'Nutricharge' किंवा 'मोठे पॅक' सजेस्ट करा.</div></div>`;
-                if(hot > 5) adviceHTML += `<div class="ai-tip"><i class="fas fa-fire"></i><div><strong>क्लोजिंग फोकस:</strong> ${hot} Hot Leads तयार आहेत. त्यांना आजच फायनल करा.</div></div>`;
-                if(adviceHTML === "") adviceHTML = `<div class="ai-tip"><i class="fas fa-check-circle"></i><div><strong>अभिनंदन!</strong> सर्व काही ट्रॅकवर आहे. नवीन प्रोस्पेक्टिंग सुरू ठेवा.</div></div>`;
-                
-                document.getElementById('aiAdviceContent').innerHTML = adviceHTML;
-
-                // Hot Leads List
-                const hotList = document.getElementById('hotLeadsList'); hotList.innerHTML = '';
-                clients.filter(c => c.leadType === 'Hot').forEach(c => {
-                    hotList.innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${c.name}</span> <span>${c.product}</span></li>`;
+                clients.forEach(c => {
+                    totalSales += parseInt(c.amount || 0);
+                    if(c.status === 'Pending') pending++;
+                    if(c.leadType === 'Hot') {
+                        hot++;
+                        hotList.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.product}</td></tr>`;
+                    }
                 });
+
+                document.getElementById('aiClients').innerText = clients.length;
+                document.getElementById('aiTicket').innerText = Math.round(totalSales / (clients.length || 1));
+                document.getElementById('aiPending').innerText = pending;
+
+                let advice = "<ul>";
+                if(pending > 5) advice += "<li>⚠️ <b>Clear Backlog:</b> You have many pending calls. Stop new prospecting and finish follow-ups first.</li>";
+                if(totalSales < 2000) advice += "<li>💰 <b>Upsell:</b> Average bill is low. Suggest Combo Packs (Oil + Tea).</li>";
+                if(hot > 0) advice += `<li>🔥 <b>Close Hot Leads:</b> You have ${hot} hot leads waiting. Call them today with an offer.</li>`;
+                advice += "</ul>";
+                document.getElementById('aiAdviceContent').innerHTML = advice;
 
                 document.getElementById('printGrowth').classList.add('active');
             }
-            
+
             window.print();
             setTimeout(() => document.querySelectorAll('.print-container').forEach(e => e.classList.remove('active')), 1000);
         }
 
-        // --- 🔐 PIN & THEME ---
-        function moveNext(el, nextId) { if(el.value.length === 1) document.getElementById(nextId).focus(); }
-        function checkPin() {
-            if((document.getElementById('pin1').value + document.getElementById('pin2').value + document.getElementById('pin3').value + document.getElementById('pin4').value) === "1234") document.getElementById('pinScreen').style.display = 'none';
-            else { alert("Wrong PIN!"); document.querySelectorAll('.pin-input').forEach(i => i.value=''); document.getElementById('pin1').focus(); }
-        }
-        function toggleTheme() {
-            if(document.body.getAttribute('data-theme') === 'dark') { document.body.removeAttribute('data-theme'); localStorage.setItem('rcmTheme', 'light'); }
-            else { document.body.setAttribute('data-theme', 'dark'); localStorage.setItem('rcmTheme', 'dark'); }
-        }
-
-        // --- CART ---
+        // --- CART & PHOTO ---
         function addProductToCart() {
             const dropdown = document.getElementById('productDropdown'); const selectedOpt = dropdown.options[dropdown.selectedIndex];
             if(!dropdown.value) return;
-            currentCart.push({ name: dropdown.value, price: parseInt(selectedOpt.dataset.price || 0) });
-            renderCart();
+            currentCart.push({ name: dropdown.value, price: parseInt(selectedOpt.dataset.price || 0) }); renderCart();
         }
         function renderCart() {
             const list = document.getElementById('selectedProductsList'); let total = 0; list.innerHTML = '';
-            currentCart.forEach((item, index) => { total += item.price; list.innerHTML += `<div class="cart-item"><span>${item.name} - ₹${item.price}</span><span style="cursor:pointer;color:red;" onclick="removeProduct(${index})">X</span></div>`; });
+            currentCart.forEach((item, index) => { total += item.price; list.innerHTML += `<div class="cart-item"><span>${item.name}</span><span class="text-danger" onclick="removeProduct(${index})" style="cursor:pointer">x</span></div>`; });
             document.getElementById('displayTotalAmount').innerText = total;
-            if(currentCart.length === 0) list.innerHTML = '<div class="text-muted text-center small">No items.</div>';
         }
         function removeProduct(i) { currentCart.splice(i, 1); renderCart(); }
+        
+        function handlePhoto(input) {
+            const file = input.files[0]; if(!file) return;
+            const status = document.getElementById('photoStatus'); status.innerText = "GPS...";
+            navigator.geolocation.getCurrentPosition(pos => processImage(file, `Loc: ${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`), 
+            err => processImage(file, "No GPS"));
+        }
+        function processImage(file, loc) {
+            const reader = new FileReader(); reader.onload = e => {
+                const img = new Image(); img.onload = () => {
+                    const cvs = document.getElementById('photoCanvas'); const ctx = cvs.getContext('2d');
+                    cvs.width = 400; cvs.height = (img.height/img.width)*400;
+                    ctx.drawImage(img, 0,0, cvs.width, cvs.height);
+                    ctx.fillStyle="rgba(0,0,0,0.5)"; ctx.fillRect(0,cvs.height-30,cvs.width,30);
+                    ctx.fillStyle="white"; ctx.font="12px Arial"; ctx.fillText(loc, 10, cvs.height-10);
+                    processedPhotoData = cvs.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('photoPreview').src = processedPhotoData;
+                    document.getElementById('photoStatus').innerText = "✅ Ready";
+                }; img.src = e.target.result;
+            }; reader.readAsDataURL(file);
+        }
 
         // --- SAVE ---
         document.getElementById('crmForm').addEventListener('submit', function(e) {
-            e.preventDefault(); if(document.getElementById('saveBtn').disabled) return;
-            const timing = document.getElementById('followUpTiming').value; let followDate = new Date();
-            if(timing === '24h') followDate.setDate(followDate.getDate() + 1); else if(timing === '3d') followDate.setDate(followDate.getDate() + 3); else if(timing === '7d') followDate.setDate(followDate.getDate() + 7); else if(timing === '15d') followDate.setDate(followDate.getDate() + 15); else if(timing === '1m') followDate.setMonth(followDate.getMonth() + 1);
-            let finalAmount = currentCart.reduce((sum, item) => sum + item.price, 0);
-            let productString = currentCart.map(i => i.name).join(", ") || "No Product";
+            e.preventDefault();
+            const followDate = new Date();
+            const timing = document.getElementById('followUpTiming').value;
+            if(timing==='3d') followDate.setDate(followDate.getDate()+3);
+            else if(timing==='7d') followDate.setDate(followDate.getDate()+7);
+            else followDate.setDate(followDate.getDate()+1);
+
+            let amount = currentCart.reduce((s,i)=>s+i.price, 0);
+            let pStr = currentCart.map(i=>i.name).join(', ') || "No Product";
+
             const client = {
-                id: Date.now(), name: document.getElementById('clientName').value, phone: document.getElementById('clientPhone').value, proposer: document.getElementById('proposerName').value, leadType: document.getElementById('leadType').value,
-                product: productString, cart: currentCart, amount: finalAmount, 
-                nextFollowUp: followDate.toISOString().split('T')[0], status: 'Pending', photo: processedPhotoData, history: []
+                id: Date.now(), name: document.getElementById('clientName').value, phone: document.getElementById('clientPhone').value,
+                proposer: document.getElementById('proposerName').value, leadType: document.getElementById('leadType').value,
+                product: pStr, cart: currentCart, amount: amount, nextFollowUp: followDate.toISOString().split('T')[0],
+                status: 'Pending', photo: processedPhotoData, history: []
             };
-            let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]"); clients.unshift(client); localStorage.setItem('rcmClients', JSON.stringify(clients));
-            alert('Saved!'); this.reset(); currentCart = []; renderCart(); document.getElementById('photoPreview').style.display='none'; document.getElementById('photoStatus').innerText=''; processedPhotoData = null; loadClients(); loadFollowUps(); updateSummary();
+            let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]"); clients.unshift(client);
+            localStorage.setItem('rcmClients', JSON.stringify(clients));
+            alert('Saved!'); this.reset(); currentCart=[]; renderCart(); processedPhotoData=null; document.getElementById('photoPreview').src='https://via.placeholder.com/100x100?text=Camera';
+            loadClients(); loadFollowUps(); updateSummary();
         });
 
-        // --- CORE UTILS ---
-        function loadProducts() { const dd = document.getElementById('productDropdown'); dd.innerHTML = '<option>Loading...</option>'; fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r => r.text()).then(csv => { dd.innerHTML = '<option value="">-- Select --</option>'; csv.split('\n').forEach(row => { let cols = row.replace(/"/g, '').split(','); if(cols[0] && cols[0].length>2) { let opt = document.createElement('option'); opt.value = cols[0]; opt.dataset.price = cols[1] || 0; opt.text = cols[0] + (cols[1]?` - ₹${cols[1]}`:''); dd.add(opt); }}); }).catch(() => { dd.innerHTML = '<option>Backup</option>'; DEFAULT_PRODUCTS.forEach(p => { let opt = document.createElement('option'); opt.value = p.name; opt.dataset.price = p.price; opt.text = p.name; dd.add(opt); }); }); }
-        function loadClients() { const term = document.getElementById('searchInput').value.toLowerCase(); const tbody = document.getElementById('clientTableBody'); tbody.innerHTML = ''; JSON.parse(localStorage.getItem('rcmClients') || "[]").filter(c => c.name.toLowerCase().includes(term)).forEach(c => { let photoHtml = c.photo ? `<img src="${c.photo}" class="photo-thumb">` : `<span class="photo-thumb bg-secondary text-white d-inline-flex align-items-center justify-content-center"><i class="fas fa-user"></i></span>`; let prodDisplay = c.product.length > 20 ? c.product.substring(0, 20) + "..." : c.product; tbody.innerHTML += `<tr><td><div class="d-flex align-items-center">${photoHtml}<div><div class="fw-bold text-dark">${c.name}</div><span class="badge bg-secondary">${c.leadType}</span></div></div></td><td><small>${prodDisplay}</small><br><span class="text-success fw-bold">₹${c.amount}</span></td><td class="text-end"><a href="https://wa.me/91${c.phone}" class="btn btn-sm btn-success"><i class="fab fa-whatsapp"></i></a><button onclick="deleteClient(${c.id})" class="btn btn-sm btn-danger ms-1"><i class="fas fa-trash"></i></button></td></tr>`; }); }
-        function loadFollowUps() { let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]"); const list = document.getElementById('followUpList'); list.innerHTML = ''; const today = new Date().toISOString().split('T')[0]; clients.filter(c => c.status === 'Pending').sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp)).forEach(c => { if(c.nextFollowUp <= today || c.leadType === 'Hot') { list.innerHTML += `<div class="list-group-item d-flex justify-content-between align-items-center bg-white border mb-2 rounded shadow-sm text-dark"><div><span class="badge bg-dark">Call #${(c.history?c.history.length:0)+1}</span> <span class="fw-bold text-dark">${c.name}</span><br><small class="text-muted">${c.product}</small></div><button onclick="openUpdateModal(${c.id})" class="btn btn-sm btn-success rounded-pill px-3">Update</button></div>`; } }); }
-        function updateSummary() { let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]"); document.getElementById('repTotalClient').innerText = clients.length; let tS=0; clients.forEach(c=>tS+=parseInt(c.amount||0)); document.getElementById('repTotalSale').innerText = tS.toLocaleString(); }
-        
-        // GPS
-        document.getElementById('meetingPhoto').addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return; const status = document.getElementById('photoStatus'); status.innerText = "GPS..."; navigator.geolocation.getCurrentPosition((pos) => { processImage(file, `Lat: ${pos.coords.latitude.toFixed(4)}, Long: ${pos.coords.longitude.toFixed(4)}`); }, (err) => { processImage(file, "GPS: N/A"); }, { timeout: 10000 }); });
-        function processImage(file, locText) { const reader = new FileReader(); reader.onload = function(event) { const img = new Image(); img.onload = function() { const canvas = document.getElementById('photoCanvas'); const ctx = canvas.getContext('2d'); const MAX_WIDTH = 500; const scaleSize = MAX_WIDTH / img.width; canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize; ctx.drawImage(img, 0, 0, canvas.width, canvas.height); ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; ctx.fillRect(0, canvas.height - 40, canvas.width, 40); ctx.font = "bold 14px sans-serif"; ctx.fillStyle = "#FF9933"; ctx.fillText(`${new Date().toLocaleDateString('en-IN')}`, 10, canvas.height - 15); ctx.font = "12px sans-serif"; ctx.fillStyle = "white"; ctx.fillText(locText, 100, canvas.height - 15); processedPhotoData = canvas.toDataURL('image/jpeg', 0.6); document.getElementById('photoPreview').src = processedPhotoData; document.getElementById('photoPreview').style.display = 'block'; document.getElementById('photoStatus').innerText = "✅ Ready"; }; img.src = event.target.result; }; reader.readAsDataURL(file); }
-
-        function downloadBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([localStorage.getItem('rcmClients')], {type: "application/json"})); a.download = "RCM_Backup.json"; a.click(); }
-        function importBackup(i) { const r = new FileReader(); r.onload = e => { if(confirm("Restore?")) { localStorage.setItem('rcmClients', e.target.result); location.reload(); }}; r.readAsText(i.files[0]); }
-        function deleteClient(id) { if(confirm("Delete?")) { let c = JSON.parse(localStorage.getItem('rcmClients')).filter(x => x.id !== id); localStorage.setItem('rcmClients', JSON.stringify(c)); loadClients(); loadFollowUps(); updateSummary(); } }
-        let updateModal; function openUpdateModal(id) { document.getElementById('editClientId').value = id; new bootstrap.Modal(document.getElementById('updateModal')).show(); } 
-        function sendWhatsAppScript() { const c = JSON.parse(localStorage.getItem('rcmClients')).find(x => x.id == document.getElementById('editClientId').value); if(c) window.open(`https://wa.me/91${c.phone}?text=नमस्कार ${c.name}, RCM बद्दल कॉल केला होता.`, '_blank'); } 
-        function saveUpdate() { let id = parseInt(document.getElementById('editClientId').value); let clients = JSON.parse(localStorage.getItem('rcmClients')); let idx = clients.findIndex(x => x.id === id); clients[idx].history.push({ date: new Date().toLocaleDateString(), note: document.getElementById('updateRemark').value }); let nD = document.getElementById('nextDateManual').value; if(nD) { clients[idx].nextFollowUp = nD; clients[idx].status = 'Pending'; } else { clients[idx].status = 'Done'; } localStorage.setItem('rcmClients', JSON.stringify(clients)); location.reload(); }
-        function switchTab(view, el) { document.querySelectorAll('.section-view').forEach(e => e.classList.remove('active-view')); document.getElementById(view).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); el.classList.add('active'); if(view === 'view-followup') loadFollowUps(); if(view === 'view-list') loadClients(); }
+        // --- UTILS ---
+        function loadProducts() { const dd = document.getElementById('productDropdown'); dd.innerHTML='<option>Loading...</option>'; fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(csv=>{ dd.innerHTML='<option value="">-- Select --</option>'; csv.split('\n').forEach(r=>{ let c=r.replace(/"/g,'').split(','); if(c[0] && c[0].length>2) { let opt=document.createElement('option'); opt.value=c[0]; opt.dataset.price=c[1]||0; opt.text=c[0]; dd.add(opt); }}); }).catch(()=> { dd.innerHTML='<option>Use Backup</option>'; DEFAULT_PRODUCTS.forEach(p=>{let o=document.createElement('option');o.value=p.name;o.dataset.price=p.price;o.text=p.name;dd.add(o);}); }); }
+        function updateSummary() { let c = JSON.parse(localStorage.getItem('rcmClients')||"[]"); let s=0; c.forEach(x=>s+=parseInt(x.amount||0)); document.getElementById('repTotalSale').innerText = s.toLocaleString(); }
+        function deleteClient(id) { if(confirm("Delete?")) { let c = JSON.parse(localStorage.getItem('rcmClients')).filter(x=>x.id!==id); localStorage.setItem('rcmClients', JSON.stringify(c)); loadClients(); loadFollowUps(); updateSummary(); } }
+        function openUpdateModal(id) { document.getElementById('editClientId').value=id; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
+        function saveUpdate() { let id=parseInt(document.getElementById('editClientId').value); let c=JSON.parse(localStorage.getItem('rcmClients')); let idx=c.findIndex(x=>x.id===id); c[idx].history.push({date:new Date().toLocaleDateString(), note:document.getElementById('updateRemark').value}); let nd=document.getElementById('nextDateManual').value; if(nd){c[idx].nextFollowUp=nd;c[idx].status='Pending';}else{c[idx].status='Done';} localStorage.setItem('rcmClients', JSON.stringify(c)); location.reload(); }
+        function switchTab(view, el) { document.querySelectorAll('.section-view').forEach(e=>e.classList.remove('active-view')); document.getElementById(view).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active')); el.classList.add('active'); if(view==='view-followup') loadFollowUps(); if(view==='view-list') loadClients(); }
+        function downloadBackup() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([localStorage.getItem('rcmClients')],{type:"application/json"})); a.download="RCM_Backup.json"; a.click(); }
+        function importBackup(i) { const r=new FileReader(); r.onload=e=>{ if(confirm("Restore?")){localStorage.setItem('rcmClients', e.target.result); location.reload();} }; r.readAsText(i.files[0]); }
         document.getElementById('searchInput').addEventListener('input', loadClients);
     </script>
 </body>
