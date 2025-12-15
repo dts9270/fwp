@@ -3,100 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Tiranga)</title>
+    <title>RCM Pro (Indian Theme)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --primary: #000080; /* Navy Blue */
             --saffron: #FF9933; 
-            --green: #138808;
-            --light: #f8f9fa; 
-            --dark: #333; 
+            --white: #ffffff; 
+            --green: #138808; 
+            --chakra: #000080; /* Navy Blue */
+            --bg: #f4f4f4;
         }
-        body { background-color: var(--light); color: var(--dark); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
+        body { background-color: var(--bg); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
         
-        /* 🇮🇳 TIRANGA HEADER ANIMATION */
+        /* 🇮🇳 HEADER - PERFECT TRI-COLOUR */
         .app-header { 
-            background: linear-gradient(-45deg, var(--saffron), #FFFFFF, var(--green), var(--saffron));
-            background-size: 400% 400%; animation: flagWave 12s ease infinite;
-            padding: 20px 20px 30px; border-radius: 0 0 25px 25px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-bottom: 3px solid var(--primary);
+            background: linear-gradient(180deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%);
+            padding: 15px 20px; 
+            border-bottom: 4px solid var(--chakra);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            position: sticky; top: 0; z-index: 1000;
         }
-        @keyframes flagWave { 0% {background-position:0% 50%} 50% {background-position:100% 50%} 100% {background-position:0% 50%} }
-        
-        .header-title { font-weight: 700; color: var(--primary); margin: 0; text-transform: uppercase; letter-spacing: 1px; }
-        .header-date { color: var(--primary); font-weight: 500; font-size: 0.9em; opacity: 0.8; }
+        .header-content {
+            background: rgba(255, 255, 255, 0.9); /* Glass effect for text readability */
+            padding: 10px 20px; border-radius: 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid var(--chakra);
+        }
+        .header-title { font-weight: 800; color: var(--chakra); margin: 0; letter-spacing: 1px; }
 
-        /* DASHBOARD CARDS */
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; margin-top: -25px; }
-        .dash-card { background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: center; border-top: 3px solid var(--saffron); }
-        .dash-card:last-child { border-top: 3px solid var(--green); }
+        /* CARDS */
+        .task-card {
+            background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+            border-top: 5px solid var(--saffron); /* Top Saffron */
+            border-bottom: 5px solid var(--green); /* Bottom Green */
+        }
         
-        /* CLIENT & TASK CARDS (Time Logic) */
-        .client-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #ccc; position: relative; }
+        .task-name { font-weight: 700; color: var(--chakra); font-size: 1.1em; }
+        .task-meta { font-size: 0.85em; color: #555; margin-bottom: 10px; display: flex; align-items: center; }
         
-        /* Status Colors */
-        .client-card.late { border-left-color: #dc3545; } /* Red */
-        .client-card.today { border-left-color: var(--saffron); } /* Orange/Saffron */
-        .client-card.future { border-left-color: var(--green); } /* Green */
-        
-        .date-badge { font-size: 0.7em; padding: 3px 8px; border-radius: 6px; font-weight: bold; display: inline-block; margin-top: 4px; color: white; }
-        .badge-late { background: #dc3545; }
-        .badge-today { background: var(--saffron); color: black; }
-        .badge-future { background: var(--green); }
+        /* WHATSAPP REMINDER BUTTON */
+        .btn-reminder {
+            background-color: #25D366; color: white; border: none; width: 100%;
+            padding: 8px; border-radius: 25px; font-weight: bold; font-size: 0.9em;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-reminder:hover { background-color: #128C7E; color: white; }
 
-        /* CART UI */
-        .cart-box { background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; }
-        .cart-item { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 5px 0; font-size: 0.9em; }
-        .total-row { font-weight: bold; text-align: right; color: var(--primary); margin-top: 5px; font-size: 1.1em; }
+        /* OTHER BUTTONS */
+        .btn-call { background-color: var(--chakra); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        .btn-done { border: 2px solid var(--green); color: var(--green); background: white; border-radius: 20px; padding: 5px 15px; font-weight: bold; font-size: 0.8em; }
 
-        /* NAV & FAB */
-        .bottom-nav { position: fixed; bottom: 20px; left: 20px; right: 20px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; justify-content: space-around; padding: 12px; z-index: 1000; border: 1px solid #eee; }
-        .nav-item { color: #888; text-align: center; text-decoration: none; font-size: 0.7em; }
-        .nav-item.active { color: var(--primary); font-weight: bold; } 
-        .nav-item i { font-size: 1.4em; display: block; margin-bottom: 2px; }
-        
-        .fab-btn { position: fixed; bottom: 95px; right: 20px; background: var(--primary); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5em; box-shadow: 0 4px 15px rgba(0, 0, 128, 0.4); z-index: 999; border: 2px solid white; }
-        
-        .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
-        .btn-primary { background-color: var(--primary); border: none; }
+        /* LIST VIEW */
+        .client-item { background: white; padding: 12px; margin-bottom: 10px; border-radius: 10px; border-left: 5px solid var(--chakra); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        /* ADD BUTTON (FAB) */
+        .fab-btn {
+            position: fixed; bottom: 90px; right: 20px;
+            background: radial-gradient(circle, var(--saffron), var(--white), var(--green));
+            color: var(--chakra); border: 2px solid var(--chakra);
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8em; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 999;
+        }
+
+        /* NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid var(--saffron); z-index: 1000; }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; }
+        .nav-item.active { color: var(--chakra); font-weight: bold; }
+        .nav-item i { font-size: 1.5em; display: block; }
+
+        .section-view { display: none; padding-top: 15px; } .section-view.active-view { display: block; }
     </style>
 </head>
 <body>
 
     <header class="app-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="header-title"><i class="fas fa-flag-checkered"></i> RCM Pro</h5>
-            <small id="currentDate" class="header-date">Today</small>
+        <div class="header-content">
+            <h5 class="header-title"><i class="fas fa-flag"></i> RCM Pro</h5>
+            <small class="fw-bold" style="color:var(--green)">Jai Hind 🇮🇳</small>
         </div>
     </header>
 
-    <div class="dash-grid">
-        <div class="dash-card"><h3><span id="statClients">0</span></h3><small>Total Clients</small></div>
-        <div class="dash-card"><h3 class="text-success">₹<span id="statSale">0</span></h3><small>Total Sales</small></div>
-    </div>
-
-    <div class="container mt-4 px-3">
+    <div class="container mt-3 px-3">
         
-        <div id="view-home" class="section-view active-view">
-            <h6 class="fw-bold text-muted mb-3 ps-1">ALL CLIENTS & STATUS</h6>
-            <div id="clientListContainer"></div>
-        </div>
-
-        <div id="view-tasks" class="section-view">
-            <h6 class="fw-bold text-muted mb-3 ps-1">PENDING TASKS</h6>
+        <div id="view-tasks" class="section-view active-view">
+            <h6 class="fw-bold text-muted mb-3 ps-1">📅 आजचे फॉलो-अप (Pending Tasks)</h6>
             <div id="taskListContainer"></div>
         </div>
 
+        <div id="view-home" class="section-view">
+            <div class="d-flex justify-content-between mb-3">
+                <h6 class="fw-bold text-muted">👥 ग्राहक यादी (Client List)</h6>
+                <button class="btn btn-sm btn-outline-dark" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Excel</button>
+            </div>
+            <input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="🔍 Search...">
+            <div id="clientListContainer"></div>
+        </div>
+
         <div id="view-tools" class="section-view">
-            <h6 class="fw-bold text-muted mb-3">TOOLS</h6>
-            <button class="btn btn-white w-100 mb-2 text-start p-3 shadow-sm border" onclick="exportToExcel()"><i class="fas fa-file-excel text-success me-2"></i> Export to Excel</button>
-            <button class="btn btn-white w-100 mb-2 text-start p-3 shadow-sm border" onclick="downloadBackup()"><i class="fas fa-download text-primary me-2"></i> Backup Data</button>
-            <label class="btn btn-white w-100 text-start p-3 shadow-sm border">
-                <i class="fas fa-upload text-warning me-2"></i> Restore Data <input type="file" hidden onchange="importBackup(this)">
-            </label>
+            <div class="card p-3 shadow-sm text-center">
+                <h6 class="fw-bold text-primary">Data Management</h6>
+                <button class="btn btn-light border w-100 mt-2" onclick="downloadBackup()">📥 Backup Data</button>
+                <label class="btn btn-light border w-100 mt-2">📤 Restore Data <input type="file" hidden onchange="importBackup(this)"></label>
+            </div>
         </div>
     </div>
 
@@ -105,43 +118,38 @@
     <div class="modal fade" id="addModal" tabindex="-1">
         <div class="modal-dialog modal-fullscreen-sm-down">
             <div class="modal-content">
-                <div class="modal-header bg-light"><h5 class="modal-title fw-bold" style="color:var(--primary)">New Entry</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header" style="background:var(--saffron); color:white;"><h5 class="modal-title fw-bold">New Entry</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <form id="addForm">
                         <div class="text-center mb-3">
                             <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
-                            <img id="photoPreview" src="https://via.placeholder.com/80?text=Photo" onclick="document.getElementById('meetingPhoto').click()" style="width:80px;height:80px;border-radius:10px;object-fit:cover;border:2px solid var(--saffron);">
+                            <img id="photoPreview" src="https://via.placeholder.com/80?text=Photo" onclick="document.getElementById('meetingPhoto').click()" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--chakra);">
                             <div id="photoStatus" class="small text-success fw-bold"></div>
                         </div>
-
                         <div class="row g-2">
-                            <div class="col-12"><input type="text" class="form-control" id="cName" placeholder="Client Name" required></div>
+                            <div class="col-12"><input type="text" class="form-control" id="cName" placeholder="Customer Name" required></div>
                             <div class="col-6"><input type="tel" class="form-control" id="cPhone" placeholder="Mobile"></div>
                             <div class="col-6"><input type="date" class="form-control" id="cDate"></div>
                             <div class="col-12"><select class="form-select" id="cType"><option value="Hot">🔥 Hot Lead</option><option value="Warm">🤔 Warm</option><option value="Cold">❄️ Cold</option></select></div>
-                            
-                            <div class="col-12 p-2 rounded border" style="background:#f9f9f9;">
-                                <label class="small text-muted fw-bold">Add Products</label>
+                            <div class="col-12 bg-light p-2 rounded border">
                                 <div class="input-group mb-2">
-                                    <select class="form-select" id="cProd"><option value="">Loading...</option></select>
-                                    <button type="button" class="btn btn-primary" onclick="addToCart()"><i class="fas fa-plus"></i></button>
+                                    <select class="form-select" id="cProd"><option value="">Select Product</option></select>
+                                    <button type="button" class="btn btn-primary" onclick="addToCart()">Add</button>
                                 </div>
-                                <div id="cartList" class="cart-box">
-                                    <div class="text-center text-muted small">No items added</div>
-                                </div>
-                                <div class="total-row">Total: ₹<span id="cartTotal">0</span></div>
+                                <div id="cartList" class="small text-muted mb-1">No items</div>
+                                <div class="fw-bold text-end">Total: ₹<span id="cartTotal">0</span></div>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer"><button type="button" class="btn btn-primary w-100 fw-bold" onclick="saveClient()">Save Entry</button></div>
+                <div class="modal-footer"><button type="button" class="btn btn-success w-100 fw-bold" onclick="saveClient()">Save Data</button></div>
             </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <a class="nav-item active" onclick="switchTab('view-home', this)"><i class="fas fa-list"></i>List</a>
-        <a class="nav-item" onclick="switchTab('view-tasks', this)"><i class="fas fa-clock"></i>Tasks</a>
+        <a class="nav-item active" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i>Tasks</a>
+        <a class="nav-item" onclick="switchTab('view-home', this)"><i class="fas fa-users"></i>List</a>
         <a class="nav-item" onclick="switchTab('view-tools', this)"><i class="fas fa-cog"></i>Tools</a>
     </div>
 
@@ -153,61 +161,71 @@
         let processedPhotoData = null; 
         let currentCart = [];
 
-        document.getElementById('currentDate').innerText = new Date().toDateString();
         document.addEventListener('DOMContentLoaded', () => { loadData(); loadProducts(); });
 
-        // --- 1. LIST & TASK RENDER LOGIC (With Dates) ---
+        // --- 1. TASK RENDER (WITH WHATSAPP BUTTON) ---
         function loadData() {
-            const listContainer = document.getElementById('clientListContainer');
             const taskContainer = document.getElementById('taskListContainer');
-            listContainer.innerHTML = ''; taskContainer.innerHTML = '';
+            const listContainer = document.getElementById('clientListContainer');
+            taskContainer.innerHTML = ''; listContainer.innerHTML = '';
             
             const clients = JSON.parse(localStorage.getItem('rcmClients') || "[]");
             const today = new Date(); today.setHours(0,0,0,0);
 
-            // Update Stats
-            document.getElementById('statClients').innerText = clients.length;
-            document.getElementById('statSale').innerText = clients.reduce((sum,c)=>sum+parseInt(c.amount||0),0).toLocaleString();
-
+            // Sort: Pending first
             clients.forEach(c => {
-                // Calculate Days Left
                 let nextDate = new Date(c.nextFollowUp);
-                let diffTime = nextDate - today;
-                let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                let diff = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
+                let dateColor = diff < 0 ? 'text-danger' : (diff === 0 ? 'text-warning' : 'text-success');
+                let dayText = diff < 0 ? `${Math.abs(diff)} Days Late` : (diff === 0 ? 'Today' : `${diff} Days Left`);
 
-                let badgeClass = diffDays < 0 ? 'badge-late' : (diffDays === 0 ? 'badge-today' : 'badge-future');
-                let cardBorder = diffDays < 0 ? 'late' : (diffDays === 0 ? 'today' : 'future');
-                let statusText = diffDays < 0 ? `${Math.abs(diffDays)} Days Late` : (diffDays === 0 ? 'Today' : `${diffDays} Days Left`);
-                let formattedDate = nextDate.toLocaleDateString('en-IN', {day:'numeric', month:'short'});
-
-                // HTML Template
-                let html = `
-                <div class="client-card ${cardBorder}">
+                // LIST ITEM
+                listContainer.innerHTML += `
+                <div class="client-item">
                     <div>
-                        <h6 class="m-0 fw-bold" style="color:var(--primary)">${c.name}</h6>
-                        <small class="text-muted">${c.product} • <b>₹${c.amount}</b></small><br>
-                        <span class="date-badge ${badgeClass}"><i class="fas fa-calendar-alt"></i> ${formattedDate} (${statusText})</span>
+                        <h6 class="m-0 fw-bold" style="color:var(--chakra)">${c.name}</h6>
+                        <small class="text-muted">${c.product} • ₹${c.amount}</small>
                     </div>
                     <div class="text-end">
-                        <a href="tel:${c.phone}" class="btn btn-sm btn-light text-primary border"><i class="fas fa-phone"></i></a>
-                        ${c.status==='Pending' ? `<button onclick="markDone(${c.id})" class="btn btn-sm btn-success ms-1"><i class="fas fa-check"></i></button>` : ''}
-                        <button onclick="deleteClient(${c.id})" class="btn btn-sm text-danger border-0 ms-1"><i class="fas fa-trash"></i></button>
+                        <small class="${dateColor} fw-bold">${dayText}</small><br>
+                        <a href="tel:${c.phone}" class="text-decoration-none text-dark"><i class="fas fa-phone"></i></a>
                     </div>
                 </div>`;
 
-                // Add to List
-                listContainer.innerHTML += html;
-
-                // Add to Task if Pending
+                // TASK CARD (If Pending)
                 if(c.status === 'Pending') {
-                    taskContainer.innerHTML += html;
+                    taskContainer.innerHTML += `
+                    <div class="task-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="task-name">${c.name}</div>
+                                <div class="task-meta"><i class="fas fa-shopping-bag me-1"></i> ${c.product}</div>
+                                <div class="task-meta ${dateColor}"><i class="fas fa-clock me-1"></i> ${dayText} (${c.nextFollowUp})</div>
+                            </div>
+                            <a href="tel:${c.phone}" class="btn-call shadow-sm"><i class="fas fa-phone"></i></a>
+                        </div>
+                        
+                        <button class="btn-reminder" onclick="sendReminder('${c.phone}', '${c.name}', '${c.product}')">
+                            <i class="fab fa-whatsapp"></i> Send Reminder
+                        </button>
+
+                        <div class="text-end mt-2">
+                            <button onclick="markDone(${c.id})" class="btn-done">Mark Done <i class="fas fa-check"></i></button>
+                        </div>
+                    </div>`;
                 }
             });
 
-            if(taskContainer.innerHTML === '') taskContainer.innerHTML = "<div class='text-center text-muted mt-4'>No pending tasks! <i class='fas fa-smile text-warning'></i></div>";
+            if(taskContainer.innerHTML === '') taskContainer.innerHTML = "<div class='text-center text-muted mt-5'>No Pending Tasks! 🎉</div>";
         }
 
-        // --- 2. CART SYSTEM (ADD PRODUCT) ---
+        // --- 2. WHATSAPP LOGIC ---
+        function sendReminder(phone, name, product) {
+            let msg = `नमस्कार ${name} जी,\n\nआपल्या *${product}* बद्दल फॉलो-अप कॉल करायचा होता.\n\nआपण कधी बोलू शकतो?\n\n- आपला RCM मित्र.`;
+            window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // --- 3. CART & SAVE ---
         function loadProducts() {
             const dd = document.getElementById('cProd');
             fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(csv=>{
@@ -220,107 +238,51 @@
                         dd.add(opt);
                     }
                 });
-            }).catch(()=>{ dd.innerHTML = '<option value="Tea">Tea - ₹120</option>'; });
+            }).catch(()=>{});
         }
-
         function addToCart() {
             const dd = document.getElementById('cProd');
-            const selectedOpt = dd.options[dd.selectedIndex];
             if(!dd.value) return;
-
-            currentCart.push({ name: dd.value, price: parseInt(selectedOpt.dataset.price || 0) });
+            currentCart.push({ name: dd.value, price: parseInt(dd.options[dd.selectedIndex].dataset.price || 0) });
             renderCart();
         }
-
         function renderCart() {
-            const list = document.getElementById('cartList');
-            let total = 0; list.innerHTML = '';
-            
-            if(currentCart.length === 0) { list.innerHTML = '<div class="text-center text-muted small">No items added</div>'; }
-            
-            currentCart.forEach((item, index) => {
-                total += item.price;
-                list.innerHTML += `
-                <div class="cart-item">
-                    <span>${item.name}</span>
-                    <span>₹${item.price} <i class="fas fa-times text-danger ms-2" onclick="removeFromCart(${index})" style="cursor:pointer"></i></span>
-                </div>`;
-            });
+            let total = 0; 
+            document.getElementById('cartList').innerHTML = currentCart.map(i => { total+=i.price; return `<span>${i.name}</span>`; }).join(", ");
             document.getElementById('cartTotal').innerText = total;
         }
-        function removeFromCart(i) { currentCart.splice(i, 1); renderCart(); }
 
-        // --- 3. SAVE LOGIC ---
         function saveClient() {
             let name = document.getElementById('cName').value;
             if(!name) { alert("Name required"); return; }
-            
-            // Calculate Total from Cart
             let totalAmt = currentCart.reduce((sum, i) => sum + i.price, 0);
-            let prodStr = currentCart.map(i => i.name).join(", ");
-            if(!prodStr) prodStr = "No Product";
+            let prodStr = currentCart.map(i => i.name).join(", ") || "No Product";
 
             let client = {
-                id: Date.now(),
-                name: name,
-                phone: document.getElementById('cPhone').value,
-                leadType: document.getElementById('cType').value,
-                product: prodStr,
-                cart: currentCart,
-                amount: totalAmt,
+                id: Date.now(), name: name, phone: document.getElementById('cPhone').value,
+                leadType: document.getElementById('cType').value, product: prodStr, amount: totalAmt,
                 nextFollowUp: document.getElementById('cDate').value || new Date().toISOString().split('T')[0],
-                status: 'Pending',
-                photo: processedPhotoData,
-                dateAdded: new Date().toLocaleDateString()
+                status: 'Pending', photo: processedPhotoData
             };
             
             let db = JSON.parse(localStorage.getItem('rcmClients') || "[]");
-            db.unshift(client);
-            localStorage.setItem('rcmClients', JSON.stringify(db));
+            db.unshift(client); localStorage.setItem('rcmClients', JSON.stringify(db));
             
             bootstrap.Modal.getInstance(document.getElementById('addModal')).hide();
-            document.getElementById('addForm').reset();
-            currentCart = []; renderCart(); processedPhotoData = null; document.getElementById('photoPreview').src = "https://via.placeholder.com/80?text=Photo";
-            
+            document.getElementById('addForm').reset(); currentCart = []; renderCart(); processedPhotoData = null; document.getElementById('photoPreview').src = "https://via.placeholder.com/80?text=Photo";
             loadData();
         }
 
         // --- UTILS ---
         function markDone(id) { let db=JSON.parse(localStorage.getItem('rcmClients')); let i=db.findIndex(x=>x.id===id); if(i>-1) db[i].status='Done'; localStorage.setItem('rcmClients',JSON.stringify(db)); loadData(); }
-        function deleteClient(id) { if(confirm("Delete?")) { let db=JSON.parse(localStorage.getItem('rcmClients')); db=db.filter(x=>x.id!==id); localStorage.setItem('rcmClients',JSON.stringify(db)); loadData(); } }
         function openAddModal() { new bootstrap.Modal(document.getElementById('addModal')).show(); }
         function switchTab(viewId, el) { document.querySelectorAll('.section-view').forEach(d => d.classList.remove('active-view')); document.getElementById(viewId).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
-        
-        // Export/Import
-        function exportToExcel() {
-            let db = JSON.parse(localStorage.getItem('rcmClients') || "[]");
-            let csv = "Name,Phone,Product,Amount,NextDate,Status\n" + db.map(c => `${c.name},${c.phone},"${c.product}",${c.amount},${c.nextFollowUp},${c.status}`).join("\n");
-            let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click();
-        }
+        function exportToExcel() { let db = JSON.parse(localStorage.getItem('rcmClients') || "[]"); let csv = "Name,Phone,Product,Amount,NextDate\n" + db.map(c => `${c.name},${c.phone},"${c.product}",${c.amount},${c.nextFollowUp}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click(); }
         function downloadBackup() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([localStorage.getItem('rcmClients')],{type:"application/json"})); a.download="Backup.json"; a.click(); }
         function importBackup(i) { const r=new FileReader(); r.onload=e=>{ if(confirm("Restore data?")){localStorage.setItem('rcmClients', e.target.result); location.reload();} }; r.readAsText(i.files[0]); }
-
-        // GPS
-        function handlePhoto(input) {
-            const file = input.files[0]; if(!file) return;
-            document.getElementById('photoStatus').innerText = "Locating...";
-            navigator.geolocation.getCurrentPosition(pos => processImage(file, `Lat:${pos.coords.latitude.toFixed(2)}, Lon:${pos.coords.longitude.toFixed(2)}`), 
-            err => processImage(file, "No GPS"));
-        }
-        function processImage(file, loc) {
-            const reader = new FileReader(); reader.onload = e => {
-                const img = new Image(); img.onload = () => {
-                    const cvs = document.getElementById('photoCanvas'); const ctx = cvs.getContext('2d');
-                    cvs.width = 400; cvs.height = (img.height/img.width)*400;
-                    ctx.drawImage(img, 0,0, cvs.width, cvs.height);
-                    ctx.fillStyle="rgba(0,0,0,0.5)"; ctx.fillRect(0,cvs.height-20,cvs.width,20);
-                    ctx.fillStyle="white"; ctx.font="10px Arial"; ctx.fillText(loc, 5, cvs.height-5);
-                    processedPhotoData = cvs.toDataURL('image/jpeg', 0.5);
-                    document.getElementById('photoPreview').src = processedPhotoData;
-                    document.getElementById('photoStatus').innerText = "Attached";
-                }; img.src = e.target.result;
-            }; reader.readAsDataURL(file);
-        }
+        function handlePhoto(input) { navigator.geolocation.getCurrentPosition(pos => processImage(input.files[0], `Lat:${pos.coords.latitude.toFixed(2)}`), err => processImage(input.files[0], "No GPS")); }
+        function processImage(f, l) { const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.onload=()=>{ const c=document.getElementById('photoCanvas'); const x=c.getContext('2d'); c.width=400; c.height=(i.height/i.width)*400; x.drawImage(i,0,0,c.width,c.height); processedPhotoData=c.toDataURL('image/jpeg', 0.5); document.getElementById('photoPreview').src=processedPhotoData; document.getElementById('photoStatus').innerText="Attached"; }; i.src=e.target.result; }; r.readAsDataURL(f); }
+        document.getElementById('searchInput').addEventListener('input', loadData);
     </script>
 </body>
 </html>
