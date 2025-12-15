@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Final)</title>
+    <title>RCM Pro (Final Fixed)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --saffron: #FF9933; 
-            --white: #ffffff; 
-            --green: #138808; 
-            --chakra: #000080; 
-            --bg: #f4f6f9;
+            --saffron: #FF9933; --white: #ffffff; --green: #138808; --chakra: #000080; --bg: #f4f6f9;
         }
         body { background-color: var(--bg); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
         
@@ -29,7 +25,7 @@
         }
         .header-title { font-weight: 800; color: var(--chakra); margin: 0; letter-spacing: 1px; }
 
-        /* CARDS */
+        /* TASK CARD UI */
         .task-card {
             background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px;
             box-shadow: 0 3px 6px rgba(0,0,0,0.05); border-left: 6px solid #ccc;
@@ -43,21 +39,14 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee;
         }
 
+        /* BUTTONS */
         .btn-whatsapp {
             background-color: #25D366; color: white; border: none; padding: 8px 12px; 
             border-radius: 20px; font-size: 0.9em; font-weight: bold; width: 100%; margin-top: 10px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .btn-update {
-            border: 1px solid var(--chakra); color: var(--chakra); background: transparent;
-            padding: 5px 15px; border-radius: 20px; font-size: 0.8em; font-weight: bold;
-        }
-
-        /* ACTIONS IN LIST */
-        .action-btn {
-            width: 35px; height: 35px; border-radius: 50%; border: none; 
-            display: flex; align-items: center; justify-content: center; margin-left: 5px;
-        }
+        .btn-update { border: 1px solid var(--chakra); color: var(--chakra); background: transparent; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; font-weight: bold; }
+        .action-btn { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; }
         .btn-edit { background: #e3f2fd; color: #0d47a1; }
         .btn-del { background: #ffebee; color: #c62828; }
         .btn-call-list { background: #e8f5e9; color: #1b5e20; }
@@ -66,13 +55,6 @@
         .card { border: none; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; background: white; }
         .cart-box { background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; margin-top: 10px; }
         .cart-item { display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; padding: 5px 0; font-size: 0.9em; }
-
-        /* REPORT BUTTONS */
-        .report-btn {
-            background: white; border: 1px solid #ddd; padding: 15px; border-radius: 10px;
-            text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .report-btn:active { background: #eee; }
 
         /* NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid var(--saffron); z-index: 1000; }
@@ -90,6 +72,7 @@
         .report-table td { border-bottom: 1px solid #ddd; padding: 8px; }
         
         .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--chakra); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .report-btn { background: white; border: 1px solid #ddd; padding: 15px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
         @media print { .no-print { display: none !important; } #reportOverlay { display: block !important; position: static; } .print-btn-area { display: none; } }
     </style>
@@ -99,33 +82,30 @@
     <header class="app-header no-print">
         <div class="header-content">
             <h5 class="header-title"><i class="fas fa-flag"></i> RCM Pro</h5>
-            <small class="fw-bold" style="color:var(--green)">Jai Hind 🇮🇳</small>
+            <small class="fw-bold" style="color:var(--green)">GPS & Tasks ✅</small>
         </div>
     </header>
 
     <div class="container px-3 no-print">
         
-        <div id="view-tasks" class="section-view active-view">
-            <h6 class="text-muted fw-bold mb-3">📅 पेंडिंग फॉलो-अप (Tasks)</h6>
-            <div id="taskListContainer"></div>
-        </div>
-
-        <div id="view-add" class="section-view">
+        <div id="view-add" class="section-view active-view">
             <div class="card p-4">
-                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">नवीन एंट्री (New Entry)</h6><button class="btn btn-sm btn-warning" onclick="resetForm()">Clear</button></div>
+                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">नवीन एंट्री (GPS Active)</h6><button class="btn btn-sm btn-warning" onclick="resetForm()">Clear</button></div>
                 <form id="crmForm" class="row g-3">
-                    <input type="hidden" id="editModeId"> <div class="col-12 text-center">
-                        <label class="small text-muted">Click to take Photo</label>
+                    <input type="hidden" id="editModeId"> 
+                    
+                    <div class="col-12 bg-light p-2 rounded text-center border">
+                        <label class="small text-muted fw-bold"><i class="fas fa-map-marker-alt text-danger"></i> GPS Photo</label>
                         <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
-                        <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/1042/1042390.png" onclick="document.getElementById('meetingPhoto').click()" style="width:100px;height:100px;object-fit:cover;border-radius:10px;border:2px dashed var(--chakra);padding:5px;cursor:pointer;">
-                        <div id="photoStatus" class="small text-success fw-bold"></div>
+                        <div onclick="document.getElementById('meetingPhoto').click()" style="cursor:pointer;">
+                            <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" style="width:80px;height:80px;object-fit:cover;border-radius:10px;">
+                            <div id="photoStatus" class="small text-success fw-bold mt-1">Tap to Click</div>
+                        </div>
                     </div>
                     
                     <div class="col-12"><input type="text" class="form-control" id="cName" placeholder="Client Name" required></div>
                     <div class="col-6"><input type="tel" class="form-control" id="cPhone" placeholder="Mobile"></div>
-                    <div class="col-6"><input type="date" class="form-control" id="cDate"></div>
-                    
-                    <div class="col-12"><input type="text" class="form-control" id="cProposer" placeholder="Proposer Name (प्रपोजर)"></div>
+                    <div class="col-6"><input type="text" class="form-control" id="cProposer" placeholder="Proposer"></div>
                     
                     <div class="col-12">
                         <div class="input-group mb-2">
@@ -133,12 +113,28 @@
                             <button type="button" class="btn btn-primary" onclick="addToCart()">Add</button>
                         </div>
                         <div id="cartList" class="cart-box small text-muted">No items</div>
-                        <div class="fw-bold text-end mt-2 text-primary">Total Bill: ₹<span id="cartTotal">0</span></div>
+                        <div class="fw-bold text-end mt-2 text-primary">Bill: ₹<span id="cartTotal">0</span></div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="small text-muted fw-bold">Next Follow-up Within:</label>
+                        <select class="form-select border-warning fw-bold text-dark" id="followUpTiming">
+                            <option value="24h">⏰ 24 Hours</option>
+                            <option value="3d">📅 3 Days</option>
+                            <option value="7d">🗓️ 7 Days</option>
+                            <option value="15d">🗓️ 15 Days</option>
+                            <option value="1m">🈷️ 1 Month</option>
+                        </select>
                     </div>
 
                     <div class="col-12 mt-3"><button type="button" class="btn btn-success w-100 fw-bold shadow" onclick="saveClient()">Save Data</button></div>
                 </form>
             </div>
+        </div>
+
+        <div id="view-tasks" class="section-view">
+            <h6 class="text-muted fw-bold mb-3">📅 पेंडिंग फॉलो-अप (Tasks)</h6>
+            <div id="taskListContainer"></div>
         </div>
 
         <div id="view-reports" class="section-view">
@@ -176,12 +172,9 @@
                 <div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update Task</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <input type="hidden" id="editClientId">
-                    
                     <label class="small text-muted fw-bold">Next Date (जर काम बाकी असेल):</label>
                     <input type="date" id="nextDateManual" class="form-control mb-3 border-primary">
-                    
                     <textarea id="updateRemark" class="form-control mb-3" placeholder="Remark (काय बोलणे झाले?)"></textarea>
-                    
                     <div class="d-grid gap-2">
                         <button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Set Next Date</button>
                         <div class="text-center text-muted small">- OR -</div>
@@ -226,7 +219,7 @@
             const today = new Date(); today.setHours(0,0,0,0);
 
             clients.forEach(c => {
-                // LIST ITEM (With Edit/Delete)
+                // LIST ITEM
                 listContainer.innerHTML += `
                 <div class="client-card">
                     <div class="d-flex justify-content-between align-items-center">
@@ -243,7 +236,7 @@
                     </div>
                 </div>`;
 
-                // TASK ITEM (Only Pending)
+                // TASK ITEM
                 if(c.status === 'Pending') {
                     let nextDate = new Date(c.nextFollowUp);
                     let diff = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
@@ -265,153 +258,77 @@
             if(taskContainer.innerHTML === '') taskContainer.innerHTML = "<div class='text-center text-muted mt-5'>No Pending Tasks! 🎉</div>";
         }
 
-        // --- 2. ADD / EDIT LOGIC ---
+        // --- 2. ADD / EDIT LOGIC (GPS & TIMING RESTORED) ---
         function saveClient() {
             let name = document.getElementById('cName').value; if(!name) return alert("Name needed");
-            let id = document.getElementById('editModeId').value; // Check if Editing
-            
+            let id = document.getElementById('editModeId').value;
             let amt = currentCart.reduce((s,i)=>s+i.price,0); 
             let pStr = currentCart.map(i=>i.name).join(", ");
-            if(!pStr && id) { 
-                // Keep old product if editing and cart is empty, or allow empty
-                let old = JSON.parse(localStorage.getItem('rcmClients')).find(x=>x.id==id);
-                pStr = old ? old.product : "No Product";
-                amt = old ? old.amount : 0;
-            } else if (!pStr) {
-                pStr = "No Product";
-            }
+            if(!pStr) pStr = "No Product";
+
+            // CALCULATE FOLLOW UP DATE
+            const timing = document.getElementById('followUpTiming').value; 
+            let followDate = new Date();
+            if(timing === '24h') followDate.setDate(followDate.getDate() + 1);
+            else if(timing === '3d') followDate.setDate(followDate.getDate() + 3);
+            else if(timing === '7d') followDate.setDate(followDate.getDate() + 7);
+            else if(timing === '15d') followDate.setDate(followDate.getDate() + 15);
+            else if(timing === '1m') followDate.setMonth(followDate.getMonth() + 1);
 
             let clientObj = {
-                id: id ? parseInt(id) : Date.now(), // Keep old ID if editing
+                id: id ? parseInt(id) : Date.now(),
                 name: name,
                 phone: document.getElementById('cPhone').value,
                 proposer: document.getElementById('cProposer').value,
                 product: pStr,
                 amount: amt,
-                nextFollowUp: document.getElementById('cDate').value || new Date().toISOString().split('T')[0],
+                nextFollowUp: followDate.toISOString().split('T')[0],
                 status: 'Pending',
                 photo: processedPhotoData || (id ? JSON.parse(localStorage.getItem('rcmClients')).find(x=>x.id==id).photo : null),
                 history: id ? JSON.parse(localStorage.getItem('rcmClients')).find(x=>x.id==id).history : []
             };
 
             let db = JSON.parse(localStorage.getItem('rcmClients') || "[]");
-            
-            if(id) {
-                // Update existing
-                let index = db.findIndex(x => x.id == id);
-                db[index] = clientObj;
-                alert("Client Updated!");
-            } else {
-                // Add new
-                db.unshift(clientObj);
-                alert("New Entry Saved!");
-            }
+            if(id) { let index = db.findIndex(x => x.id == id); db[index] = clientObj; alert("Client Updated!"); }
+            else { db.unshift(clientObj); alert("Entry Saved!"); }
             
             localStorage.setItem('rcmClients', JSON.stringify(db));
-            resetForm();
-            loadData();
-            switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]);
+            resetForm(); loadData(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]);
         }
 
-        function editClient(id) {
-            let db = JSON.parse(localStorage.getItem('rcmClients'));
-            let c = db.find(x => x.id == id);
-            if(c) {
-                document.getElementById('editModeId').value = c.id;
-                document.getElementById('cName').value = c.name;
-                document.getElementById('cPhone').value = c.phone;
-                document.getElementById('cProposer').value = c.proposer || '';
-                document.getElementById('cDate').value = c.nextFollowUp;
-                if(c.photo) document.getElementById('photoPreview').src = c.photo;
-                
-                // Switch to Add Tab
-                switchTab('view-add', document.querySelectorAll('.nav-item')[1]);
-                window.scrollTo(0,0);
-            }
+        function handlePhoto(input) {
+            const file = input.files[0]; if(!file) return;
+            document.getElementById('photoStatus').innerText = "Locating...";
+            navigator.geolocation.getCurrentPosition(pos => processImage(file, `Lat:${pos.coords.latitude.toFixed(2)}, Lon:${pos.coords.longitude.toFixed(2)}`), 
+            err => processImage(file, "No GPS Found"));
+        }
+        function processImage(f, loc) {
+            const r = new FileReader(); r.onload = e => {
+                const i = new Image(); i.onload = () => {
+                    const c = document.getElementById('photoCanvas'); const x = c.getContext('2d');
+                    c.width = 400; c.height = (i.height/i.width)*400; x.drawImage(i,0,0,c.width,c.height);
+                    x.fillStyle="rgba(0,0,0,0.5)"; x.fillRect(0,c.height-20,c.width,20);
+                    x.fillStyle="white"; x.font="10px Arial"; x.fillText(loc, 5, c.height-5);
+                    processedPhotoData = c.toDataURL('image/jpeg', 0.5);
+                    document.getElementById('photoPreview').src = processedPhotoData;
+                    document.getElementById('photoStatus').innerText = "GPS Photo Ready ✅";
+                }; i.src = e.target.result;
+            }; r.readAsDataURL(f);
         }
 
-        function deleteClient(id) {
-            if(confirm("Are you sure you want to delete this client?")) {
-                let db = JSON.parse(localStorage.getItem('rcmClients'));
-                db = db.filter(x => x.id !== id);
-                localStorage.setItem('rcmClients', JSON.stringify(db));
-                loadData();
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('crmForm').reset();
-            document.getElementById('editModeId').value = '';
-            document.getElementById('photoPreview').src = "https://cdn-icons-png.flaticon.com/512/1042/1042390.png";
-            currentCart = [];
-            document.getElementById('cartList').innerHTML = "No items";
-            document.getElementById('cartTotal').innerText = "0";
-            processedPhotoData = null;
-        }
-
-        // --- 3. TASKS UPDATE ---
-        function openUpdateModal(id) {
-            document.getElementById('editClientId').value = id;
-            document.getElementById('nextDateManual').value = ""; 
-            new bootstrap.Modal(document.getElementById('updateModal')).show();
-        }
-
-        function saveUpdate(type) {
-            let id = parseInt(document.getElementById('editClientId').value);
-            let clients = JSON.parse(localStorage.getItem('rcmClients'));
-            let idx = clients.findIndex(x => x.id === id);
-            
-            if(idx > -1) {
-                let remark = document.getElementById('updateRemark').value;
-                clients[idx].history.push({ date: new Date().toLocaleDateString(), note: remark });
-
-                if (type === 'reschedule') {
-                    let nextDate = document.getElementById('nextDateManual').value;
-                    if (!nextDate) { alert("Please select a date!"); return; }
-                    clients[idx].nextFollowUp = nextDate;
-                    clients[idx].status = 'Pending'; 
-                } else if (type === 'complete') {
-                    clients[idx].status = 'Done'; 
-                }
-                
-                localStorage.setItem('rcmClients', JSON.stringify(clients));
-                bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide();
-                loadData();
-            }
-        }
-
-        // --- 4. REPORTS & UTILS ---
-        function generateReport(type) {
-            let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]");
-            let html = `<div style="text-align:center;margin-bottom:20px;"><h2>RCM Report</h2><p>${new Date().toLocaleString()}</p></div>`;
-            
-            if(type === 'followup') {
-                html += `<h4>📅 Follow-up Diary</h4><table class="report-table"><thead><tr><th>Client</th><th>Product</th><th>Date</th><th>Status</th></tr></thead><tbody>`;
-                clients.sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
-                clients.forEach(c => {
-                    let st = c.status === 'Done' ? '<span class="text-success fw-bold">Completed ✅</span>' : '<span class="text-danger">Pending ⏳</span>';
-                    html += `<tr><td><b>${c.name}</b><br>${c.phone}</td><td>${c.product}</td><td>${c.nextFollowUp}</td><td>${st}</td></tr>`;
-                });
-                html += `</tbody></table>`;
-            } 
-            else if(type === 'growth') {
-                let total = clients.reduce((s,c)=>s+parseInt(c.amount||0),0);
-                html += `<h4>📊 Analysis</h4><p><strong>Clients:</strong> ${clients.length}</p><p><strong>Total Sales:</strong> ₹${total.toLocaleString()}</p>`;
-                html += `<h4>🔥 All Leads</h4><ul>` + clients.map(c=>`<li>${c.name} (${c.status})</li>`).join('') + `</ul>`;
-            }
-            document.getElementById('reportContent').innerHTML = html;
-            document.getElementById('reportOverlay').style.display = 'block';
-        }
-
+        // --- UTILS ---
+        function resetForm() { document.getElementById('crmForm').reset(); document.getElementById('editModeId').value = ''; document.getElementById('photoPreview').src = "https://cdn-icons-png.flaticon.com/512/3687/3687412.png"; currentCart = []; document.getElementById('cartList').innerHTML = "No items"; document.getElementById('cartTotal').innerText = "0"; processedPhotoData = null; document.getElementById('photoStatus').innerText = ""; }
+        function openUpdateModal(id) { document.getElementById('editClientId').value = id; document.getElementById('nextDateManual').value = ""; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
+        function saveUpdate(type) { let id = parseInt(document.getElementById('editClientId').value); let clients = JSON.parse(localStorage.getItem('rcmClients')); let idx = clients.findIndex(x => x.id === id); if(idx > -1) { let remark = document.getElementById('updateRemark').value; clients[idx].history.push({ date: new Date().toLocaleDateString(), note: remark }); if (type === 'reschedule') { let nextDate = document.getElementById('nextDateManual').value; if (!nextDate) { alert("Please select a date!"); return; } clients[idx].nextFollowUp = nextDate; clients[idx].status = 'Pending'; } else if (type === 'complete') { clients[idx].status = 'Done'; } localStorage.setItem('rcmClients', JSON.stringify(clients)); bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); loadData(); } }
+        function generateReport(type) { let clients = JSON.parse(localStorage.getItem('rcmClients') || "[]"); let html = `<div style="text-align:center;margin-bottom:20px;"><h2>RCM Report</h2><p>${new Date().toLocaleString()}</p></div>`; if(type === 'followup') { html += `<h4>📅 Follow-up Diary</h4><table class="report-table"><thead><tr><th>Client</th><th>Product</th><th>Date</th><th>Status</th></tr></thead><tbody>`; clients.sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp)); clients.forEach(c => { let st = c.status === 'Done' ? '<span class="text-success fw-bold">Completed ✅</span>' : '<span class="text-danger">Pending ⏳</span>'; html += `<tr><td><b>${c.name}</b><br>${c.phone}</td><td>${c.product}</td><td>${c.nextFollowUp}</td><td>${st}</td></tr>`; }); html += `</tbody></table>`; } else if(type === 'growth') { let total = clients.reduce((s,c)=>s+parseInt(c.amount||0),0); html += `<h4>📊 Analysis</h4><p><strong>Clients:</strong> ${clients.length}</p><p><strong>Total Sales:</strong> ₹${total.toLocaleString()}</p>`; html += `<h4>🔥 Focus List</h4><ul>` + clients.filter(c=>c.leadType==='Hot').map(c=>`<li>${c.name} - ${c.product}</li>`).join('') + `</ul>`; } document.getElementById('reportContent').innerHTML = html; document.getElementById('reportOverlay').style.display = 'block'; }
+        function editClient(id) { let db = JSON.parse(localStorage.getItem('rcmClients')); let c = db.find(x => x.id == id); if(c) { document.getElementById('editModeId').value = c.id; document.getElementById('cName').value = c.name; document.getElementById('cPhone').value = c.phone; document.getElementById('cProposer').value = c.proposer || ''; if(c.photo) document.getElementById('photoPreview').src = c.photo; switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
+        function deleteClient(id) { if(confirm("Are you sure?")) { let db = JSON.parse(localStorage.getItem('rcmClients')); db = db.filter(x => x.id !== id); localStorage.setItem('rcmClients', JSON.stringify(db)); loadData(); } }
         function sendReminder(phone, name, product) { window.open(`https://wa.me/91${phone}?text=नमस्कार ${name}, आपल्या *${product}* बद्दल फॉलो-अप कॉल करायचा होता.`, '_blank'); }
         function loadProducts() { const dd = document.getElementById('cProd'); fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(c=>{ dd.innerHTML='<option value="">Select</option>'; c.split('\n').forEach(r=>{let x=r.replace(/"/g,'').split(','); if(x[0]&&x[0].length>2){let o=document.createElement('option');o.value=x[0];o.dataset.price=x[1]||0;o.text=x[0];dd.add(o);}});}).catch(()=>{}); }
         function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); let t=0; document.getElementById('cartList').innerHTML=currentCart.map(i=>{t+=i.price; return `<div class="cart-item"><span>${i.name}</span><span>₹${i.price}</span></div>`}).join(""); document.getElementById('cartTotal').innerText=t; }
-        
         function switchTab(viewId, el) { document.querySelectorAll('.section-view').forEach(d => d.classList.remove('active-view')); document.getElementById(viewId).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         function downloadBackup() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([localStorage.getItem('rcmClients')],{type:"application/json"})); a.download="Backup.json"; a.click(); }
         function importBackup(i) { const r=new FileReader(); r.onload=e=>{ if(confirm("Restore?")){localStorage.setItem('rcmClients', e.target.result); location.reload();} }; r.readAsText(i.files[0]); }
-        function handlePhoto(input) { navigator.geolocation.getCurrentPosition(pos => processImage(input.files[0], `Lat:${pos.coords.latitude.toFixed(2)}`), err => processImage(input.files[0], "No GPS")); }
-        function processImage(f, l) { const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.onload=()=>{ const c=document.getElementById('photoCanvas'); const x=c.getContext('2d'); c.width=400; c.height=(i.height/i.width)*400; x.drawImage(i,0,0,c.width,c.height); processedPhotoData=c.toDataURL('image/jpeg', 0.5); document.getElementById('photoPreview').src=processedPhotoData; document.getElementById('photoStatus').innerText="Attached"; }; i.src=e.target.result; }; r.readAsDataURL(f); }
         document.getElementById('searchInput').addEventListener('input', loadData);
     </script>
 </body>
