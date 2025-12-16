@@ -3,101 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Ultimate (All Features)</title>
+    <title>RCM Business Tycoon</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        :root { --saffron: #FF9933; --white: #ffffff; --green: #138808; --chakra: #000080; --bg: #f4f6f9; }
+        :root { --saffron: #FF9933; --white: #ffffff; --green: #138808; --chakra: #000080; --bg: #f0f2f5; }
         body { background-color: var(--bg); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
         
-        /* HEADER */
-        .app-header { background: linear-gradient(180deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%); padding: 15px 20px; border-bottom: 4px solid var(--chakra); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .header-content { background: rgba(255, 255, 255, 0.95); padding: 8px 20px; border-radius: 30px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--chakra); }
+        .app-header { background: linear-gradient(135deg, var(--saffron), var(--white), var(--green)); padding: 15px 20px; border-bottom: 4px solid var(--chakra); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header-content { background: rgba(255, 255, 255, 0.9); padding: 8px 20px; border-radius: 30px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--chakra); }
         .header-title { font-weight: 800; color: var(--chakra); margin: 0; }
 
         /* CARDS */
-        .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .task-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .task-card:active { transform: scale(0.98); }
         .task-card.late { border-left-color: #dc3545; } .task-card.today { border-left-color: var(--saffron); } .task-card.future { border-left-color: var(--green); }
         .client-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;}
-        
-        /* UDHARI & BIRTHDAY */
-        .udhari-box { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
-        .birthday-alert { background: linear-gradient(45deg, #ff9a9e, #fad0c4); color: #880e4f; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: none; align-items: center; justify-content: space-between; border: 1px solid #ffcdd2; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* TAGS */
-        .badge-unpaid { background: #ffebee; color: #c62828; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; border: 1px solid #ffcdd2; }
-        .badge-paid { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; border: 1px solid #c8e6c9; }
+        /* GROWTH TOOLS */
+        .growth-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid var(--chakra); }
+        .calc-result { background: #e8f5e9; color: #1b5e20; padding: 10px; border-radius: 10px; font-weight: bold; margin-top: 10px; display: none; }
+        
+        /* BANNER MAKER */
+        #posterCanvas { width: 100%; border-radius: 10px; border: 2px solid #333; margin-top: 10px; }
 
         /* BUTTONS */
-        .btn-whatsapp { background-color: #25D366; color: white; border: none; padding: 8px 12px; border-radius: 20px; font-size: 0.9em; width: 100%; margin-top: 10px; font-weight: bold; }
-        .btn-update { border: 1px solid var(--chakra); color: var(--chakra); background: transparent; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; font-weight: bold; }
-        .action-btn { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; }
-        .btn-edit { background: #e3f2fd; color: #0d47a1; } .btn-del { background: #ffebee; color: #c62828; } .btn-call { background: #e8f5e9; color: #1b5e20; }
+        .btn-whatsapp { background-color: #25D366; color: white; border: none; padding: 8px; border-radius: 20px; width: 100%; font-weight: bold; margin-top: 10px; }
+        .btn-main { background: var(--chakra); color: white; border-radius: 25px; padding: 10px 20px; width: 100%; border: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         
-        /* MIC ICON */
-        .input-group-text { background: white; border-left: 0; cursor: pointer; color: var(--chakra); }
-        .form-control { border-right: 0; }
-
         /* NAV & FAB */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid var(--saffron); z-index: 1000; }
-        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; }
-        .nav-item.active { color: var(--chakra); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; }
-        .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--chakra); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; border-top: 3px solid var(--saffron); z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.7em; }
+        .nav-item.active { color: var(--chakra); font-weight: bold; } .nav-item i { font-size: 1.4em; display: block; margin-bottom: 2px; }
+        .fab-btn { position: fixed; bottom: 85px; right: 20px; background: linear-gradient(45deg, var(--chakra), #0056b3); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white; }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
 
-        /* PRINT */
-        @media print { .no-print { display: none !important; } #reportOverlay { display: block !important; position: static; } .print-btn-area { display: none; } }
+        /* UTILS */
+        .badge-unpaid { background: #ffebee; color: #c62828; padding: 3px 8px; border-radius: 10px; font-size: 0.7em; }
+        .badge-paid { background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 10px; font-size: 0.7em; }
+        @media print { .no-print { display: none !important; } #reportOverlay { display: block !important; position: static; } }
         #reportOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto; padding: 20px; }
-        .report-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
-        .report-table th { background: var(--saffron); color: white; padding: 8px; text-align: left; }
-        .report-table td { border-bottom: 1px solid #ddd; padding: 8px; }
-        .report-img { width: 100px; height: auto; border-radius: 5px; border: 1px solid #ddd; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
     <header class="app-header no-print">
         <div class="header-content">
-            <h5 class="header-title"><i class="fas fa-cloud"></i> RCM Ultimate</h5>
-            <small class="fw-bold text-success" id="connectionStatus">Checking...</small>
+            <h5 class="header-title"><i class="fas fa-crown"></i> RCM Tycoon</h5>
+            <small class="fw-bold text-success" id="connectionStatus">● Online</small>
         </div>
     </header>
 
     <div class="container px-3 no-print">
-        <div id="view-add" class="section-view active-view">
+        
+        <div id="view-growth" class="section-view active-view">
+            
+            <div class="growth-card">
+                <h6 class="fw-bold text-start"><i class="fas fa-calculator text-primary"></i> RCM बचत मीटर (Savings)</h6>
+                <div class="row g-2">
+                    <div class="col-6"><input type="number" id="marketPrice" class="form-control" placeholder="Market Price"></div>
+                    <div class="col-6"><input type="number" id="rcmPrice" class="form-control" placeholder="RCM Price"></div>
+                </div>
+                <button class="btn btn-warning w-100 mt-2 btn-sm fw-bold" onclick="calculateSavings()">Calculate Saving</button>
+                <div id="savingResult" class="calc-result"></div>
+            </div>
+
+            <div class="growth-card">
+                <h6 class="fw-bold text-start"><i class="fas fa-palette text-danger"></i> Offer Poster Maker</h6>
+                <input type="text" id="offerText" class="form-control mb-2" placeholder="Ex: Health Guard Oil वर 20% सूट!">
+                <button class="btn btn-outline-dark w-100 btn-sm" onclick="createPoster()">Create Poster 🎨</button>
+                <canvas id="posterCanvas" style="display:none;"></canvas>
+                <img id="posterImg" style="width:100%; border-radius:10px; margin-top:10px; display:none; border:2px solid gold;">
+                <a id="downloadPoster" class="btn btn-success w-100 mt-2 btn-sm" style="display:none;">Download & Share 📲</a>
+            </div>
+
+            <div class="growth-card">
+                <h6 class="fw-bold text-start"><i class="fas fa-bullseye text-success"></i> My Dream Target</h6>
+                <h2 class="fw-bold text-primary">₹<span id="totalEarnings">0</span></h2>
+                <small class="text-muted">Total Sales Revenue</small>
+                <div class="progress mt-2" style="height: 10px;">
+                    <div class="progress-bar bg-success" id="dreamProgress" style="width: 0%"></div>
+                </div>
+                <small class="d-block mt-1 text-end">Target: ₹1,00,000</small>
+            </div>
+        </div>
+
+        <div id="view-tasks" class="section-view">
+            <div id="bdayAlert" class="alert alert-info py-2 shadow-sm" style="display:none;">
+                <i class="fas fa-birthday-cake text-danger"></i> <b>B'day:</b> <span id="bdayNames"></span>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-6">
+                    <div class="bg-white p-3 rounded shadow-sm border-start border-4 border-danger text-center">
+                        <small>उधारी (Unpaid)</small>
+                        <h5 class="fw-bold text-danger m-0">₹<span id="totalUdhari">0</span></h5>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-white p-3 rounded shadow-sm border-start border-4 border-success text-center">
+                        <small>जमा (Paid)</small>
+                        <h5 class="fw-bold text-success m-0">₹<span id="totalPaid">0</span></h5>
+                    </div>
+                </div>
+            </div>
+
+            <h6 class="text-muted fw-bold mb-3">📅 पेंडिंग फॉलो-अप</h6>
+            <div id="taskListContainer" class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
+        </div>
+
+        <div id="view-add" class="section-view">
             <div class="card p-4 border-0 shadow-sm" style="border-radius:15px;">
-                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">Entry (with Voice 🎤)</h6><button class="btn btn-sm btn-warning" onclick="resetForm()">Clear</button></div>
+                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">New Entry</h6><button class="btn btn-sm btn-light border" onclick="resetForm()">Reset</button></div>
                 <form id="crmForm" class="row g-3">
-                    <input type="hidden" id="editDocId"> 
+                    <input type="hidden" id="editDocId">
                     
                     <div class="col-12 text-center bg-light p-2 rounded border">
-                        <label class="small text-muted fw-bold"><i class="fas fa-map-marker-alt text-danger"></i> GPS Photo</label>
                         <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
                         <div onclick="document.getElementById('meetingPhoto').click()" style="cursor:pointer;">
                             <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" style="width:60px;height:60px;object-fit:cover;">
-                            <div id="photoStatus" class="small text-muted mt-1">Tap to Click</div>
+                            <div id="photoStatus" class="small text-muted mt-1">Tap for GPS Photo 📸</div>
                         </div>
                     </div>
                     
                     <div class="col-12">
-                        <label class="small text-muted fw-bold">Customer Name</label>
+                        <label class="small text-muted fw-bold">Name</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="cName" placeholder="नाव सांगा.." required>
+                            <input type="text" class="form-control" id="cName" placeholder="Enter Name">
                             <span class="input-group-text" onclick="startVoice('cName')"><i class="fas fa-microphone"></i></span>
                         </div>
                     </div>
 
                     <div class="col-6"><label class="small text-muted fw-bold">Date</label><input type="date" class="form-control px-1" id="cDate" style="font-size: 0.9em;"></div>
-                    <div class="col-6"><label class="small text-muted fw-bold">Birth Date (🎂)</label><input type="date" class="form-control px-1" id="cDob"></div>
-
+                    <div class="col-6"><label class="small text-muted fw-bold">DOB 🎂</label><input type="date" class="form-control px-1" id="cDob"></div>
                     <div class="col-6"><input type="tel" class="form-control" id="cPhone" placeholder="Mobile"></div>
                     <div class="col-6"><input type="text" class="form-control" id="cProposer" placeholder="Proposer"></div>
                     
@@ -110,111 +154,46 @@
                         <div class="fw-bold text-end mt-2 text-primary">Bill: ₹<span id="cartTotal">0</span></div>
                     </div>
 
-                    <div class="col-6">
-                        <label class="small text-muted fw-bold">Payment:</label>
-                        <select class="form-select border-danger fw-bold" id="payStatus">
-                            <option value="Paid">✅ Paid</option>
-                            <option value="Unpaid" selected>🔴 Unpaid</option>
-                        </select>
-                    </div>
-
-                    <div class="col-6">
-                        <label class="small text-muted fw-bold">Next Follow-up:</label>
-                        <select class="form-select border-warning fw-bold text-dark" id="followUpTiming">
-                            <option value="24h">⏰ 24 Hours</option>
-                            <option value="3d">📅 3 Days</option>
-                            <option value="7d">🗓️ 7 Days</option>
-                            <option value="15d">🗓️ 15 Days</option>
-                        </select>
-                    </div>
-                    <div class="col-12 mt-3"><button type="button" class="btn btn-success w-100 fw-bold shadow" onclick="saveClient()">Save to Cloud ☁️</button></div>
+                    <div class="col-6"><select class="form-select border-danger fw-bold" id="payStatus"><option value="Paid">✅ Paid</option><option value="Unpaid" selected>🔴 Unpaid</option></select></div>
+                    <div class="col-6"><select class="form-select border-warning fw-bold text-dark" id="followUpTiming"><option value="24h">⏰ 24 Hours</option><option value="3d">📅 3 Days</option><option value="7d">🗓️ 7 Days</option><option value="15d">🗓️ 15 Days</option></select></div>
+                    
+                    <div class="col-12 mt-3"><button type="button" class="btn btn-main" onclick="saveClient()">Save to Cloud ☁️</button></div>
                 </form>
             </div>
         </div>
 
-        <div id="view-tasks" class="section-view">
-            
-            <div id="bdayAlert" class="birthday-alert shadow-sm">
-                <div><i class="fas fa-birthday-cake me-2"></i> <b>Happy Birthday:</b> <span id="bdayNames"></span></div>
-                <i class="fas fa-times" onclick="this.parentElement.style.display='none'"></i>
-            </div>
-
-            <div class="udhari-box shadow-sm">
-                <h6 class="m-0">मार्केटमधील उधारी (Pending)</h6>
-                <h2 class="fw-bold m-0">₹<span id="totalUdhari">0</span></h2>
-            </div>
-            <h6 class="text-muted fw-bold mb-3">📅 पेंडिंग फॉलो-अप</h6>
-            <div id="taskListContainer" class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
-        </div>
-
         <div id="view-list" class="section-view">
-            <input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="Search...">
+            <input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="Search Client...">
             <div id="clientListContainer" class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
         </div>
 
         <div id="view-reports" class="section-view">
-            
             <div class="card p-3 mb-3 shadow-sm">
-                <h6 class="fw-bold text-center">📊 बिझनेस स्थिती (Chart)</h6>
+                <h6 class="fw-bold text-center">Business Overview</h6>
                 <canvas id="myChart" style="max-height: 200px;"></canvas>
             </div>
-
-            <div class="card p-3 mb-3 shadow-sm bg-light">
-                <h6 class="fw-bold text-center text-primary"><i class="fas fa-id-card"></i> Digital Identity</h6>
-                <button class="btn btn-primary w-100 mb-2" onclick="generateCard()">Create My Visiting Card</button>
-            </div>
-
-            <h6 class="text-muted fw-bold mb-3">PDF रिपोर्ट्स</h6>
             <div class="row">
-                <div class="col-6"><div class="card p-3 text-center shadow-sm" onclick="generateReport('followup')"><h5>📅</h5><small>Diary + Photo</small></div></div>
+                <div class="col-6"><div class="card p-3 text-center shadow-sm" onclick="generateReport('followup')"><h5>📅</h5><small>Diary</small></div></div>
                 <div class="col-6"><div class="card p-3 text-center shadow-sm" onclick="generateReport('growth')"><h5>📈</h5><small>Growth</small></div></div>
             </div>
-            <button class="btn btn-outline-dark w-100 mt-3" onclick="exportToExcel()">Download Excel File</button>
-        </div>
-    </div>
-
-    <button class="fab-btn no-print" onclick="switchTab('view-add', document.querySelectorAll('.nav-item')[1]); resetForm();"><i class="fas fa-plus"></i></button>
-
-    <div class="modal fade" id="updateModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow">
-                <div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update Task</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body">
-                    <input type="hidden" id="editClientId">
-                    <label class="small text-muted fw-bold">Next Date:</label>
-                    <input type="date" id="nextDateManual" class="form-control mb-3 border-primary">
-                    
-                    <label class="small text-muted fw-bold">Remark:</label>
-                    <div class="input-group mb-3">
-                        <textarea id="updateRemark" class="form-control" placeholder="काय बोलणे झाले?"></textarea>
-                        <span class="input-group-text" onclick="startVoice('updateRemark')"><i class="fas fa-microphone"></i></span>
-                    </div>
-
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="markPaidCheck">
-                        <label class="form-check-label fw-bold text-success" for="markPaidCheck">Payment Received? (पैसे आले)</label>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Reschedule</button>
-                        <button class="btn btn-success" onclick="saveUpdate('complete')">✅ Mark Complete</button>
-                    </div>
-                </div>
+            <div class="card p-3 mt-3 bg-light shadow-sm text-center">
+                <h6 class="fw-bold text-primary">Digital Identity</h6>
+                <button class="btn btn-outline-primary btn-sm w-100" onclick="generateCard()">Download Visiting Card 📇</button>
             </div>
         </div>
     </div>
 
-    <div id="reportOverlay">
-        <div class="text-center p-2 sticky-top bg-white shadow-sm mb-3">
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('reportOverlay').style.display='none'">Back</button> 
-            <button class="btn btn-danger btn-sm" onclick="window.print()">Print PDF</button>
-        </div>
-        <div id="reportContent" class="p-3"></div>
-    </div>
+    <button class="fab-btn no-print" onclick="switchTab('view-add', document.querySelectorAll('.nav-item')[2]); resetForm();"><i class="fas fa-plus"></i></button>
+
+    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update Task</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><label class="small text-muted fw-bold">Next Date:</label><input type="date" id="nextDateManual" class="form-control mb-3 border-primary"><div class="input-group mb-3"><textarea id="updateRemark" class="form-control" placeholder="Remark"></textarea><span class="input-group-text" onclick="startVoice('updateRemark')"><i class="fas fa-microphone"></i></span></div><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label fw-bold text-success" for="markPaidCheck">Payment Received?</label></div><div class="d-grid gap-2"><button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Reschedule</button><button class="btn btn-success" onclick="saveUpdate('complete')">✅ Mark Complete</button></div></div></div></div></div>
 
     <canvas id="cardCanvas" style="display:none;"></canvas>
+    
+    <div id="reportOverlay"><div class="text-center p-2 sticky-top bg-white shadow-sm mb-3"><button class="btn btn-secondary btn-sm" onclick="document.getElementById('reportOverlay').style.display='none'">Back</button> <button class="btn btn-danger btn-sm" onclick="window.print()">Print PDF</button></div><div id="reportContent" class="p-3"></div></div>
 
     <div class="bottom-nav no-print">
-        <a class="nav-item active" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i>Tasks</a>
+        <a class="nav-item active" onclick="switchTab('view-growth', this)"><i class="fas fa-rocket"></i>Growth</a>
+        <a class="nav-item" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i>Tasks</a>
         <a class="nav-item" onclick="switchTab('view-add', this)"><i class="fas fa-plus-circle"></i>Add</a>
         <a class="nav-item" onclick="switchTab('view-list', this)"><i class="fas fa-users"></i>List</a>
         <a class="nav-item" onclick="switchTab('view-reports', this)"><i class="fas fa-chart-pie"></i>Reports</a>
@@ -222,206 +201,164 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- 🔥 FIREBASE CONFIGURATION (Verified) ---
-        const firebaseConfig = {
-          apiKey: "AIzaSyAYfRLpyfVHNYFyTYZaSylGxyoW4UFH-yw",
-          authDomain: "rcmcrm-5ad88.firebaseapp.com",
-          projectId: "rcmcrm-5ad88",
-          storageBucket: "rcmcrm-5ad88.firebasestorage.app",
-          messagingSenderId: "172188965998",
-          appId: "1:172188965998:web:33d65df1549fdb1acb1a7f"
-        };
-        
+        // --- FIREBASE CONFIG (Already set) ---
+        const firebaseConfig = { apiKey: "AIzaSyAYfRLpyfVHNYFyTYZaSylGxyoW4UFH-yw", authDomain: "rcmcrm-5ad88.firebaseapp.com", projectId: "rcmcrm-5ad88", storageBucket: "rcmcrm-5ad88.firebasestorage.app", messagingSenderId: "172188965998", appId: "1:172188965998:web:33d65df1549fdb1acb1a7f" };
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
-        db.collection("test").get().then(() => { document.getElementById('connectionStatus').innerText = "Online 🟢"; }).catch((e) => { document.getElementById('connectionStatus').innerText = "Connecting..."; });
+        db.collection("test").get().then(() => { document.getElementById('connectionStatus').innerText = "● Online"; }).catch((e) => { document.getElementById('connectionStatus').innerText = "Offline"; });
 
         const SHEET_ID = "1eR5THz-4AV3HkfnNJ5Un48ksz0I0jrepJSED3qHFg6k";
-        let processedPhotoData = null; let currentCart = [];
-        let globalClients = []; 
+        let processedPhotoData = null; let currentCart = []; let globalClients = []; 
 
         document.getElementById('cDate').valueAsDate = new Date();
         document.addEventListener('DOMContentLoaded', () => { loadProducts(); listenToData(); });
 
+        // --- NEW FEATURES LOGIC ---
+        
+        // 1. Savings Calculator
+        function calculateSavings() {
+            let m = parseFloat(document.getElementById('marketPrice').value) || 0;
+            let r = parseFloat(document.getElementById('rcmPrice').value) || 0;
+            if(m > 0 && r > 0) {
+                let save = m - r;
+                let pct = ((save/m)*100).toFixed(1);
+                let div = document.getElementById('savingResult');
+                div.style.display = 'block';
+                div.innerHTML = `तुम्ही वाचवले: ₹${save} (${pct}%) 🎉<br><small>RCM जॉईन करा आणि बचत करा!</small>`;
+            }
+        }
+
+        // 2. Poster Maker
+        function createPoster() {
+            let text = document.getElementById('offerText').value || "Super Offer!";
+            const c = document.getElementById('posterCanvas');
+            const ctx = c.getContext('2d');
+            c.width = 1080; c.height = 1080; // Instagram Square
+
+            // Background
+            let grd = ctx.createLinearGradient(0,0,1080,1080);
+            grd.addColorStop(0, "#ff9933"); grd.addColorStop(1, "#c62828");
+            ctx.fillStyle = grd; ctx.fillRect(0,0,1080,1080);
+
+            // Text
+            ctx.fillStyle = "white"; ctx.textAlign = "center";
+            ctx.font = "bold 80px Poppins"; ctx.fillText(text, 540, 400);
+            ctx.font = "50px Poppins"; ctx.fillText("Contact: Deepak Shingole", 540, 600);
+            ctx.fillText("📞 7020970727", 540, 700);
+            
+            // Branding
+            ctx.fillStyle = "yellow"; ctx.font = "bold 60px Poppins"; ctx.fillText("⭐ RCM BUSINESS ⭐", 540, 200);
+
+            let img = document.getElementById('posterImg');
+            img.src = c.toDataURL(); img.style.display = 'block';
+            let down = document.getElementById('downloadPoster');
+            down.href = c.toDataURL(); down.download = "RCM_Offer.png"; down.style.display = 'block';
+        }
+
+        // 3. Visiting Card
+        function generateCard() {
+            const c = document.getElementById('cardCanvas'); const ctx = c.getContext('2d');
+            c.width = 600; c.height = 350;
+            let grd = ctx.createLinearGradient(0, 0, 0, 350); grd.addColorStop(0, "#fff"); grd.addColorStop(1, "#f0f0f0");
+            ctx.fillStyle = grd; ctx.fillRect(0,0,600,350);
+            
+            // Design
+            ctx.fillStyle = "#000080"; ctx.fillRect(0,0,20,350); 
+            ctx.font = "bold 35px Arial"; ctx.fillText("Deepak Shingole", 50, 100);
+            ctx.fillStyle = "#FF9933"; ctx.font = "25px Arial"; ctx.fillText("RCM Business Partner", 50, 140);
+            ctx.fillStyle = "#333"; ctx.font = "20px Arial"; 
+            ctx.fillText("📞 7020970727", 50, 220);
+            ctx.fillText("📍 Team Unique", 50, 260);
+            
+            let link = document.createElement('a'); link.download = 'Deepak_RCM_Card.png'; link.href = c.toDataURL(); link.click();
+        }
+
+        // 4. Voice
+        function startVoice(id) {
+            if (!('webkitSpeechRecognition' in window)) return alert("Not supported");
+            const r = new webkitSpeechRecognition(); r.lang = 'mr-IN'; r.start();
+            r.onresult = e => { document.getElementById(id).value = e.results[0][0].transcript; };
+        }
+
+        // --- CORE LOGIC ---
         function listenToData() {
             db.collection("clients").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-                globalClients = [];
-                let totalUdhari = 0, totalPaid = 0;
-                
+                globalClients = []; let totalUdhari = 0, totalPaid = 0, totalSales = 0;
                 snapshot.forEach((doc) => {
                     let data = doc.data(); data.docId = doc.id; 
-                    if(data.paymentStatus === 'Unpaid') totalUdhari += parseInt(data.amount || 0);
-                    else totalPaid += parseInt(data.amount || 0);
+                    let amt = parseInt(data.amount || 0);
+                    if(data.paymentStatus === 'Unpaid') totalUdhari += amt; else totalPaid += amt;
+                    totalSales += amt;
                     globalClients.push(data);
                 });
                 
                 document.getElementById('totalUdhari').innerText = totalUdhari;
-                renderUI();
-                checkBirthdays(); // Feature 2
-                updateChart(totalPaid, totalUdhari); // Feature 1
+                document.getElementById('totalPaid').innerText = totalPaid;
+                document.getElementById('totalEarnings').innerText = totalSales.toLocaleString();
+                
+                // Dream Bar
+                let target = 100000;
+                let pct = Math.min((totalSales/target)*100, 100);
+                document.getElementById('dreamProgress').style.width = pct + "%";
+
+                renderUI(); updateChart(totalPaid, totalUdhari); checkBirthdays();
             });
         }
 
-        // --- FEATURE 1: CHARTS ---
+        function loadProducts() { const dd=document.getElementById('cProd'); fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(c=>{const rows=c.split('\n'); dd.innerHTML='<option value="">Select Product</option>'; rows.forEach((r,i)=>{if(i===0)return; let d=r.replace(/"/g,'').split(','); if(d[0]&&d[0].length>1){let name=d[0]; let p=d[2]?d[2].trim():0; let o=document.createElement('option'); o.value=name; o.dataset.price=p; o.text=`${name} - ₹${p}`; dd.add(o);}});}).catch(()=>{}); }
+        
+        // UI & HELPERS
+        function renderUI() {
+            const taskDiv = document.getElementById('taskListContainer'); const listDiv = document.getElementById('clientListContainer'); taskDiv.innerHTML = ''; listDiv.innerHTML = '';
+            const today = new Date(); today.setHours(0,0,0,0); const term = document.getElementById('searchInput').value.toLowerCase();
+            
+            globalClients.filter(c => c.name.toLowerCase().includes(term)).forEach(c => {
+                let payBadge = c.paymentStatus === 'Paid' ? '<span class="badge-paid">Paid</span>' : '<span class="badge-unpaid">Udhari</span>';
+                listDiv.innerHTML += `<div class="client-card"><div><h6 class="m-0 fw-bold text-dark">${c.name} ${payBadge}</h6><small class="text-muted">${c.product}</small></div><div class="d-flex"><a href="tel:${c.phone}" class="action-btn btn-call"><i class="fas fa-phone"></i></a><button onclick="editClient('${c.docId}')" class="action-btn btn-edit"><i class="fas fa-pencil-alt"></i></button><button onclick="deleteClient('${c.docId}')" class="action-btn btn-del"><i class="fas fa-trash"></i></button></div></div>`;
+                if(c.status === 'Pending') {
+                    let nextDate = new Date(c.nextFollowUp); let diff = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
+                    let statusClass = diff < 0 ? 'late' : (diff === 0 ? 'today' : 'future');
+                    let dayText = diff < 0 ? `${Math.abs(diff)} Days Late` : (diff === 0 ? 'Today' : `${diff} Days Left`);
+                    taskDiv.innerHTML += `<div class="task-card ${statusClass}"><div class="d-flex justify-content-between align-items-center"><div><h6 class="m-0 fw-bold" style="color:var(--chakra)">${c.name}</h6><small class="text-muted">${c.product} ${payBadge}</small></div><div class="text-end"><small class="${diff<0?'text-danger':'text-success'} fw-bold">${dayText}</small><br><small>${c.nextFollowUp}</small></div></div><button class="btn-whatsapp" onclick="sendReminder('${c.phone}', '${c.name}', '${c.product}')"><i class="fab fa-whatsapp"></i> WhatsApp</button><div class="text-end mt-2"><button onclick="openUpdateModal('${c.docId}')" class="btn-update">Update</button></div></div>`;
+                }
+            });
+        }
+
+        // CHART
         let myChart = null;
         function updateChart(paid, unpaid) {
             const ctx = document.getElementById('myChart').getContext('2d');
             if(myChart) myChart.destroy();
-            myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Paid (जमा)', 'Unpaid (उधारी)'],
-                    datasets: [{
-                        data: [paid, unpaid],
-                        backgroundColor: ['#198754', '#dc3545'],
-                        borderWidth: 1
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
+            myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Paid', 'Unpaid'], datasets: [{ data: [paid, unpaid], backgroundColor: ['#198754', '#dc3545'], borderWidth: 0 }] }, options: { responsive: true, cutout: '70%' } });
         }
 
-        // --- FEATURE 2: BIRTHDAY ALERT ---
-        function checkBirthdays() {
-            let today = new Date();
-            let bdayPeople = globalClients.filter(c => {
-                if(!c.dob) return false;
-                let d = new Date(c.dob);
-                return d.getDate() === today.getDate() && d.getMonth() === today.getMonth();
-            });
-            
-            if(bdayPeople.length > 0) {
-                document.getElementById('bdayAlert').style.display = 'flex';
-                document.getElementById('bdayNames').innerText = bdayPeople.map(c=>c.name).join(', ');
-            }
-        }
+        function checkBirthdays() { let t=new Date(); let b=globalClients.filter(c=>{if(!c.dob)return false; let d=new Date(c.dob); return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth();}); if(b.length>0){document.getElementById('bdayAlert').style.display='block'; document.getElementById('bdayNames').innerText=b.map(x=>x.name).join(', ');} }
 
-        // --- FEATURE 3: VOICE INPUT ---
-        function startVoice(inputId) {
-            if (!('webkitSpeechRecognition' in window)) { alert("Voice typing not supported in this browser."); return; }
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = 'mr-IN'; // Marathi
-            recognition.start();
-            recognition.onresult = function(event) {
-                document.getElementById(inputId).value = event.results[0][0].transcript;
-            };
-        }
-
-        // --- FEATURE 4: VISITING CARD ---
-        function generateCard() {
-            let name = prompt("Enter Name for Card:", "Deepak Shingole");
-            let phone = prompt("Enter Phone:", "7020970727");
-            if(!name) return;
-
-            const c = document.getElementById('cardCanvas');
-            const ctx = c.getContext('2d');
-            c.width = 600; c.height = 350;
-
-            // Background
-            let grd = ctx.createLinearGradient(0, 0, 0, 350);
-            grd.addColorStop(0, "#FF9933");
-            grd.addColorStop(0.5, "#FFFFFF");
-            grd.addColorStop(1, "#138808");
-            ctx.fillStyle = grd;
-            ctx.fillRect(0,0,600,350);
-
-            // Text
-            ctx.fillStyle = "#000080";
-            ctx.font = "bold 40px Arial";
-            ctx.fillText(name, 30, 150);
-            
-            ctx.font = "25px Arial";
-            ctx.fillStyle = "#333";
-            ctx.fillText("RCM Business Partner", 30, 190);
-            
-            ctx.fillStyle = "#000";
-            ctx.font = "bold 30px Arial";
-            ctx.fillText("📞 " + phone, 30, 280);
-
-            // Border
-            ctx.strokeStyle = "#000080";
-            ctx.lineWidth = 10;
-            ctx.strokeRect(0,0,600,350);
-
-            // Download
-            let link = document.createElement('a');
-            link.download = 'My_RCM_Card.png';
-            link.href = c.toDataURL();
-            link.click();
-        }
-
-        // --- STANDARD FUNCTIONS ---
-        function renderUI() {
-            const taskDiv = document.getElementById('taskListContainer');
-            const listDiv = document.getElementById('clientListContainer');
-            taskDiv.innerHTML = ''; listDiv.innerHTML = '';
-            
-            const today = new Date(); today.setHours(0,0,0,0);
-            const term = document.getElementById('searchInput').value.toLowerCase();
-
-            globalClients.filter(c => c.name.toLowerCase().includes(term)).forEach(c => {
-                let payBadge = c.paymentStatus === 'Paid' ? '<span class="badge-paid">Paid</span>' : '<span class="badge-unpaid">Udhari</span>';
-                
-                listDiv.innerHTML += `
-                <div class="client-card">
-                    <div><h6 class="m-0 fw-bold text-dark">${c.name} ${payBadge}</h6><small class="text-muted">${c.product} (₹${c.amount})</small></div>
-                    <div class="d-flex"><a href="tel:${c.phone}" class="action-btn btn-call"><i class="fas fa-phone"></i></a><button onclick="editClient('${c.docId}')" class="action-btn btn-edit"><i class="fas fa-pencil-alt"></i></button><button onclick="deleteClient('${c.docId}')" class="action-btn btn-del"><i class="fas fa-trash"></i></button></div>
-                </div>`;
-
-                if(c.status === 'Pending') {
-                    let nextDate = new Date(c.nextFollowUp);
-                    let diff = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
-                    let statusClass = diff < 0 ? 'late' : (diff === 0 ? 'today' : 'future');
-                    let dayText = diff < 0 ? `${Math.abs(diff)} Days Late` : (diff === 0 ? 'Today' : `${diff} Days Left`);
-                    let color = diff < 0 ? 'text-danger' : 'text-success';
-
-                    taskDiv.innerHTML += `
-                    <div class="task-card ${statusClass}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div><h6 class="m-0 fw-bold" style="color:var(--chakra)">${c.name}</h6><small class="text-muted">${c.product} ${payBadge}</small></div>
-                            <div class="text-end"><small class="${color} fw-bold">${dayText}</small><br><small>${c.nextFollowUp}</small></div>
-                        </div>
-                        <button class="btn-whatsapp" onclick="sendReminder('${c.phone}', '${c.name}', '${c.product}')"><i class="fab fa-whatsapp"></i> Send Reminder</button>
-                        <div class="text-end mt-2"><button onclick="openUpdateModal('${c.docId}')" class="btn-update">Update Status</button></div>
-                    </div>`;
-                }
-            });
-            if(taskDiv.innerHTML === '') taskDiv.innerHTML = "<div class='text-center text-muted mt-5'>No Pending Tasks!</div>";
-        }
-
+        // ACTIONS
         function saveClient() {
             let name = document.getElementById('cName').value; if(!name) return alert("Name needed");
-            let id = document.getElementById('editDocId').value;
-            let amt = currentCart.reduce((s,i)=>s+i.price,0); 
-            let pStr = currentCart.map(i=>i.name).join(", ") || "No Product";
-            let paySt = document.getElementById('payStatus').value;
-            let dob = document.getElementById('cDob').value; // Save DOB
-            const timing = document.getElementById('followUpTiming').value; 
-            let followDate = new Date();
-            if(timing === '24h') followDate.setDate(followDate.getDate() + 1);
-            else if(timing === '3d') followDate.setDate(followDate.getDate() + 3);
-            else if(timing === '7d') followDate.setDate(followDate.getDate() + 7);
-            else if(timing === '15d') followDate.setDate(followDate.getDate() + 15);
-
-            let data = { name: name, phone: document.getElementById('cPhone').value, proposer: document.getElementById('cProposer').value, product: pStr, amount: amt, paymentStatus: paySt, dob: dob, nextFollowUp: followDate.toISOString().split('T')[0], status: 'Pending', photo: processedPhotoData, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
-
-            if(id) { db.collection("clients").doc(id).update(data).then(() => { alert("Updated!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); }); } 
-            else { db.collection("clients").add(data).then(() => { alert("Saved Online!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); }); }
+            let id = document.getElementById('editDocId').value; let amt = currentCart.reduce((s,i)=>s+i.price,0); let pStr = currentCart.map(i=>i.name).join(", ")||"No Product";
+            let followDate = new Date(); let t=document.getElementById('followUpTiming').value;
+            if(t==='24h') followDate.setDate(followDate.getDate()+1); else if(t==='3d') followDate.setDate(followDate.getDate()+3); else if(t==='7d') followDate.setDate(followDate.getDate()+7); else followDate.setDate(followDate.getDate()+15);
+            
+            let data = { name: name, phone: document.getElementById('cPhone').value, proposer: document.getElementById('cProposer').value, product: pStr, amount: amt, paymentStatus: document.getElementById('payStatus').value, dob: document.getElementById('cDob').value, nextFollowUp: followDate.toISOString().split('T')[0], status: 'Pending', photo: processedPhotoData, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+            
+            if(id) { db.collection("clients").doc(id).update(data).then(() => { alert("Updated!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[1]); }); } 
+            else { db.collection("clients").add(data).then(() => { alert("Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[1]); }); }
         }
 
-        function handlePhoto(i) { navigator.geolocation.getCurrentPosition(p=>processImage(i.files[0], `Loc: ${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)}`), e=>processImage(i.files[0], "No GPS Found")); }
-        function processImage(f, l) { const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.onload=()=>{ const c=document.getElementById('photoCanvas'); const x=c.getContext('2d'); c.width=400; c.height=(i.height/i.width)*400; x.drawImage(i,0,0,c.width,c.height); x.fillStyle="rgba(0,0,0,0.6)"; x.fillRect(0,c.height-35,c.width,35); x.fillStyle="white"; x.font="bold 12px Arial"; let dateStr = new Date().toLocaleString('en-IN'); x.fillText(dateStr, 10, c.height-20); x.font="10px Arial"; x.fillText(l, 10, c.height-6); processedPhotoData=c.toDataURL('image/jpeg', 0.6); document.getElementById('photoPreview').src=processedPhotoData; document.getElementById('photoStatus').innerText="GPS Ready"; }; i.src=e.target.result; }; r.readAsDataURL(f); }
-        function generateReport(type) { let html = `<div style="text-align:center;margin-bottom:20px;"><h2>RCM Online Report</h2><p>${new Date().toLocaleString()}</p></div>`; if(type === 'followup') { html += `<table class="report-table"><thead><tr><th>Photo</th><th>Client</th><th>Details</th><th>Status</th></tr></thead><tbody>`; globalClients.sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp)); globalClients.forEach(c => { let imgHtml = c.photo ? `<img src="${c.photo}" class="report-img"><a href="${c.photo}" download="RCM_Photo.jpg" style="font-size:0.8em;text-decoration:none;">⬇️ Download</a>` : '-'; html += `<tr><td>${imgHtml}</td><td><b>${c.name}</b><br>${c.phone}</td><td>Product: ${c.product}<br>Date: ${c.nextFollowUp}</td><td>${c.status}</td></tr>`; }); html += `</tbody></table>`; } else { let total = globalClients.reduce((s,c)=>s+parseInt(c.amount||0),0); html += `<h3>Total Sales: ₹${total}</h3><h3>Total Clients: ${globalClients.length}</h3>`; } document.getElementById('reportContent').innerHTML = html; document.getElementById('reportOverlay').style.display = 'block'; }
-        
-        function deleteClient(docId) { if(confirm("Delete permanently?")) { db.collection("clients").doc(docId).delete(); } }
-        function editClient(docId) { let c = globalClients.find(x => x.docId == docId); if(c) { document.getElementById('editDocId').value = c.docId; document.getElementById('cName').value = c.name; document.getElementById('cPhone').value = c.phone; document.getElementById('cProposer').value = c.proposer || ''; document.getElementById('payStatus').value = c.paymentStatus || 'Unpaid'; if(c.dob) document.getElementById('cDob').value = c.dob; if(c.photo) document.getElementById('photoPreview').src = c.photo; switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
-        function openUpdateModal(docId) { document.getElementById('editClientId').value = docId; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
-        function saveUpdate(type) { let docId = document.getElementById('editClientId').value; let updateData = {}; if(document.getElementById('markPaidCheck').checked) updateData.paymentStatus = 'Paid'; if(type === 'reschedule') { let nextDate = document.getElementById('nextDateManual').value; if(!nextDate) return alert("Select Date"); updateData.nextFollowUp = nextDate; updateData.status = 'Pending'; } else { updateData.status = 'Done'; } db.collection("clients").doc(docId).update(updateData).then(() => { bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); }
-        function resetForm() { document.getElementById('crmForm').reset(); document.getElementById('editDocId').value = ''; currentCart=[]; document.getElementById('cartList').innerHTML='No items'; document.getElementById('cartTotal').innerText='0'; processedPhotoData=null; document.getElementById('photoPreview').src='https://cdn-icons-png.flaticon.com/512/3687/3687412.png'; }
-        function loadProducts() { const dd=document.getElementById('cProd'); fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(c=>{dd.innerHTML='<option value="">Select</option>'; c.split('\n').forEach(r=>{let x=r.replace(/"/g,'').split(','); if(x[0]&&x[0].length>2){let o=document.createElement('option');o.value=x[0];o.dataset.price=x[1]||0;o.text=x[0];dd.add(o);}});}).catch(()=>{}); }
-        function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); let t=0; document.getElementById('cartList').innerHTML=currentCart.map(i=>{t+=i.price; return `<div class="cart-item"><span>${i.name}</span><span>₹${i.price}</span></div>`}).join(""); document.getElementById('cartTotal').innerText=t; }
-        function switchTab(v, el) { document.querySelectorAll('.section-view').forEach(d => d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') { updateChart(0,0); } } // Re-render chart on tab switch
-        function sendReminder(p, n, pr) { window.open(`https://wa.me/91${p}?text=नमस्कार ${n}, आपल्या *${pr}* बद्दल फॉलो-अप कॉल करायचा होता.`, '_blank'); }
+        // UTILS
+        function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; document.getElementById('cartList').innerHTML='No items'; document.getElementById('cartTotal').innerText='0'; processedPhotoData=null; document.getElementById('photoPreview').src='https://cdn-icons-png.flaticon.com/512/3687/3687412.png'; }
+        function addToCart(){ const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); let t=0; document.getElementById('cartList').innerHTML=currentCart.map(i=>{t+=i.price; return `<div class="d-flex justify-content-between border-bottom p-1"><span>${i.name}</span><span>₹${i.price}</span></div>`}).join(""); document.getElementById('cartTotal').innerText=t; }
+        function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateChart(0,0); }
+        function handlePhoto(i) { navigator.geolocation.getCurrentPosition(p=>processImage(i.files[0], `Loc: ${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)}`), e=>processImage(i.files[0], "No GPS")); }
+        function processImage(f, l) { const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.onload=()=>{ const c=document.createElement('canvas'); const x=c.getContext('2d'); c.width=400; c.height=(i.height/i.width)*400; x.drawImage(i,0,0,c.width,c.height); x.fillStyle="rgba(0,0,0,0.6)"; x.fillRect(0,c.height-35,c.width,35); x.fillStyle="white"; x.font="12px Arial"; x.fillText(new Date().toLocaleString(), 10, c.height-20); x.fillText(l, 10, c.height-6); processedPhotoData=c.toDataURL('image/jpeg', 0.6); document.getElementById('photoPreview').src=processedPhotoData; document.getElementById('photoStatus').innerText="GPS Ready"; }; i.src=e.target.result; }; r.readAsDataURL(f); }
+        function openUpdateModal(id){ document.getElementById('editClientId').value=id; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
+        function saveUpdate(type) { let id = document.getElementById('editClientId').value; let u = {}; if(document.getElementById('markPaidCheck').checked) u.paymentStatus='Paid'; if(type==='reschedule'){ let d=document.getElementById('nextDateManual').value; if(!d)return alert("Date?"); u.nextFollowUp=d; u.status='Pending'; } else { u.status='Done'; } db.collection("clients").doc(id).update(u).then(()=>{ bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); }
+        function deleteClient(id){ if(confirm("Delete?")) db.collection("clients").doc(id).delete(); }
+        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('cProposer').value=c.proposer||''; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; if(c.photo)document.getElementById('photoPreview').src=c.photo; switchTab('view-add', document.querySelectorAll('.nav-item')[2]); } }
+        function sendReminder(p,n,pr){ window.open(`https://wa.me/91${p}?text=नमस्कार ${n}, आपल्या *${pr}* बद्दल फॉलो-अप कॉल करायचा होता.`, '_blank'); }
+        function generateReport(type){ let h=`<div class='text-center'><h3>RCM Report</h3><small>${new Date().toLocaleString()}</small></div><table class='report-table w-100' border='1'><thead><tr><th>Client</th><th>Details</th></tr></thead><tbody>`; globalClients.forEach(c=>{ h+=`<tr><td>${c.photo?`<img src='${c.photo}' class='report-img'>`:''}<br><b>${c.name}</b></td><td>Prod: ${c.product}<br>Amt: ₹${c.amount}<br>Date: ${c.nextFollowUp}<br>Status: ${c.status}</td></tr>`; }); h+=`</tbody></table>`; document.getElementById('reportContent').innerHTML=h; document.getElementById('reportOverlay').style.display='block'; }
         function exportToExcel() { let csv = "Name,Phone,Product,Amount,Payment,NextDate,Status\n" + globalClients.map(c => `${c.name},${c.phone},"${c.product}",${c.amount},${c.paymentStatus},${c.nextFollowUp},${c.status}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Online_Data.csv"; link.click(); }
         document.getElementById('searchInput').addEventListener('input', renderUI);
     </script>
