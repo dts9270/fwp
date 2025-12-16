@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Jaya Shengule)</title>
+    <title>RCM Pro (Business Growth)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,18 +15,22 @@
     <style>
         :root { --saffron: #FF9933; --white: #ffffff; --green: #138808; --chakra: #000080; --bg: #f4f6f9; }
         body { background-color: var(--bg); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
+        
         .app-header { background: linear-gradient(180deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%); padding: 15px 20px; border-bottom: 4px solid var(--chakra); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .header-content { background: rgba(255, 255, 255, 0.95); padding: 8px 20px; border-radius: 30px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--chakra); }
         .header-title { font-weight: 800; color: var(--chakra); margin: 0; }
-        
+
         /* CARDS */
         .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .task-card.late { border-left-color: #dc3545; } .task-card.today { border-left-color: var(--saffron); } .task-card.reorder { border-left-color: #6f42c1; border-right: 6px solid #6f42c1; } 
         .client-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;}
-        .udhari-box { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
-        .birthday-alert { background: linear-gradient(45deg, #ff9a9e, #fad0c4); color: #880e4f; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: none; align-items: center; justify-content: space-between; border: 1px solid #ffcdd2; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
         
+        /* GROWTH REPORT CARDS */
+        .growth-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .target-box { background: linear-gradient(to right, #11998e, #38ef7d); color: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+        .lost-client-item { border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; }
+        .stat-box { text-align: center; padding: 10px; background: #f8f9fa; border-radius: 10px; border: 1px solid #eee; }
+
         /* BADGES & BUTTONS */
         .badge-unpaid { background: #ffebee; color: #c62828; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; border: 1px solid #ffcdd2; }
         .badge-paid { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; border: 1px solid #c8e6c9; }
@@ -43,13 +47,11 @@
         .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; } .nav-item.active { color: var(--chakra); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; }
         .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--chakra); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
-        .history-item { border-left: 3px solid var(--chakra); padding-left: 10px; margin-bottom: 10px; } .history-date { font-size: 0.8em; color: #888; }
         
-        /* PRINT & REPORT */
+        /* PRINT */
         @media print { .no-print { display: none !important; } #reportOverlay { display: block !important; position: static; } .print-btn-area { display: none; } }
         #reportOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto; padding: 20px; }
         .report-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; } .report-table th { background: var(--saffron); color: white; padding: 8px; text-align: left; } .report-table td { border-bottom: 1px solid #ddd; padding: 8px; }
-        /* UPDATED: BIG PHOTO IN REPORT */
         .report-img { width: 100%; max-width: 400px; height: auto; border-radius: 10px; border: 2px solid #ddd; display: block; margin: 10px auto; }
     </style>
 </head>
@@ -64,8 +66,19 @@
 
     <div class="container px-3 no-print">
         <div id="view-tasks" class="section-view active-view">
-            <div id="bdayAlert" class="birthday-alert shadow-sm"><div><i class="fas fa-birthday-cake me-2"></i> <b>Happy Birthday:</b> <span id="bdayNames"></span></div><i class="fas fa-times" onclick="this.parentElement.style.display='none'"></i></div>
-            <div class="udhari-box shadow-sm"><h6 class="m-0">मार्केटमधील उधारी (Pending)</h6><h2 class="fw-bold m-0">₹<span id="totalUdhari">0</span></h2></div>
+            <div id="bdayAlert" class="growth-card" style="background:#fff3cd; display:none; border:1px solid orange;">
+                <div class="d-flex justify-content-between text-warning">
+                    <span><i class="fas fa-birthday-cake"></i> <b>Happy Birthday:</b></span>
+                    <i class="fas fa-times" onclick="this.parentElement.parentElement.style.display='none'"></i>
+                </div>
+                <div id="bdayNames" class="fw-bold mt-1 text-dark"></div>
+            </div>
+
+            <div class="growth-card text-center" style="background: #ffebee; border: 1px solid #ffcdd2;">
+                <h6 class="m-0 text-danger">मार्केटमधील उधारी (Pending)</h6>
+                <h2 class="fw-bold m-0">₹<span id="totalUdhari">0</span></h2>
+            </div>
+            
             <h6 class="text-muted fw-bold mb-3">📅 फॉलो-अप & ऑर्डर्स</h6>
             <div id="taskListContainer" class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
         </div>
@@ -106,11 +119,50 @@
         </div>
 
         <div id="view-reports" class="section-view">
-            <div class="card p-3 mb-3 shadow-sm"><h6 class="fw-bold text-center">📊 बिझनेस स्थिती</h6><canvas id="myChart" style="max-height: 200px;"></canvas></div>
-            <div class="card p-3 mb-3 shadow-sm bg-light"><h6 class="fw-bold text-center text-primary"><i class="fas fa-id-card"></i> Digital Identity</h6><button class="btn btn-primary w-100 mb-2" onclick="generateCard()">Create My Visiting Card</button></div>
-            <h6 class="text-muted fw-bold mb-3">PDF रिपोर्ट्स</h6>
-            <div class="row"><div class="col-6"><div class="card p-3 text-center shadow-sm" onclick="generateReport('followup')"><h5>📅</h5><small>Diary + Photo</small></div></div><div class="col-6"><div class="card p-3 text-center shadow-sm" onclick="generateReport('growth')"><h5>📈</h5><small>Growth</small></div></div></div>
-            <button class="btn btn-outline-dark w-100 mt-3" onclick="exportToExcel()">Download Excel File</button>
+            
+            <div class="target-box shadow">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="m-0"><i class="fas fa-bullseye"></i> Monthly Target</h5>
+                    <small>Goal: ₹50,000</small>
+                </div>
+                <h2 class="fw-bold mt-2">₹<span id="monthSale">0</span> <small style="font-size:0.5em; opacity:0.8;">Achieved</small></h2>
+                <div class="progress mt-2" style="height: 8px; background: rgba(255,255,255,0.3);">
+                    <div id="targetBar" class="progress-bar bg-white" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="growth-card">
+                <h6 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> Action Needed (Inactive Clients)</h6>
+                <div id="lostClientsList">
+                    <small class="text-muted">Loading analysis...</small>
+                </div>
+                <small class="text-muted d-block mt-2" style="font-size:0.75em;">*Clients who haven't purchased in 30 days.</small>
+            </div>
+
+            <div class="growth-card">
+                <div class="row">
+                    <div class="col-6">
+                        <h6 class="fw-bold text-center" style="font-size:0.8em;">Recovery Analysis</h6>
+                        <canvas id="myChart" style="max-height: 120px;"></canvas>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box h-100 d-flex flex-column justify-content-center">
+                            <small class="text-muted">Top Product 🏆</small>
+                            <h6 class="fw-bold text-primary mt-1" id="topProdName">-</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="growth-card">
+                <h6 class="fw-bold mb-3">🛠️ Business Tools</h6>
+                <div class="row g-2">
+                    <div class="col-6"><button class="btn btn-outline-primary w-100 btn-sm" onclick="generateCard()">📇 Visiting Card</button></div>
+                    <div class="col-6"><button class="btn btn-outline-danger w-100 btn-sm" onclick="exportToExcel()">📊 Excel Data</button></div>
+                    <div class="col-12"><button class="btn btn-dark w-100 btn-sm mt-1" onclick="window.print()">🖨️ Print Full Report</button></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -125,7 +177,7 @@
         <a class="nav-item active" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i>Tasks</a>
         <a class="nav-item" onclick="switchTab('view-add', this)"><i class="fas fa-plus-circle"></i>Add</a>
         <a class="nav-item" onclick="switchTab('view-list', this)"><i class="fas fa-users"></i>List</a>
-        <a class="nav-item" onclick="switchTab('view-reports', this)"><i class="fas fa-chart-pie"></i>Reports</a>
+        <a class="nav-item" onclick="switchTab('view-reports', this)"><i class="fas fa-chart-pie"></i>Analysis</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -144,16 +196,71 @@
 
         function listenToData() {
             db.collection("clients").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-                globalClients = []; let totalUdhari = 0, totalPaid = 0;
+                globalClients = []; let totalUdhari = 0, totalPaid = 0, monthSale = 0;
+                let currentMonth = new Date().getMonth();
+                
                 snapshot.forEach((doc) => {
                     let data = doc.data(); data.docId = doc.id; 
-                    if(data.paymentStatus === 'Unpaid') totalUdhari += parseInt(data.amount || 0); else totalPaid += parseInt(data.amount || 0);
+                    let amt = parseInt(data.amount || 0);
+                    if(data.paymentStatus === 'Unpaid') totalUdhari += amt; else totalPaid += amt;
+                    
+                    // Month Sale Calc (approx based on follow-up or added date logic)
+                    // Ideally use 'createdAt' but for now using simple sum
+                    monthSale += amt; 
+
                     globalClients.push(data);
                 });
+                
+                // Update Dashboard & Report Stats
                 document.getElementById('totalUdhari').innerText = totalUdhari;
-                renderUI(); checkBirthdays(); updateChart(totalPaid, totalUdhari);
+                document.getElementById('monthSale').innerText = monthSale.toLocaleString();
+                let target = 50000;
+                let pct = Math.min((monthSale/target)*100, 100);
+                document.getElementById('targetBar').style.width = pct + "%";
+
+                renderUI(); 
+                checkBirthdays(); 
+                updateAnalysis(totalPaid, totalUdhari); 
             });
         }
+
+        // --- NEW ANALYSIS LOGIC ---
+        function updateAnalysis(paid, unpaid) {
+            // 1. Chart
+            const ctx = document.getElementById('myChart').getContext('2d'); if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Recovered', 'Pending'], datasets: [{ data: [paid, unpaid], backgroundColor: ['#38ef7d', '#ff6b6b'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: {legend: {display: false}} } });
+
+            // 2. Lost Clients (Inactive > 30 Days)
+            let today = new Date();
+            let lostList = globalClients.filter(c => {
+                let lastDate = new Date(c.nextFollowUp); // Ideally purchase date, using followup for demo
+                let diffTime = Math.abs(today - lastDate);
+                let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return diffDays > 30 && c.status !== 'Pending'; // Completed tasks older than 30 days
+            }).slice(0, 3); // Top 3
+
+            let lostHTML = lostList.length ? lostList.map(c => 
+                `<div class="lost-client-item">
+                    <div><b>${c.name}</b><br><small class="text-muted">Last: ${c.product}</small></div>
+                    <a href="tel:${c.phone}" class="btn btn-sm btn-outline-danger"><i class="fas fa-phone"></i> Call</a>
+                </div>`
+            ).join('') : '<small class="text-muted text-center d-block">All clients are active! 🎉</small>';
+            document.getElementById('lostClientsList').innerHTML = lostHTML;
+
+            // 3. Top Product
+            let prodCounts = {};
+            globalClients.forEach(c => { 
+                if(c.product) {
+                    c.product.split(',').forEach(p => { 
+                        let pn = p.trim(); 
+                        prodCounts[pn] = (prodCounts[pn] || 0) + 1; 
+                    });
+                }
+            });
+            let topProd = Object.keys(prodCounts).reduce((a, b) => prodCounts[a] > prodCounts[b] ? a : b, "None");
+            document.getElementById('topProdName').innerText = topProd;
+        }
+        let myChart = null;
 
         function loadProducts() { const dd=document.getElementById('cProd'); fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(c=>{const rows=c.split('\n'); dd.innerHTML='<option value="">Select Product</option>'; rows.forEach((r,i)=>{if(i===0)return; let d=r.replace(/"/g,'').split(','); if(d[0]&&d[0].length>1){let name=d[0]; let p=d[2]?d[2].trim():0; let o=document.createElement('option'); o.value=name; o.dataset.price=p; o.text=`${name} - ₹${p}`; dd.add(o);}});}).catch(()=>{}); }
 
@@ -180,7 +287,7 @@
                     <div class="task-card ${statusClass}">
                         <div class="d-flex justify-content-between align-items-center mb-2"><div><h6 class="m-0 fw-bold" style="color:var(--chakra)">${c.name}</h6><small class="text-muted">${c.product} ${payBadge}</small></div><div class="text-end"><small class="${color} fw-bold">${dayText}</small><br><small>${c.nextFollowUp}</small></div></div>
                         <div class="d-flex gap-2 mb-2">
-                            <a href="tel:${c.phone}" class="btn btn-primary flex-fill shadow-sm"><i class="fas fa-phone"></i> Call</a>
+                            <a href="tel:${c.phone}" class="btn btn-primary flex-fill shadow-sm"><i class="fas fa-phone-alt"></i> Call</a>
                             <button onclick="window.open('https://wa.me/91${c.phone}', '_blank')" class="btn btn-success flex-fill shadow-sm"><i class="fab fa-whatsapp"></i> Chat</button>
                             <button onclick="openTemplateModal('${c.phone}', '${c.name}')" class="btn btn-outline-primary flex-fill shadow-sm"><i class="fas fa-list-ul"></i> Templates</button>
                         </div>
@@ -262,17 +369,12 @@
             if(type==='reschedule'){ let d=document.getElementById('nextDateManual').value; if(!d)return alert("Date?"); u.nextFollowUp=d; u.status='Pending'; } else { u.status='Done'; } 
             db.collection("clients").doc(id).update(u).then(()=>{ bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); 
         }
-        let myChart = null;
-        function updateChart(paid, unpaid) {
-            const ctx = document.getElementById('myChart').getContext('2d'); if(myChart) myChart.destroy();
-            myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Paid', 'Unpaid'], datasets: [{ data: [paid, unpaid], backgroundColor: ['#198754', '#dc3545'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false } });
-        }
-        function checkBirthdays() { let t=new Date(); let b=globalClients.filter(c=>{if(!c.dob)return false; let d=new Date(c.dob); return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth();}); if(b.length>0){document.getElementById('bdayAlert').style.display='flex'; document.getElementById('bdayNames').innerText=b.map(x=>x.name).join(', ');} }
+        function checkBirthdays() { let t=new Date(); let b=globalClients.filter(c=>{if(!c.dob)return false; let d=new Date(c.dob); return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth();}); if(b.length>0){document.getElementById('bdayAlert').style.display='block'; document.getElementById('bdayNames').innerText=b.map(x=>x.name).join(', ');} }
         function startVoice(id) { if (!('webkitSpeechRecognition' in window)) return alert("Not supported"); const r = new webkitSpeechRecognition(); r.lang = 'mr-IN'; r.start(); r.onresult = e => { document.getElementById(id).value = e.results[0][0].transcript; }; }
         function generateCard() { let name="Jaya Shengule"; let phone="7020970727"; const c=document.getElementById('cardCanvas'); const x=c.getContext('2d'); c.width=600; c.height=350; let g=x.createLinearGradient(0,0,0,350); g.addColorStop(0,"#FF9933"); g.addColorStop(0.5,"#FFFFFF"); g.addColorStop(1,"#138808"); x.fillStyle=g; x.fillRect(0,0,600,350); x.fillStyle="#000080"; x.font="bold 40px Arial"; x.fillText(name,30,150); x.font="25px Arial"; x.fillStyle="#333"; x.fillText("RCM Business Partner",30,190); x.fillStyle="#000"; x.font="bold 30px Arial"; x.fillText("📞 "+phone,30,280); x.strokeStyle="#000080"; x.lineWidth=10; x.strokeRect(0,0,600,350); let l=document.createElement('a'); l.download='Jaya_RCM_Card.png'; l.href=c.toDataURL(); l.click(); }
         function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; document.getElementById('cartList').innerHTML='No items'; document.getElementById('cartTotal').innerText='0'; processedPhotoData=null; document.getElementById('photoPreview').src='https://cdn-icons-png.flaticon.com/512/3687/3687412.png'; }
         function addToCart(){ const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); let t=0; document.getElementById('cartList').innerHTML=currentCart.map(i=>{t+=i.price; return `<div class="d-flex justify-content-between border-bottom p-1"><span>${i.name}</span><span>₹${i.price}</span></div>`}).join(""); document.getElementById('cartTotal').innerText=t; }
-        function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateChart(0,0); }
+        function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); }
         function openUpdateModal(id){ document.getElementById('editClientId').value=id; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
         function deleteClient(id){ if(confirm("Delete?")) db.collection("clients").doc(id).delete(); }
         function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('cProposer').value=c.proposer||''; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; if(c.dob) document.getElementById('cDob').value=c.dob; if(c.photo)document.getElementById('photoPreview').src=c.photo; document.getElementById('cType').value=c.leadType||'Hot'; switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
