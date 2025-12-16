@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Map Camera)</title>
+    <title>RCM Pro (Jaya Shengule)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -18,12 +18,16 @@
         .app-header { background: linear-gradient(180deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%); padding: 15px 20px; border-bottom: 4px solid var(--chakra); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .header-content { background: rgba(255, 255, 255, 0.95); padding: 8px 20px; border-radius: 30px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--chakra); }
         .header-title { font-weight: 800; color: var(--chakra); margin: 0; }
+        
+        /* CARDS */
         .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .task-card.late { border-left-color: #dc3545; } .task-card.today { border-left-color: var(--saffron); } .task-card.reorder { border-left-color: #6f42c1; border-right: 6px solid #6f42c1; } 
         .client-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;}
         .udhari-box { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
         .birthday-alert { background: linear-gradient(45deg, #ff9a9e, #fad0c4); color: #880e4f; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: none; align-items: center; justify-content: space-between; border: 1px solid #ffcdd2; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        
+        /* BADGES & BUTTONS */
         .badge-unpaid { background: #ffebee; color: #c62828; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; border: 1px solid #ffcdd2; }
         .badge-paid { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; border: 1px solid #c8e6c9; }
         .badge-hot { background: #ffebee; color: #dc3545; border: 1px solid red; padding: 2px 5px; font-size: 0.7em; border-radius: 5px; }
@@ -32,16 +36,21 @@
         .btn-update { border: 1px solid var(--chakra); color: var(--chakra); background: transparent; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; font-weight: bold; width: 100%; }
         .action-btn { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; }
         .btn-edit { background: #e3f2fd; color: #0d47a1; } .btn-del { background: #ffebee; color: #c62828; } .btn-hist { background: #e0f7fa; color: #006064; }
+        
+        /* UI ELEMENTS */
         .input-group-text { background: white; border-left: 0; cursor: pointer; color: var(--chakra); } .form-control { border-right: 0; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid var(--saffron); z-index: 1000; }
         .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; } .nav-item.active { color: var(--chakra); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; }
         .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--chakra); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
         .history-item { border-left: 3px solid var(--chakra); padding-left: 10px; margin-bottom: 10px; } .history-date { font-size: 0.8em; color: #888; }
+        
+        /* PRINT & REPORT */
         @media print { .no-print { display: none !important; } #reportOverlay { display: block !important; position: static; } .print-btn-area { display: none; } }
         #reportOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto; padding: 20px; }
         .report-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; } .report-table th { background: var(--saffron); color: white; padding: 8px; text-align: left; } .report-table td { border-bottom: 1px solid #ddd; padding: 8px; }
-        .report-img { width: 100px; height: auto; border-radius: 5px; border: 1px solid #ddd; display: block; margin-bottom: 5px; }
+        /* UPDATED: BIG PHOTO IN REPORT */
+        .report-img { width: 100%; max-width: 400px; height: auto; border-radius: 10px; border: 2px solid #ddd; display: block; margin: 10px auto; }
     </style>
 </head>
 <body>
@@ -67,12 +76,12 @@
                 <form id="crmForm" class="row g-3">
                     <input type="hidden" id="editDocId"> 
                     
-                    <div class="col-12 text-center bg-light p-2 rounded border">
-                        <label class="small text-muted fw-bold"><i class="fas fa-map-marker-alt text-danger"></i> GPS Map Photo</label>
+                    <div class="col-12 text-center bg-light p-3 rounded border">
+                        <label class="small text-muted fw-bold d-block mb-2"><i class="fas fa-map-marker-alt text-danger"></i> GPS Map Photo</label>
                         <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
-                        <div onclick="document.getElementById('meetingPhoto').click()" style="cursor:pointer;">
-                            <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" style="width:100%;height:auto;object-fit:contain;border-radius:10px;">
-                            <div id="photoStatus" class="small text-muted mt-1">Tap to Click</div>
+                        <div onclick="document.getElementById('meetingPhoto').click()" style="cursor:pointer; display: inline-block;">
+                            <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" style="width:120px; height:120px; object-fit:cover; border-radius:10px; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            <div id="photoStatus" class="small text-muted mt-2 fw-bold">Tap to Click</div>
                         </div>
                     </div>
                     
@@ -171,7 +180,7 @@
                     <div class="task-card ${statusClass}">
                         <div class="d-flex justify-content-between align-items-center mb-2"><div><h6 class="m-0 fw-bold" style="color:var(--chakra)">${c.name}</h6><small class="text-muted">${c.product} ${payBadge}</small></div><div class="text-end"><small class="${color} fw-bold">${dayText}</small><br><small>${c.nextFollowUp}</small></div></div>
                         <div class="d-flex gap-2 mb-2">
-                            <a href="tel:${c.phone}" class="btn btn-primary flex-fill shadow-sm"><i class="fas fa-phone-alt"></i> Call</a>
+                            <a href="tel:${c.phone}" class="btn btn-primary flex-fill shadow-sm"><i class="fas fa-phone"></i> Call</a>
                             <button onclick="window.open('https://wa.me/91${c.phone}', '_blank')" class="btn btn-success flex-fill shadow-sm"><i class="fab fa-whatsapp"></i> Chat</button>
                             <button onclick="openTemplateModal('${c.phone}', '${c.name}')" class="btn btn-outline-primary flex-fill shadow-sm"><i class="fas fa-list-ul"></i> Templates</button>
                         </div>
@@ -207,49 +216,15 @@
                     c.width = 500; c.height = (i.height/i.width)*500; // Better Res
                     x.drawImage(i,0,0,c.width,c.height);
                     
-                    // -- DRAW THE "FAKE" MAP OVERLAY (Similar to GPS Map Camera) --
-                    
-                    let boxH = 120; // Height of black box
-                    let boxY = c.height - boxH - 20; // Position from bottom
-                    
-                    // 1. Black Translucent Box
-                    x.fillStyle = "rgba(0,0,0,0.7)";
-                    x.roundRect(10, boxY, c.width - 20, boxH, 15);
-                    x.fill();
-
-                    // 2. The Map Image (Placeholder - Satellite Style)
-                    // This is a base64 tiny satellite map icon to mimic the look
-                    let mapImg = new Image();
-                    mapImg.src = "https://cdn-icons-png.flaticon.com/512/854/854878.png"; // Map Icon
-                    // Better: Draw a dark blue rect to simulate map
-                    x.fillStyle = "#2c3e50";
-                    x.fillRect(25, boxY + 15, 90, 90);
-                    x.drawImage(mapImg, 35, boxY + 25, 70, 70); // Draw icon inside
-
-                    // 3. Text Details
-                    x.fillStyle = "white";
-                    x.textAlign = "left";
-                    
-                    // Address
-                    x.font = "bold 18px Arial";
-                    x.fillText(locName, 130, boxY + 35);
-                    
-                    // Lat/Lon
-                    x.font = "14px Arial";
-                    x.fillStyle = "#ccc";
-                    x.fillText(`Lat: ${lat.toFixed(5)}°`, 130, boxY + 60);
-                    x.fillText(`Long: ${lon.toFixed(5)}°`, 130, boxY + 80);
-                    
-                    // Date & Google Logo Mimic
-                    x.fillStyle = "#fff";
-                    x.fillText(new Date().toLocaleString(), 130, boxY + 105);
-                    
-                    // Google Logo Text (Bottom Right)
-                    x.font = "bold 16px Arial";
-                    x.fillStyle = "white";
-                    x.textAlign = "right";
-                    x.fillText("Google", c.width - 30, boxY + 105);
-
+                    let boxH = 120; let boxY = c.height - boxH - 20;
+                    x.fillStyle = "rgba(0,0,0,0.7)"; x.roundRect(10, boxY, c.width - 20, boxH, 15); x.fill();
+                    let mapImg = new Image(); mapImg.src = "https://cdn-icons-png.flaticon.com/512/854/854878.png"; 
+                    x.fillStyle = "#2c3e50"; x.fillRect(25, boxY + 15, 90, 90); x.drawImage(mapImg, 35, boxY + 25, 70, 70);
+                    x.fillStyle = "white"; x.textAlign = "left";
+                    x.font = "bold 18px Arial"; x.fillText(locName, 130, boxY + 35);
+                    x.font = "14px Arial"; x.fillStyle = "#ccc"; x.fillText(`Lat: ${lat.toFixed(5)}°`, 130, boxY + 60); x.fillText(`Long: ${lon.toFixed(5)}°`, 130, boxY + 80);
+                    x.fillStyle = "#fff"; x.fillText(new Date().toLocaleString(), 130, boxY + 105);
+                    x.font = "bold 16px Arial"; x.fillStyle = "white"; x.textAlign = "right"; x.fillText("Google", c.width - 30, boxY + 105);
                     processedPhotoData = c.toDataURL('image/jpeg', 0.8);
                     document.getElementById('photoPreview').src = processedPhotoData;
                     document.getElementById('photoStatus').innerText = "Map Added ✅";
@@ -258,9 +233,7 @@
         }
 
         // --- HELPERS ---
-        // (Rounding function polyfill for older browsers)
         CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) { if (w < 2 * r) r = w / 2; if (h < 2 * r) r = h / 2; this.beginPath(); this.moveTo(x + r, y); this.arcTo(x + w, y, x + w, y + h, r); this.arcTo(x + w, y + h, x, y + h, r); this.arcTo(x, y + h, x, y, r); this.arcTo(x, y, x + w, y, r); this.closePath(); return this; }
-
         function openTemplateModal(phone, name) {
             let container = document.getElementById('templateButtons');
             let msgs = [{t: "Offer", m: `नमस्कार ${name}, RCM मध्ये नवीन ऑफर्स आल्या आहेत. एकदा नक्की बघा. - Jaya Shengule`}, {t: "Payment", m: `नमस्कार ${name}, आपले पेमेंट पेंडिंग आहे. कृपया लवकर करा. - Jaya Shengule`}, {t: "Meeting", m: `नमस्कार ${name}, आज रात्री 8 वाजता महत्वाची Zoom मिटिंग आहे. जॉईन करा. - Jaya Shengule`}];
