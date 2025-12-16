@@ -23,7 +23,7 @@
         /* CARDS */
         .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .task-card.late { border-left-color: #dc3545; } .task-card.today { border-left-color: var(--saffron); } 
-        .task-card.reorder { border-left-color: #6f42c1; border-right: 6px solid #6f42c1; } /* Re-order style */
+        .task-card.reorder { border-left-color: #6f42c1; border-right: 6px solid #6f42c1; } 
 
         .client-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;}
         
@@ -39,8 +39,7 @@
         .badge-cold { background: #e2e3e5; color: #383d41; border: 1px solid gray; padding: 2px 5px; font-size: 0.7em; border-radius: 5px; }
 
         /* BUTTONS */
-        .btn-whatsapp { background-color: #25D366; color: white; border: none; padding: 8px 12px; border-radius: 20px; font-size: 0.9em; width: 100%; margin-top: 10px; font-weight: bold; }
-        .btn-update { border: 1px solid var(--chakra); color: var(--chakra); background: transparent; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; font-weight: bold; }
+        .btn-update { border: 1px solid var(--chakra); color: var(--chakra); background: transparent; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; font-weight: bold; width: 100%; }
         .action-btn { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; }
         .btn-edit { background: #e3f2fd; color: #0d47a1; } .btn-del { background: #ffebee; color: #c62828; } .btn-hist { background: #e0f7fa; color: #006064; }
         
@@ -215,7 +214,7 @@
 
         function loadProducts() { const dd=document.getElementById('cProd'); fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(c=>{const rows=c.split('\n'); dd.innerHTML='<option value="">Select Product</option>'; rows.forEach((r,i)=>{if(i===0)return; let d=r.replace(/"/g,'').split(','); if(d[0]&&d[0].length>1){let name=d[0]; let p=d[2]?d[2].trim():0; let o=document.createElement('option'); o.value=name; o.dataset.price=p; o.text=`${name} - ₹${p}`; dd.add(o);}});}).catch(()=>{}); }
 
-        // --- RENDER UI (Updated with Tags & Re-order) ---
+        // --- RENDER UI (Updated with Actions) ---
         function renderUI() {
             const taskDiv = document.getElementById('taskListContainer'); const listDiv = document.getElementById('clientListContainer'); taskDiv.innerHTML = ''; listDiv.innerHTML = '';
             const today = new Date(); today.setHours(0,0,0,0); const term = document.getElementById('searchInput').value.toLowerCase();
@@ -224,7 +223,6 @@
                 let payBadge = c.paymentStatus === 'Paid' ? '<span class="badge-paid">Paid</span>' : '<span class="badge-unpaid">Udhari</span>';
                 let leadBadge = c.leadType === 'Hot' ? '<span class="badge-hot">🔥 Hot</span>' : (c.leadType === 'Warm' ? '<span class="badge-warm">🤔 Warm</span>' : '<span class="badge-cold">❄️ Cold</span>');
                 
-                // LIST CARD
                 listDiv.innerHTML += `
                 <div class="client-card">
                     <div><h6 class="m-0 fw-bold text-dark">${c.name} ${leadBadge}</h6><small class="text-muted">${c.product} ${payBadge}</small></div>
@@ -235,36 +233,37 @@
                     </div>
                 </div>`;
 
-                // TASK CARD
-                // Check Re-order
                 let isReorder = false;
-                if(c.reOrderDate) {
-                    let rDate = new Date(c.reOrderDate);
-                    if(rDate <= today) isReorder = true;
-                }
+                if(c.reOrderDate) { let rDate = new Date(c.reOrderDate); if(rDate <= today) isReorder = true; }
 
                 if(c.status === 'Pending' || isReorder) {
                     let nextDate = new Date(c.nextFollowUp); let diff = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
                     let statusClass = diff < 0 ? 'late' : (diff === 0 ? 'today' : 'future');
                     if(isReorder) statusClass = 'reorder';
                     let dayText = isReorder ? '↻ Re-order Due' : (diff < 0 ? `${Math.abs(diff)} Days Late` : (diff === 0 ? 'Today' : `${diff} Days Left`));
-                    let color = isReorder ? 'text-purple' : (diff < 0 ? 'text-danger' : 'text-success');
+                    let color = isReorder ? 'text-primary' : (diff < 0 ? 'text-danger' : 'text-success');
 
                     taskDiv.innerHTML += `
                     <div class="task-card ${statusClass}">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
                             <div><h6 class="m-0 fw-bold" style="color:var(--chakra)">${c.name}</h6><small class="text-muted">${c.product} ${payBadge}</small></div>
                             <div class="text-end"><small class="${color} fw-bold">${dayText}</small><br><small>${c.nextFollowUp}</small></div>
                         </div>
-                        <button class="btn-whatsapp" onclick="openTemplateModal('${c.phone}', '${c.name}')"><i class="fab fa-whatsapp"></i> Send Message</button>
-                        <div class="text-end mt-2"><button onclick="openUpdateModal('${c.docId}')" class="btn-update">Update</button></div>
+                        
+                        <div class="d-flex gap-2 mb-2">
+                            <a href="tel:${c.phone}" class="btn btn-success flex-fill shadow-sm"><i class="fas fa-phone-alt"></i> Call</a>
+                            <button onclick="window.open('https://wa.me/91${c.phone}', '_blank')" class="btn btn-success flex-fill shadow-sm"><i class="fab fa-whatsapp"></i> Chat</button>
+                            <button onclick="openTemplateModal('${c.phone}', '${c.name}')" class="btn btn-outline-primary flex-fill shadow-sm"><i class="fas fa-list-ul"></i> Templates</button>
+                        </div>
+
+                        <button onclick="openUpdateModal('${c.docId}')" class="btn-update">Update Status</button>
                     </div>`;
                 }
             });
             if(taskDiv.innerHTML === '') taskDiv.innerHTML = "<div class='text-center text-muted mt-5'>No Pending Tasks!</div>";
         }
 
-        // --- NEW MODAL LOGIC ---
+        // --- HELPERS ---
         function openTemplateModal(phone, name) {
             let container = document.getElementById('templateButtons');
             let msgs = [
@@ -294,13 +293,9 @@
             let paySt = document.getElementById('payStatus').value; let dob = document.getElementById('cDob').value;
             let lead = document.getElementById('cType').value;
             
-            // Re-order Calc
             let reDays = document.getElementById('cReorder').value;
             let reDate = null;
-            if(reDays) {
-                let d = new Date(); d.setDate(d.getDate() + parseInt(reDays));
-                reDate = d.toISOString().split('T')[0];
-            }
+            if(reDays) { let d = new Date(); d.setDate(d.getDate() + parseInt(reDays)); reDate = d.toISOString().split('T')[0]; }
 
             const timing = document.getElementById('followUpTiming').value; let followDate = new Date();
             if(timing === '24h') followDate.setDate(followDate.getDate() + 1); else if(timing === '3d') followDate.setDate(followDate.getDate() + 3); else if(timing === '7d') followDate.setDate(followDate.getDate() + 7); else if(timing === '15d') followDate.setDate(followDate.getDate() + 15);
@@ -315,12 +310,7 @@
             let id = document.getElementById('editClientId').value; 
             let remark = document.getElementById('updateRemark').value;
             let u = {}; 
-            
-            // Push to history
-            db.collection("clients").doc(id).update({
-                history: firebase.firestore.FieldValue.arrayUnion({ date: new Date().toLocaleDateString(), note: remark || (type==='complete'?'Completed':'Rescheduled') })
-            });
-
+            db.collection("clients").doc(id).update({ history: firebase.firestore.FieldValue.arrayUnion({ date: new Date().toLocaleDateString(), note: remark || (type==='complete'?'Completed':'Rescheduled') }) });
             if(document.getElementById('markPaidCheck').checked) u.paymentStatus='Paid'; 
             if(type==='reschedule'){ let d=document.getElementById('nextDateManual').value; if(!d)return alert("Date?"); u.nextFollowUp=d; u.status='Pending'; } else { u.status='Done'; } 
             db.collection("clients").doc(id).update(u).then(()=>{ bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); 
