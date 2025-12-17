@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Auto Stock)</title>
+    <title>RCM Pro (Smart Stock)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -22,30 +22,22 @@
         .header-title { font-weight: 800; color: var(--chakra); margin: 0; }
         
         .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .task-card.late { border-left-color: #dc3545; } .task-card.today { border-left-color: var(--saffron); } 
-        .client-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;}
-        
-        /* INVENTORY STYLES */
         .inventory-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 10px; }
-        .inv-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
-        .inv-table th { background: var(--chakra); color: white; padding: 12px; text-align: left; }
-        .inv-table td { padding: 10px; border-bottom: 1px solid #eee; }
-        .inv-table tr:nth-child(even) { background: #f8f9fa; }
+        .inv-table { width: 100%; border-collapse: collapse; font-size: 0.9em; } .inv-table th { background: var(--chakra); color: white; padding: 12px; text-align: left; } .inv-table td { padding: 10px; border-bottom: 1px solid #eee; }
         .stock-badge { background: #e3f2fd; color: #0d47a1; padding: 3px 8px; border-radius: 5px; font-weight: bold; }
-        .stock-low { background: #ffebee; color: #c62828; }
-
         .btn-upload-pdf { background: linear-gradient(45deg, #11998e, #38ef7d); color: white; border: none; width: 100%; padding: 10px; border-radius: 10px; font-weight: bold; margin-bottom: 10px; }
-
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
+        .cart-remove { color: red; font-weight: bold; padding: 0 10px; cursor: pointer; }
+        
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid var(--saffron); z-index: 1000; }
         .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; } .nav-item.active { color: var(--chakra); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; }
         .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--chakra); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
         
+        /* OVERLAYS */
         #pdfPreviewModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; overflow-y: auto; padding: 20px; }
         .pdf-modal-content { background: white; border-radius: 15px; padding: 20px; max-width: 500px; margin: 50px auto; }
-        
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
-        .cart-remove { color: red; cursor: pointer; padding: 0 10px; font-weight: bold; }
+        #successPopup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 9999; text-align: center; width: 80%; max-width: 300px; }
     </style>
 </head>
 <body>
@@ -58,18 +50,14 @@
     </header>
 
     <div class="container px-3 no-print">
-        
-        <div id="successPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:15px; box-shadow:0 5px 20px rgba(0,0,0,0.3); z-index:9999; text-align:center; border:2px solid green;">
-            <i class="fas fa-check-circle text-success" style="font-size:3em;"></i>
-            <h5 class="mt-2 fw-bold" id="popupMsg">Data Saved!</h5>
-            <button class="btn btn-sm btn-dark mt-2" onclick="document.getElementById('successPopup').style.display='none'">OK</button>
+        <div id="successPopup">
+            <div style="font-size: 4em; color: #28a745; margin-bottom: 10px;"><i class="fas fa-check-circle"></i></div>
+            <h4 class="fw-bold text-dark" id="popupMsg">Data Saved!</h4>
+            <button class="btn btn-dark w-100 mt-2" onclick="document.getElementById('successPopup').style.display='none'">OK</button>
         </div>
 
         <div id="view-tasks" class="section-view active-view">
-            <div class="alert alert-warning p-2 text-center shadow-sm">
-                <h6 class="m-0 text-danger">मार्केटमधील उधारी (Pending)</h6>
-                <h2 class="fw-bold m-0">₹<span id="totalUdhari">0</span></h2>
-            </div>
+            <div class="alert alert-warning p-2 text-center shadow-sm"><h6 class="m-0 text-danger">मार्केटमधील उधारी (Pending)</h6><h2 class="fw-bold m-0">₹<span id="totalUdhari">0</span></h2></div>
             <h6 class="text-muted fw-bold mb-3">📅 फॉलो-अप & ऑर्डर्स</h6>
             <div id="taskListContainer" class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
         </div>
@@ -78,69 +66,61 @@
             <h6 class="fw-bold mb-3"><i class="fas fa-boxes text-primary"></i> Stock Management</h6>
             
             <button class="btn-upload-pdf shadow-sm" onclick="document.getElementById('stockPdfInput').click()">
-                <i class="fas fa-file-pdf"></i> Upload Bill (Auto Stock ADD)
+                <i class="fas fa-file-invoice"></i> Upload Bill (Add Stock)
             </button>
             <input type="file" id="stockPdfInput" class="d-none" accept="application/pdf" onchange="processPDF(this)">
 
             <div class="d-flex justify-content-between align-items-center mb-2 mt-3">
-                <small class="text-muted">Live Stock from Sheet + Bill</small>
+                <small class="text-muted">Live Stock (From Google Sheet)</small>
                 <button class="btn btn-sm btn-outline-primary" onclick="loadProducts()"><i class="fas fa-sync"></i> Refresh</button>
             </div>
-            
             <div class="inventory-card">
                 <table class="inv-table">
-                    <thead><tr><th>Product</th><th style="text-align:right;">Price</th><th style="text-align:right;">Stock</th></tr></thead>
-                    <tbody id="inventoryList"><tr><td colspan="3" class="text-center p-3">Loading...</td></tr></tbody>
+                    <thead><tr><th>Product (Sheet)</th><th style="text-align:right;">Price</th><th style="text-align:right;">Stock</th></tr></thead>
+                    <tbody id="inventoryList"><tr><td colspan="3" class="text-center p-3">Loading Sheet...</td></tr></tbody>
                 </table>
             </div>
         </div>
 
         <div id="view-add" class="section-view">
             <div class="card p-4 border-0 shadow-sm" style="border-radius:15px;">
-                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold" id="formTitle">New Entry (Sale)</h6><button class="btn btn-sm btn-warning" onclick="resetForm()">Clear</button></div>
+                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold" id="formTitle">New Entry</h6><button class="btn btn-sm btn-warning" onclick="resetForm()">Clear</button></div>
                 <form id="crmForm" class="row g-3">
                     <input type="hidden" id="editDocId"> 
-                    
                     <div class="col-12 text-center bg-light p-3 rounded border">
                         <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
-                        <div onclick="document.getElementById('meetingPhoto').click()" style="cursor:pointer; display: inline-block;">
-                            <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" style="width:100px; height:100px; object-fit:cover; border-radius:10px; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                            <div id="photoStatus" class="small text-muted mt-1 fw-bold">GPS Photo</div>
+                        <div onclick="document.getElementById('meetingPhoto').click()" style="cursor:pointer;">
+                            <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" style="width:80px;height:80px;object-fit:cover;border-radius:10px;">
+                            <div class="small text-muted fw-bold">Photo</div>
                         </div>
                     </div>
-                    
-                    <div class="col-12"><label class="small text-muted fw-bold">Name</label><div class="input-group"><input type="text" class="form-control" id="cName" placeholder="नाव सांगा.." required><span class="input-group-text" onclick="startVoice('cName')"><i class="fas fa-microphone"></i></span></div></div>
-                    <div class="col-6"><label class="small text-muted fw-bold">Type 🔥</label><select class="form-select" id="cType"><option value="Hot">🔥 Hot</option><option value="Warm">🤔 Warm</option><option value="Cold">❄️ Cold</option></select></div>
-                    <div class="col-6"><label class="small text-muted fw-bold">Re-order 🔄</label><select class="form-select" id="cReorder"><option value="">None</option><option value="30">30 Days</option><option value="60">60 Days</option></select></div>
+                    <div class="col-12"><label class="small fw-bold">Name</label><input type="text" class="form-control" id="cName" required></div>
                     <div class="col-6"><input type="tel" class="form-control" id="cPhone" placeholder="Mobile"></div>
-                    <div class="col-6"><input type="text" class="form-control" id="cProposer" placeholder="Proposer"></div>
-                    <div class="col-6"><label class="small text-muted fw-bold">Date</label><input type="date" class="form-control px-1" id="cDate" style="font-size: 0.9em;"></div>
-                    
+                    <div class="col-6"><input type="date" class="form-control" id="cDate"></div>
                     <div class="col-12">
-                        <label class="small text-muted fw-bold">Products (Stock Minus)</label>
-                        <div class="input-group mb-2"><select class="form-select" id="cProd"><option value="">Loading...</option></select><button type="button" class="btn btn-primary" onclick="addToCart()">Add +</button></div>
-                        <div id="cartList" class="bg-light p-2 rounded small text-muted border">No items</div><div class="fw-bold text-end mt-2 text-primary">Bill: ₹<span id="cartTotal">0</span></div>
+                        <label class="small fw-bold">Products</label>
+                        <div class="input-group mb-2"><select class="form-select" id="cProd"><option value="">Loading...</option></select><button type="button" class="btn btn-primary" onclick="addToCart()">Add</button></div>
+                        <div id="cartList" class="bg-light p-2 rounded small border">No items</div><div class="fw-bold text-end mt-1 text-primary">Total: ₹<span id="cartTotal">0</span></div>
                     </div>
-
-                    <div class="col-6"><label class="small text-muted fw-bold">Payment:</label><select class="form-select border-danger fw-bold" id="payStatus"><option value="Paid">✅ Paid</option><option value="Unpaid" selected>🔴 Unpaid</option></select></div>
-                    <div class="col-6"><label class="small text-muted fw-bold">Follow-up:</label><select class="form-select border-warning fw-bold text-dark" id="followUpTiming"><option value="24h">⏰ 24 Hours</option><option value="3d">📅 3 Days</option><option value="7d">🗓️ 7 Days</option><option value="15d">🗓️ 15 Days</option></select></div>
-                    <div class="col-12 mt-3"><button type="button" class="btn btn-success w-100 fw-bold shadow p-3" style="border-radius:30px;" onclick="saveClient()">💾 SAVE SALE</button></div>
+                    <div class="col-6"><label class="small fw-bold">Payment</label><select class="form-select border-danger" id="payStatus"><option value="Paid">✅ Paid</option><option value="Unpaid" selected>🔴 Unpaid</option></select></div>
+                    <div class="col-6"><label class="small fw-bold">Follow-up</label><select class="form-select border-warning" id="followUpTiming"><option value="24h">24 Hours</option><option value="3d">3 Days</option><option value="7d">7 Days</option></select></div>
+                    <div class="col-12 mt-3"><button type="button" class="btn btn-success w-100 fw-bold shadow p-3" style="border-radius:30px;" onclick="saveClient()">💾 SAVE</button></div>
                 </form>
             </div>
         </div>
 
-        <div id="view-list" class="section-view"><input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="Search..."><div id="clientListContainer" class="text-center mt-5"><div class="spinner-border text-primary"></div></div></div>
-        <div id="view-reports" class="section-view"><div class="card p-3 mb-3 shadow-sm"><h6 class="fw-bold text-center">📊 बिझनेस स्थिती</h6><canvas id="myChart" style="max-height: 200px;"></canvas></div><div class="row"><div class="col-6"><div class="card p-3 text-center shadow-sm" onclick="generateReport('followup')"><h5>📅</h5><small>Diary Report</small></div></div><div class="col-6"><div class="card p-3 text-center shadow-sm" onclick="generateReport('growth')"><h5>📈</h5><small>Growth Report</small></div></div></div><button class="btn btn-outline-dark w-100 mt-3" onclick="exportToExcel()">Download Excel</button></div>
+        <div id="view-list" class="section-view"><input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="Search..."><div id="clientListContainer" class="mt-3"></div></div>
+        <div id="view-reports" class="section-view"><div class="card p-3 mb-3 shadow-sm"><h6 class="fw-bold text-center">Stats</h6><canvas id="myChart" style="max-height: 200px;"></canvas></div><button class="btn btn-outline-dark w-100" onclick="exportToExcel()">Download Excel</button></div>
     </div>
 
     <div id="pdfPreviewModal">
         <div class="pdf-modal-content">
-            <h5 class="fw-bold text-primary"><i class="fas fa-file-invoice"></i> Bill Scanned!</h5>
-            <p class="small text-muted">Items found in bill. Confirm to ADD to stock?</p>
+            <h5 class="fw-bold text-primary"><i class="fas fa-clipboard-check"></i> Bill Processed</h5>
+            <p class="small text-muted">Found following items in your Sheet:</p>
             <ul id="scannedItemsList" class="list-group mb-3 small"></ul>
             <div class="d-flex gap-2">
                 <button class="btn btn-secondary w-50" onclick="document.getElementById('pdfPreviewModal').style.display='none'">Cancel</button>
-                <button class="btn btn-success w-50" onclick="confirmStockUpdate()">✅ Add to Stock</button>
+                <button class="btn btn-success w-50" onclick="confirmStockUpdate()">Add Stock</button>
             </div>
         </div>
     </div>
@@ -153,9 +133,8 @@
         <a class="nav-item" onclick="switchTab('view-reports', this)"><i class="fas fa-chart-pie"></i>Reports</a>
     </div>
 
-    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update Task</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><label class="small text-muted fw-bold">Next Date:</label><input type="date" id="nextDateManual" class="form-control mb-3 border-primary"><label class="small text-muted fw-bold">Remark:</label><div class="input-group mb-3"><textarea id="updateRemark" class="form-control" placeholder="काय बोलणे झाले?"></textarea><span class="input-group-text" onclick="startVoice('updateRemark')"><i class="fas fa-microphone"></i></span></div><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label fw-bold text-success" for="markPaidCheck">Payment Received?</label></div><div class="d-grid gap-2"><button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Reschedule</button><button class="btn btn-success" onclick="saveUpdate('complete')">✅ Mark Complete</button></div></div></div></div></div>
-    <div id="reportOverlay"><div class="text-center p-2 sticky-top bg-white shadow-sm mb-3"><button class="btn btn-secondary btn-sm" onclick="document.getElementById('reportOverlay').style.display='none'">Back</button> <button class="btn btn-danger btn-sm" onclick="printReport()">🖨️ Print PDF</button></div><div id="reportContent" class="p-3"></div></div>
-    <div id="invoiceTemplate" style="display:none;"></div><canvas id="cardCanvas" style="display:none;"></canvas>
+    <canvas id="cardCanvas" style="display:none;"></canvas>
+    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><input type="date" id="nextDateManual" class="form-control mb-3"><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label text-success" for="markPaidCheck">Received?</label></div><div class="d-grid gap-2"><button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Reschedule</button><button class="btn btn-success" onclick="saveUpdate('complete')">✅ Complete</button></div></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -166,7 +145,7 @@
 
         const SHEET_ID = "1eR5THz-4AV3HkfnNJ5Un48ksz0I0jrepJSED3qHFg6k";
         let processedPhotoData = null; let currentCart = []; let globalClients = []; let globalProductList = [];
-        let scannedStockItems = []; // For PDF data
+        let scannedStockItems = []; 
 
         document.getElementById('cDate').valueAsDate = new Date();
         document.addEventListener('DOMContentLoaded', () => { loadProducts(); listenToData(); });
@@ -184,7 +163,7 @@
             });
         }
 
-        // --- 1. LOAD PRODUCTS & STOCK ---
+        // --- 1. LOAD FROM SHEET (MASTER LIST) ---
         function loadProducts() {
             const dd = document.getElementById('cProd');
             const invList = document.getElementById('inventoryList');
@@ -194,8 +173,7 @@
                 snap.forEach(doc => stockMap[doc.id] = doc.data().qty);
 
                 fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r => r.text()).then(csv => {
-                    const rows = csv.split('\n'); 
-                    dd.innerHTML = '<option value="">Select Product...</option>';
+                    const rows = csv.split('\n'); dd.innerHTML = '<option value="">Select Product...</option>';
                     invList.innerHTML = ''; globalProductList = [];
 
                     rows.forEach((r, i) => { 
@@ -203,7 +181,11 @@
                         if(c[0] && c[0].length > 1) { 
                             let name = c[0].trim(); let price = c[2] ? c[2].trim() : 0; 
                             let stock = stockMap[name] || 0;
-                            globalProductList.push({name: name, price: price, stock: stock});
+                            
+                            // Store lower case name for matching
+                            globalProductList.push({name: name, price: price, stock: stock, searchName: name.toLowerCase()});
+
+                            // Dropdown & Table
                             let opt = document.createElement('option'); opt.value = name; opt.dataset.price = price; opt.text = `${name} - ₹${price}`; dd.add(opt);
                             let badgeClass = stock < 5 ? "stock-badge stock-low" : "stock-badge";
                             invList.innerHTML += `<tr><td>${name}</td><td style="text-align:right;">₹${price}</td><td style="text-align:right;"><span class="${badgeClass}">${stock}</span></td></tr>`;
@@ -213,34 +195,38 @@
             });
         }
 
-        // --- 2. PDF STOCK PARSER (STOCK IN) ---
+        // --- 2. SMART PDF PARSER ---
         async function processPDF(input) {
             if(!input.files[0]) return;
-            const file = input.files[0];
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            const file = input.files[0]; const arrayBuffer = await file.arrayBuffer(); const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            let fullText = ""; 
+            for(let i=1; i<=pdf.numPages; i++) { const page = await pdf.getPage(i); const textContent = await page.getTextContent(); fullText += textContent.items.map(item => item.str).join(" ") + " "; }
             
-            let fullText = "";
-            for(let i=1; i<=pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const textContent = await page.getTextContent();
-                fullText += textContent.items.map(item => item.str).join(" ") + " ";
-            }
-
+            fullText = fullText.toLowerCase(); // Case insensitive match
             document.getElementById('scannedItemsList').innerHTML = "";
             scannedStockItems = [];
             
+            // Loop through Google Sheet Products and find them in PDF
             globalProductList.forEach(prod => {
-                // Heuristic: Check if Product Name exists in Bill
-                if(fullText.toLowerCase().includes(prod.name.toLowerCase().split(' ')[0])) { 
-                    // Assume Default Qty 5 if found, or custom logic for 'Oil' etc.
-                    let qty = prod.name.includes("Oil") ? 12 : (prod.name.includes("Soap") ? 2 : 5);
+                // Fuzzy Match: Check if the first 2 words of Sheet Product exist in PDF
+                // e.g. Sheet: "Rice Bran Oil", PDF: "Health Guard Rice Bran Oil..." -> "rice bran" matches
+                let keywords = prod.searchName.split(' ').filter(w => w.length > 2);
+                let matchCount = 0;
+                keywords.forEach(word => { if(fullText.includes(word)) matchCount++; });
+
+                if(matchCount >= 2 || (keywords.length === 1 && matchCount === 1)) {
+                    // It's a match! Now try to guess Qty.
+                    // Heuristic: If "Oil", assign 12. If "Soap", assign 2. Else 5. (As per bill patterns)
+                    let qty = 5;
+                    if(prod.searchName.includes("oil")) qty = 12;
+                    else if(prod.searchName.includes("soap")) qty = 2;
+                    
                     scannedStockItems.push({name: prod.name, qty: qty});
                     document.getElementById('scannedItemsList').innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${prod.name}</span> <span class="fw-bold text-success">+${qty}</span></li>`;
                 }
             });
 
-            if(scannedStockItems.length === 0) alert("No matching products found in PDF text.");
+            if(scannedStockItems.length === 0) alert("No matching products found in this Bill. Make sure Sheet names match Bill item names.");
             else document.getElementById('pdfPreviewModal').style.display = 'block';
         }
 
@@ -250,53 +236,44 @@
                 let ref = db.collection("inventory").doc(item.name);
                 batch.set(ref, { qty: firebase.firestore.FieldValue.increment(item.qty) }, { merge: true });
             });
-            batch.commit().then(() => {
-                document.getElementById('pdfPreviewModal').style.display = 'none';
-                showPopup("Stock Added Successfully! 📦");
-                loadProducts(); 
-            });
+            batch.commit().then(() => { document.getElementById('pdfPreviewModal').style.display = 'none'; showPopup("Stock Updated!"); loadProducts(); });
         }
 
-        // --- 3. SAVE CLIENT (STOCK OUT) ---
+        // --- 3. SAVE / EDIT (FIXED MERGE) ---
+        function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); updateCartUI(); }
+        function removeFromCart(idx) { currentCart.splice(idx, 1); updateCartUI(); }
+        function updateCartUI() { let t=0; document.getElementById('cartList').innerHTML = currentCart.map((i,x)=> {t+=i.price; return `<div class="cart-item"><span>${i.name}</span><span class="cart-remove" onclick="removeFromCart(${x})">×</span></div>`}).join(''); document.getElementById('cartTotal').innerText=t; }
+
         function saveClient() {
             let name = document.getElementById('cName').value; if(!name) return alert("Name needed");
             let id = document.getElementById('editDocId').value; 
             let amt = currentCart.reduce((s,i)=>s+i.price,0); 
             let pStr = currentCart.map(i=>i.name).join(", ") || "No Product";
             
-            // 🔥 DEDUCT STOCK (Only on New Entry)
-            if(!id) {
-                let batch = db.batch();
-                currentCart.forEach(i => {
-                    let ref = db.collection("inventory").doc(i.name);
-                    batch.set(ref, { qty: firebase.firestore.FieldValue.increment(-1) }, { merge: true });
-                });
-                batch.commit(); // Execute Stock Minus
-            }
+            // Deduct Stock if New Sale
+            if(!id) { currentCart.forEach(i => { db.collection("inventory").doc(i.name).update({ qty: firebase.firestore.FieldValue.increment(-1) }).catch(e=>{}); }); }
 
-            let data = { name: name, phone: document.getElementById('cPhone').value, proposer: document.getElementById('cProposer').value, product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), paymentStatus: document.getElementById('payStatus').value, dob: document.getElementById('cDob').value, leadType: document.getElementById('cType').value, reOrderDate: null, nextFollowUp: document.getElementById('cDate').value, status: 'Pending', photo: processedPhotoData, history: [], timestamp: firebase.firestore.FieldValue.serverTimestamp() };
-            const timing = document.getElementById('followUpTiming').value; let followDate = new Date();
-            if(timing === '24h') followDate.setDate(followDate.getDate()+1);
-            data.nextFollowUp = followDate.toISOString().split('T')[0];
+            let data = { name: name, phone: document.getElementById('cPhone').value, product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), paymentStatus: document.getElementById('payStatus').value, nextFollowUp: document.getElementById('cDate').value, status: 'Pending', photo: processedPhotoData, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+            const timing = document.getElementById('followUpTiming').value; let followDate = new Date(); if(timing === '24h') followDate.setDate(followDate.getDate()+1); else followDate.setDate(followDate.getDate()+7); data.nextFollowUp = followDate.toISOString().split('T')[0];
 
             let action = id ? db.collection("clients").doc(id).update(data) : db.collection("clients").add(data);
-            action.then(() => { showPopup("Sale Saved & Stock Updated!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); loadProducts(); });
+            action.then(() => { showPopup(id ? "Updated!" : "Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); loadProducts(); });
         }
 
-        // --- UTILS & HELPERS ---
-        function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); updateCartUI(); }
-        function removeFromCart(idx) { currentCart.splice(idx, 1); updateCartUI(); }
-        function updateCartUI() { let t=0; document.getElementById('cartList').innerHTML = currentCart.map((i,x)=> {t+=i.price; return `<div class="cart-item"><span>${i.name} (₹${i.price})</span><span class="cart-remove" onclick="removeFromCart(${x})">×</span></div>`}).join(''); document.getElementById('cartTotal').innerText=t; }
-        
-        function showPopup(msg) { document.getElementById('popupMsg').innerText = msg; document.getElementById('successPopup').style.display='block'; setTimeout(()=>document.getElementById('successPopup').style.display='none', 2000); }
+        // --- UTILS ---
+        function showPopup(msg) { document.getElementById('popupMsg').innerText = msg; document.getElementById('successPopup').style.display='flex'; setTimeout(()=>document.getElementById('successPopup').style.display='none', 2000); }
         function handlePhoto(i) { navigator.geolocation.getCurrentPosition(p=>{ processImage(i.files[0], `Loc: ${p.coords.latitude.toFixed(2)},${p.coords.longitude.toFixed(2)}`); }, e=>processImage(i.files[0], "No GPS")); }
         function processImage(f,l){ const r=new FileReader(); r.onload=e=>{const i=new Image(); i.onload=()=>{const c=document.getElementById('cardCanvas'); const x=c.getContext('2d'); c.width=500; c.height=(i.height/i.width)*500; x.drawImage(i,0,0,c.width,c.height); x.fillStyle="rgba(0,0,0,0.5)"; x.fillRect(10,c.height-40,200,30); x.fillStyle="white"; x.fillText(l,20,c.height-20); processedPhotoData=c.toDataURL('image/jpeg',0.7); document.getElementById('photoPreview').src=processedPhotoData;}; i.src=e.target.result;}; r.readAsDataURL(f); }
         function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); processedPhotoData=null; document.getElementById('photoPreview').src='https://cdn-icons-png.flaticon.com/512/3687/3687412.png'; document.getElementById('formTitle').innerText="New Entry"; }
         function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateChart(0,0); }
-        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('cProposer').value=c.proposer||''; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } else { currentCart = []; } updateCartUI(); document.getElementById('formTitle').innerText = "Editing: " + c.name; switchTab('view-add', document.querySelectorAll('.nav-item')[2]); } }
-        function renderUI() { const t=document.getElementById('taskListContainer'); const l=document.getElementById('clientListContainer'); t.innerHTML=''; l.innerHTML=''; globalClients.forEach(c=>{ l.innerHTML+=`<div class='client-card'><div><b>${c.name}</b><br><small>${c.product}</small></div><div><button onclick="editClient('${c.docId}')" class="btn-edit">Edit</button></div></div>`; if(c.status==='Pending') t.innerHTML+=`<div class='task-card'><b>${c.name}</b><br>Follow: ${c.nextFollowUp}</div>`; }); }
-        let myChart=null; function updateChart(p,u){ const ctx=document.getElementById('myChart').getContext('2d'); if(myChart)myChart.destroy(); myChart=new Chart(ctx,{type:'doughnut',data:{labels:['Paid','Unpaid'],datasets:[{data:[p,u],backgroundColor:['green','red']}]}}); }
-        function startVoice(id) { const r = new webkitSpeechRecognition(); r.lang='mr-IN'; r.start(); r.onresult=e=>{document.getElementById(id).value=e.results[0][0].transcript;}; }
-    </script>
-</body>
-</html>
+        
+        function editClient(id){ 
+            let c=globalClients.find(x=>x.docId==id); 
+            if(c){ 
+                document.getElementById('editDocId').value=c.docId; 
+                document.getElementById('cName').value=c.name; 
+                document.getElementById('cPhone').value=c.phone; 
+                document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; 
+                if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } else { currentCart = []; } 
+                updateCartUI(); 
+                document.getElementById('formTitle').innerText = "Edit: " + c.name;
