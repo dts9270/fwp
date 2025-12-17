@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (GPS & Tasks)</title>
+    <title>RCM Pro (Ultimate Task UI)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
         .header-content { display: flex; justify-content: space-between; align-items: center; color: white; }
         .header-title { font-weight: 700; margin: 0; letter-spacing: 0.5px; }
         
-        /* CARDS */
+        /* GENERAL CARDS */
         .client-card { 
             background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05);
@@ -31,65 +31,62 @@
         }
         .client-card:active { transform: scale(0.98); }
         
+        /* === NEW TASK UI STYLES === */
+        .task-card { 
+            background: white; border-radius: 16px; padding: 16px; margin-bottom: 15px; 
+            border-left: 6px solid #ccc; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .task-info { flex-grow: 1; }
+        .task-actions { display: flex; gap: 10px; }
+        
+        .task-btn {
+            width: 42px; height: 42px; border-radius: 50%; border: none; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 1.1em; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .task-btn:active { transform: scale(0.9); }
+        .btn-wa { background: #25D366; color: white; } /* WhatsApp Green */
+        .btn-ph { background: #3b82f6; color: white; } /* Phone Blue */
+        .btn-dn { background: #f3f4f6; color: #374151; } /* Done Grey */
+
+        .task-urgent { border-left-color: #ef4444; background: linear-gradient(to right, #fff5f5, #fff); }
+        .task-today { border-left-color: #f59e0b; background: linear-gradient(to right, #fffbf0, #fff); }
+        .task-future { border-left-color: #2563eb; }
+        
+        .days-pill {
+            font-size: 0.75em; padding: 3px 10px; border-radius: 12px; font-weight: 700; display: inline-block; margin-bottom: 5px;
+        }
+        .pill-red { background: #fee2e2; color: #991b1b; }
+        .pill-yellow { background: #fef3c7; color: #92400e; }
+        .pill-blue { background: #dbeafe; color: #1e40af; }
+
+        /* LIST & OTHER STYLES (Kept Same) */
         .card-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .user-info { display: flex; align-items: center; gap: 12px; }
-        .user-avatar { 
-            width: 45px; height: 45px; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); 
-            color: #3730a3; font-weight: 700; font-size: 1.2em; border-radius: 12px; 
-            display: flex; align-items: center; justify-content: center; text-transform: uppercase;
-        }
+        .user-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #3730a3; font-weight: 700; font-size: 1.2em; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
         .user-details h6 { margin: 0; font-weight: 700; color: #111827; font-size: 1rem; }
         .user-details small { color: #6b7280; font-size: 0.85em; }
-
         .status-badge { font-size: 0.75em; padding: 4px 10px; border-radius: 20px; font-weight: 600; letter-spacing: 0.3px; }
-        .badge-paid { background: #d1fae5; color: #065f46; }
-        .badge-unpaid { background: #fee2e2; color: #991b1b; }
-
+        .badge-paid { background: #d1fae5; color: #065f46; } .badge-unpaid { background: #fee2e2; color: #991b1b; }
         .card-body-row { background: #f9fafb; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 0.9em; color: #4b5563; display: flex; justify-content: space-between; }
         .amt-text { font-weight: 700; color: var(--primary); font-size: 1.1em; }
-
         .card-actions { display: flex; gap: 8px; }
-        .btn-action { 
-            flex: 1; border: none; padding: 8px; border-radius: 8px; font-size: 0.9em; font-weight: 600; 
-            display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: background 0.2s;
-        }
-        .btn-call { background: #ecfdf5; color: #059669; }
-        .btn-bill { background: #fff7ed; color: #ea580c; }
-        .btn-edit { background: #eff6ff; color: #2563eb; }
-        .btn-del { width: 40px; flex: none; background: #fef2f2; color: #dc2626; }
-
-        /* TASK CARD STYLES */
-        .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .task-urgent { border-left-color: #ef4444; background-color: #fff5f5; }
-        .task-today { border-left-color: #f59e0b; background-color: #fffbf0; }
-        .task-future { border-left-color: #2563eb; }
-
-        /* SEARCH BAR */
+        .btn-action { flex: 1; border: none; padding: 8px; border-radius: 8px; font-size: 0.9em; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: background 0.2s; }
+        .btn-call { background: #ecfdf5; color: #059669; } .btn-bill { background: #fff7ed; color: #ea580c; } .btn-edit { background: #eff6ff; color: #2563eb; } .btn-del { width: 40px; flex: none; background: #fef2f2; color: #dc2626; }
         .search-container { position: relative; margin-bottom: 20px; }
-        .search-input { 
-            width: 100%; padding: 12px 15px 12px 45px; border-radius: 12px; border: 1px solid #e5e7eb; 
-            background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.02); outline: none; transition: border 0.3s;
-        }
+        .search-input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 12px; border: 1px solid #e5e7eb; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.02); outline: none; transition: border 0.3s; }
         .search-input:focus { border-color: var(--primary); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
-
-        /* OTHER */
         .inventory-card { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 10px; }
         .inv-table { width: 100%; font-size: 0.9em; } .inv-table th { background: #1e3a8a; color: white; padding: 10px; text-align: left; } .inv-table td { padding: 10px; border-bottom: 1px solid #eee; }
         .stock-badge { padding: 3px 8px; border-radius: 5px; font-weight: bold; font-size: 0.8em; } .stock-ok { background: #e8f5e9; color: green; } .stock-low { background: #ffebee; color: red; }
-
         .btn-upload-pdf { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
-        
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 10px; border-top: 1px solid #e5e7eb; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
-        .nav-item { text-align: center; color: #9ca3af; text-decoration: none; font-size: 0.75em; font-weight: 500; transition: color 0.3s; } 
-        .nav-item.active { color: var(--primary); font-weight: 700; } .nav-item i { font-size: 1.4em; display: block; margin-bottom: 3px; }
+        .nav-item { text-align: center; color: #9ca3af; text-decoration: none; font-size: 0.75em; font-weight: 500; transition: color 0.3s; } .nav-item.active { color: var(--primary); font-weight: 700; } .nav-item i { font-size: 1.4em; display: block; margin-bottom: 3px; }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
-        
-        /* Modals */
         #pdfPreviewModal, #reportOverlay, #successPopup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; backdrop-filter: blur(2px); align-items: center; justify-content: center; }
         .modal-box { background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-        
-        /* Print */
         #printArea { display: none; }
         @media print { body * { visibility: hidden; } #printArea, #printArea * { visibility: visible; } #printArea { position: absolute; left: 0; top: 0; width: 100%; display: block; padding: 20px; } .no-print { display: none; } }
     </style>
@@ -123,7 +120,7 @@
                 <h5 class="fw-bold text-danger m-0">₹<span id="totalUdhari">0</span></h5>
             </div>
             <hr class="text-muted my-2">
-            <h6 class="text-secondary fw-bold mb-3 mt-3">📅 PRIORITIZED FOLLOW-UPS</h6>
+            <h6 class="text-secondary fw-bold mb-3 mt-3">📅 TODAY'S FOLLOW-UPS</h6>
             <div id="taskListContainer" class="pb-5"><div class="text-center mt-5"><div class="spinner-border text-primary"></div></div></div>
         </div>
 
@@ -250,7 +247,6 @@
             });
         }
 
-        // --- 1. LOAD PRODUCTS ---
         function loadProducts() {
             const dd = document.getElementById('cProd');
             const invList = document.getElementById('inventoryList');
@@ -272,7 +268,7 @@
             });
         }
 
-        // --- 2. RENDER UI WITH SORTING & DAYS LEFT ---
+        // --- RENDER UI (UPDATED TASKS) ---
         function renderUI() {
             const listDiv = document.getElementById('clientListContainer'); listDiv.innerHTML = '';
             const tDiv = document.getElementById('taskListContainer'); tDiv.innerHTML = '';
@@ -299,7 +295,7 @@
                 </div>`;
             });
 
-            // 2. Task View (Sorted & Days Left)
+            // 2. Task View (With Call & WhatsApp)
             let pendingTasks = globalClients.filter(c => c.status === 'Pending' && c.nextFollowUp);
             pendingTasks.sort((a, b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
 
@@ -309,26 +305,30 @@
                 let due = new Date(c.nextFollowUp);
                 let diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
                 
-                let dayTxt = "", cls = "";
-                if(diff < 0) { dayTxt = `⚠️ Overdue by ${Math.abs(diff)} days`; cls = "task-urgent"; }
-                else if(diff === 0) { dayTxt = "🔥 Today"; cls = "task-today"; }
-                else { dayTxt = `⏳ ${diff} Days Left`; cls = "task-future"; }
+                let dayTxt = "", cls = "", pillCls = "";
+                if(diff < 0) { dayTxt = `Overdue (${Math.abs(diff)} Days)`; cls = "task-urgent"; pillCls = "pill-red"; }
+                else if(diff === 0) { dayTxt = "Today"; cls = "task-today"; pillCls = "pill-yellow"; }
+                else { dayTxt = `${diff} Days Left`; cls = "task-future"; pillCls = "pill-blue"; }
+
+                let waMsg = `Namaskar ${c.name}, RCM product payment pending ahe ₹${c.amount}. Please pay.`;
+                let waLink = `https://wa.me/91${c.phone}?text=${encodeURIComponent(waMsg)}`;
 
                 tDiv.innerHTML += `
                 <div class="task-card ${cls}">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="fw-bold m-0">${c.name}</h6>
-                            <small class="fw-bold text-dark">${dayTxt}</small><br>
-                            <small class="text-muted" style="font-size:0.8em">Due: ${c.nextFollowUp}</small>
-                        </div>
-                        <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="openUpdateModal('${c.docId}')">Action</button>
+                    <div class="task-info">
+                        <span class="days-pill ${pillCls}">${dayTxt}</span>
+                        <h6 class="fw-bold m-0">${c.name}</h6>
+                        <small class="text-muted">Due: ${c.nextFollowUp}</small>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-btn btn-ph" onclick="window.open('tel:${c.phone}')"><i class="fas fa-phone-alt"></i></button>
+                        <button class="task-btn btn-wa" onclick="window.open('${waLink}')"><i class="fab fa-whatsapp"></i></button>
+                        <button class="task-btn btn-dn" onclick="openUpdateModal('${c.docId}')"><i class="fas fa-check"></i></button>
                     </div>
                 </div>`;
             });
         }
 
-        // --- 3. LOGIC (Save, GPS, Cart) ---
         function getGPS() {
             const status = document.getElementById('gpsStatus');
             if (!navigator.geolocation) { alert("Geolocation unsupported"); return; }
@@ -363,7 +363,6 @@
             action.then(() => { showPopup("Data Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); loadProducts(); });
         }
 
-        // PDF & Utils
         async function processPDF(input) {
             if(!input.files[0]) return;
             const pdf = await pdfjsLib.getDocument(await input.files[0].arrayBuffer()).promise;
@@ -372,7 +371,7 @@
             globalProductList.forEach(prod => {
                 let key = prod.name.split(' ')[0];
                 if(txt.toLowerCase().includes(key.toLowerCase())) {
-                    let qty = 5; // Default logic
+                    let qty = 5; 
                     scannedStockItems.push({name: prod.name, qty: qty});
                     document.getElementById('scannedItemsList').innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${prod.name}</span><span class="badge bg-success">+${qty}</span></li>`;
                 }
