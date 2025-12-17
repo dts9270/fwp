@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Smart Tasks)</title>
+    <title>RCM Pro (Secure)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -30,11 +30,13 @@
         .dash-lbl { font-size: 0.9em; opacity: 0.9; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         .dash-icon { position: absolute; right: -10px; bottom: -10px; font-size: 5em; opacity: 0.2; transform: rotate(-10deg); }
 
-        /* CHART CONTAINER (MOBILE FRIENDLY FIX) */
+        /* CHART CONTAINER */
         .chart-box { background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .chart-wrapper { position: relative; height: 250px; width: 100%; } /* Fixed Height for Mobile */
+        .chart-wrapper { position: relative; height: 250px; width: 100%; }
 
-        /* TASK CARD & DROPDOWN */
+        /* TASK & LIST CARDS */
+        .client-card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
+        
         .task-card { 
             background: white; border-radius: 16px; padding: 16px; margin-bottom: 15px; 
             border-left: 6px solid #ccc; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
@@ -43,29 +45,27 @@
         .task-actions { display: flex; gap: 8px; align-items: center; }
         .task-btn { width: 40px; height: 40px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.1em; cursor: pointer; text-decoration: none; color: white; transition: transform 0.2s; }
         .task-btn:active { transform: scale(0.9); }
-        .btn-wa { background: #25D366; } 
-        .btn-ph { background: #3b82f6; } 
-        .btn-opt { background: #6b7280; color: white; } /* Dropdown Trigger */
+        .btn-wa { background: #25D366; } .btn-ph { background: #3b82f6; } .btn-opt { background: #6b7280; color: white; }
         
-        /* Dropdown Styling Fix */
+        /* DROPDOWN */
         .dropdown-menu { border-radius: 15px; padding: 10px; border: none; box-shadow: 0 5px 25px rgba(0,0,0,0.15); }
         .dropdown-item { padding: 10px 15px; font-weight: 500; border-radius: 10px; margin-bottom: 2px; }
         .dropdown-item:active { background-color: #f3f4f6; color: black; }
         .dropdown-item i { width: 25px; text-align: center; margin-right: 10px; }
 
-        /* BOTTOM NAV */
+        /* NAV & UTILS */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 10px; border-top: 1px solid #e5e7eb; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
         .nav-item { text-align: center; color: #9ca3af; text-decoration: none; font-size: 0.75em; font-weight: 500; transition: color 0.3s; cursor: pointer; } 
         .nav-item.active { color: var(--primary); font-weight: 700; } .nav-item i { font-size: 1.4em; display: block; margin-bottom: 3px; }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
 
-        /* UTILS */
-        .client-card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
         .user-avatar { width: 40px; height: 40px; background: #e0e7ff; color: #3730a3; font-weight: 700; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
         .search-container { position: relative; margin-bottom: 20px; }
         .search-input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 12px; border: 1px solid #e5e7eb; outline: none; }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
-        
+        .status-badge { font-size: 0.75em; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+        .badge-paid { background: #d1fae5; color: #065f46; } .badge-unpaid { background: #fee2e2; color: #991b1b; }
+
         #printArea { display: none; }
         @media print { body * { visibility: hidden; } #printArea, #printArea * { visibility: visible; } #printArea { position: absolute; left: 0; top: 0; width: 100%; display: block; padding: 20px; } .no-print { display: none; } }
     </style>
@@ -106,15 +106,21 @@
                 <div class="d-flex justify-content-between mb-4"><h5 class="fw-bold text-dark" id="formTitle">New Sale</h5><button class="btn btn-sm btn-light text-danger fw-bold" onclick="resetForm()">Reset</button></div>
                 <form id="crmForm" class="row g-3">
                     <input type="hidden" id="editDocId"> 
+                    
                     <div class="col-12"><label class="small fw-bold text-muted">Customer Name</label><input type="text" class="form-control bg-light border-0" id="cName" required style="padding:12px; border-radius:10px;"></div>
+                    <div class="col-12"><label class="small fw-bold text-muted">Proposer Name</label><input type="text" class="form-control bg-light border-0" id="cProposer" placeholder="Optional" style="padding:12px; border-radius:10px;"></div>
+                    
                     <div class="col-6"><label class="small fw-bold text-muted">Mobile</label><input type="tel" class="form-control bg-light border-0" id="cPhone" style="padding:12px; border-radius:10px;"></div>
                     <div class="col-6"><label class="small fw-bold text-muted">Date</label><input type="date" class="form-control bg-light border-0" id="cDate" style="padding:12px; border-radius:10px;"></div>
+                    
                     <div class="col-12"><label class="small fw-bold text-muted">Product (Loading...)</label><select class="form-select bg-light border-0" id="cProd" style="padding:12px; border-radius:10px;"><option value="">Select...</option></select></div>
                     <div class="col-12"><div id="cartList" class="small text-muted mb-2"></div><button type="button" class="btn btn-sm btn-outline-primary" onclick="addToCart()">+ Add Product</button> <span class="float-end fw-bold">Total: ₹<span id="cartTotal">0</span></span></div>
+                    
                     <div class="col-6"><label class="small fw-bold text-muted">Payment</label><select class="form-select bg-light border-0" id="payStatus" style="padding:12px; border-radius:10px;"><option value="Paid">✅ Paid</option><option value="Unpaid" selected>🔴 Unpaid</option></select></div>
                     <div class="col-6"><label class="small fw-bold text-muted">Follow-up</label><input type="date" class="form-control bg-light border-0" id="followUpDate" style="padding:12px; border-radius:10px;"></div>
                     <div class="col-6"><label class="small fw-bold text-muted">Photo</label><input type="file" class="form-control bg-light border-0" id="shopPhoto" accept="image/*" capture="camera"></div>
                     <div class="col-6"><label class="small fw-bold text-muted">GPS</label><button type="button" class="btn btn-outline-primary w-100" onclick="getGPS()"><i class="fas fa-map-marker-alt"></i> Tag</button><input type="hidden" id="gpsCoords"></div>
+                    
                     <div class="col-12 mt-4"><button type="button" class="btn btn-primary w-100 fw-bold p-3" style="border-radius:15px;" onclick="saveClient()">SAVE ENTRY</button></div>
                 </form>
             </div>
@@ -184,7 +190,6 @@
                 globalClients = []; let totalUdhari = 0, totalPaid = 0;
                 snapshot.forEach((doc) => {
                     let data = doc.data(); data.docId = doc.id; 
-                    // Calculate totals (Completed tasks count as paid/history if we want, but for pending list we filter later)
                     if(data.paymentStatus === 'Unpaid' && data.status !== 'Done') totalUdhari += parseInt(data.amount || 0); 
                     if(data.paymentStatus === 'Paid' || data.status === 'Done') totalPaid += parseInt(data.amount || 0);
                     globalClients.push(data);
@@ -210,28 +215,34 @@
             });
         }
 
-        // --- CORE UI LOGIC ---
         function renderUI() {
             const listDiv = document.getElementById('clientListContainer'); listDiv.innerHTML = '';
             const tDiv = document.getElementById('taskListContainer'); tDiv.innerHTML = '';
             const term = document.getElementById('searchInput').value.toLowerCase();
             const today = new Date(); today.setHours(0,0,0,0);
 
-            // 1. List View (Shows All)
+            // 1. List View (With Proposer & Secure Delete)
             globalClients.filter(c => c.name.toLowerCase().includes(term)).forEach(c => {
                 let badge = c.status === 'Done' ? '<span class="status-badge bg-secondary text-white">DONE</span>' : (c.paymentStatus === 'Paid' ? '<span class="status-badge badge-paid">PAID</span>' : '<span class="status-badge badge-unpaid">UNPAID</span>');
+                let proposerTxt = c.proposer ? `<small class="d-block text-primary">Proposer: ${c.proposer}</small>` : '';
+
                 listDiv.innerHTML += `
                 <div class="client-card">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div class="d-flex align-items-center gap-2"><div class="user-avatar">${c.name.charAt(0)}</div><div><h6 class="m-0 fw-bold">${c.name}</h6><small class="text-muted">${c.phone}</small></div></div>
                         ${badge}
                     </div>
+                    ${proposerTxt}
                     <div class="bg-light p-2 rounded d-flex justify-content-between mb-2 small text-muted"><span>${c.product}</span><span class="fw-bold text-primary fs-6">₹${c.amount}</span></div>
-                    <div class="d-flex gap-2"><button class="btn btn-sm btn-light flex-grow-1 text-success fw-bold" onclick="window.open('tel:${c.phone}')">Call</button><button class="btn btn-sm btn-light flex-grow-1 text-primary fw-bold" onclick="editClient('${c.docId}')">Edit</button></div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-light flex-grow-1 text-success fw-bold" onclick="window.open('tel:${c.phone}')">Call</button>
+                        <button class="btn btn-sm btn-light flex-grow-1 text-primary fw-bold" onclick="editClient('${c.docId}')">Edit</button>
+                        <button class="btn btn-sm btn-light flex-grow-0 text-danger" onclick="deleteSecure('${c.docId}')"><i class="fas fa-trash"></i></button>
+                    </div>
                 </div>`;
             });
 
-            // 2. Tasks View (Smart Dropdown Logic)
+            // 2. Tasks View
             let pendingTasks = globalClients.filter(c => c.status !== 'Done' && c.nextFollowUp);
             pendingTasks.sort((a, b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
             
@@ -252,11 +263,8 @@
                     <div class="task-actions">
                         <button class="task-btn btn-ph" onclick="window.open('tel:${c.phone}')"><i class="fas fa-phone"></i></button>
                         <button class="task-btn btn-wa" onclick="window.open('${waLink}')"><i class="fab fa-whatsapp"></i></button>
-                        
                         <div class="dropdown">
-                            <button class="task-btn btn-opt" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
+                            <button class="task-btn btn-opt" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="#" onclick="updateTask('${c.docId}', 7)"><i class="fas fa-calendar-week text-primary"></i> 7 Days Later</a></li>
                                 <li><a class="dropdown-item" href="#" onclick="updateTask('${c.docId}', 15)"><i class="fas fa-calendar-alt text-warning"></i> 15 Days Later</a></li>
@@ -271,21 +279,29 @@
             if(pendingTasks.length==0) tDiv.innerHTML = "<div class='text-center p-3 text-muted'>No Pending Tasks</div>";
         }
 
-        // --- NEW TASK ACTIONS ---
+        // --- SECURE DELETE FUNCTION ---
+        function deleteSecure(id) {
+            if(confirm("⚠ Are you sure you want to delete this client permanently?")) {
+                let pin = prompt("🔒 Enter Security PIN to confirm deletion:");
+                if(pin === "2708") {
+                    db.collection("clients").doc(id).delete().then(() => {
+                        showPopup("Client Deleted Successfully!");
+                    }).catch(e => alert("Error: " + e));
+                } else {
+                    alert("❌ Incorrect PIN! Deletion cancelled.");
+                }
+            }
+        }
+
         function updateTask(id, days) {
-            let newDate = new Date();
-            newDate.setDate(newDate.getDate() + days);
+            let newDate = new Date(); newDate.setDate(newDate.getDate() + days);
             let ds = newDate.toISOString().split('T')[0];
-            db.collection("clients").doc(id).update({ nextFollowUp: ds }).then(() => {
-                showPopup(`Updated to ${days} days later!`);
-            });
+            db.collection("clients").doc(id).update({ nextFollowUp: ds }).then(() => showPopup(`Updated to ${days} days later!`));
         }
 
         function completeTask(id) {
-            if(confirm("Mark this task as Done? It will move out of Pending.")) {
-                db.collection("clients").doc(id).update({ status: 'Done', paymentStatus: 'Paid' }).then(() => {
-                    showPopup("Task Completed! ✅");
-                });
+            if(confirm("Mark this task as Done?")) {
+                db.collection("clients").doc(id).update({ status: 'Done', paymentStatus: 'Paid' }).then(() => showPopup("Task Completed! ✅"));
             }
         }
 
@@ -295,35 +311,19 @@
             document.getElementById('repTotalUdhari').innerText = '₹' + udhari;
             document.getElementById('repCashIn').innerText = '₹' + paid;
 
-            // Bar Chart (Mobile Friendly)
-            const last7Days = {}; 
-            const dates = []; 
+            const last7Days = {}; const dates = []; 
             for(let i=6; i>=0; i--) { let d = new Date(); d.setDate(d.getDate() - i); let ds = d.toISOString().split('T')[0]; dates.push(ds); last7Days[ds] = 0; }
             globalClients.forEach(c => { let d = c.nextFollowUp; if(last7Days[d] !== undefined) last7Days[d] += parseInt(c.amount); });
             
             const ctxBar = document.getElementById('barChart').getContext('2d');
             if(barChart) barChart.destroy();
-            
-            // NOTE: maintainAspectRatio: false is key for mobile responsiveness
-            barChart = new Chart(ctxBar, { 
-                type: 'bar', 
-                data: { labels: dates.map(d=>d.substring(5)), datasets: [{ label: 'Sales', data: Object.values(last7Days), backgroundColor: '#3b82f6', borderRadius: 4 }] }, 
-                options: { 
-                    responsive: true,
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } }, 
-                    scales: { y: { display:false }, x: { grid: { display: false } } } 
-                } 
-            });
+            barChart = new Chart(ctxBar, { type: 'bar', data: { labels: dates.map(d=>d.substring(5)), datasets: [{ label: 'Sales', data: Object.values(last7Days), backgroundColor: '#3b82f6', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display:false }, x: { grid: { display: false } } } } });
 
-            // Top Products
-            let prodCounts = {};
-            globalClients.forEach(c => { if(c.cartJson) { try { JSON.parse(c.cartJson).forEach(item => { prodCounts[item.name] = (prodCounts[item.name] || 0) + 1; }); } catch(e){} } });
+            let prodCounts = {}; globalClients.forEach(c => { if(c.cartJson) { try { JSON.parse(c.cartJson).forEach(item => { prodCounts[item.name] = (prodCounts[item.name] || 0) + 1; }); } catch(e){} } });
             let sortedProds = Object.entries(prodCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
             document.getElementById('topProductsList').innerHTML = sortedProds.map((p,i) => `<li class="list-group-item d-flex justify-content-between align-items-center border-0 p-1"><span>${i+1}. ${p[0]}</span><span class="badge bg-primary rounded-pill">${p[1]}</span></li>`).join('');
         }
 
-        // Common Logic
         function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); updateCartUI(); }
         function updateCartUI() { let t=0; document.getElementById('cartList').innerHTML = currentCart.map(i=> {t+=i.price; return `${i.name}, `}).join(''); document.getElementById('cartTotal').innerText=t; }
         
@@ -332,7 +332,20 @@
             let id = document.getElementById('editDocId').value; 
             let amt = currentCart.reduce((s,i)=>s+i.price,0); 
             let pStr = currentCart.map(i=>i.name).join(", ") || "Sale";
-            let data = { name: name, phone: document.getElementById('cPhone').value, product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), paymentStatus: document.getElementById('payStatus').value, nextFollowUp: document.getElementById('followUpDate').value, status: 'Pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+            let proposer = document.getElementById('cProposer').value || ""; // Capture Proposer
+            
+            let data = { 
+                name: name, 
+                proposer: proposer, // Save Proposer
+                phone: document.getElementById('cPhone').value, 
+                product: pStr, 
+                amount: amt, 
+                cartJson: JSON.stringify(currentCart), 
+                paymentStatus: document.getElementById('payStatus').value, 
+                nextFollowUp: document.getElementById('followUpDate').value, 
+                status: 'Pending', 
+                timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+            };
             let action = id ? db.collection("clients").doc(id).update(data) : db.collection("clients").add(data);
             action.then(() => { showPopup("Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); });
         }
@@ -341,13 +354,13 @@
         function getGPS() { if (!navigator.geolocation) { alert("No GPS"); return; } navigator.geolocation.getCurrentPosition(p => { document.getElementById('gpsCoords').value = `${p.coords.latitude},${p.coords.longitude}`; alert("Location Tagged!"); }); }
         function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); }
         function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateDashboard(parseInt(document.getElementById('repCashIn').innerText.replace('₹','')), parseInt(document.getElementById('repTotalUdhari').innerText.replace('₹',''))); }
-        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; document.getElementById('followUpDate').value=c.nextFollowUp; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } updateCartUI(); switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
+        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cProposer').value=c.proposer||''; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; document.getElementById('followUpDate').value=c.nextFollowUp; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } updateCartUI(); switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
         
         function printReport(type) {
-            let html = `<div style="padding:20px;"><h2>PENDING REPORT</h2><table style="width:100%;text-align:left;"><tr><th>Name</th><th>Amount</th></tr>${globalClients.filter(c=>c.paymentStatus=='Unpaid').map(c=>`<tr><td>${c.name}<br>${c.phone}</td><td style="color:red;font-weight:bold;">${c.amount}</td></tr>`).join('')}</table></div>`;
+            let html = `<div style="padding:20px;"><h2>PENDING REPORT</h2><table style="width:100%;text-align:left;"><tr><th>Name</th><th>Proposer</th><th>Amount</th></tr>${globalClients.filter(c=>c.paymentStatus=='Unpaid').map(c=>`<tr><td>${c.name}<br>${c.phone}</td><td>${c.proposer||'-'}</td><td style="color:red;font-weight:bold;">${c.amount}</td></tr>`).join('')}</table></div>`;
             document.getElementById('printArea').innerHTML = html; window.print();
         }
-        function exportToExcel() { let csv = "Name,Phone,Amount,Status\n" + globalClients.map(c => `${c.name},${c.phone},${c.amount},${c.status}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click(); }
+        function exportToExcel() { let csv = "Name,Proposer,Phone,Amount,Status\n" + globalClients.map(c => `${c.name},${c.proposer||''},${c.phone},${c.amount},${c.status}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click(); }
     </script>
 </body>
 </html>
