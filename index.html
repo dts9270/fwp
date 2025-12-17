@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Pro Dashboard)</title>
+    <title>RCM Pro (Smart Tasks)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -21,54 +21,51 @@
         .header-content { display: flex; justify-content: space-between; align-items: center; color: white; }
         .header-title { font-weight: 700; margin: 0; letter-spacing: 0.5px; }
         
-        /* === NEW DASHBOARD UI === */
-        .dash-card { 
-            border-radius: 20px; padding: 20px; color: white; margin-bottom: 15px; position: relative; overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
+        /* DASHBOARD CARDS */
+        .dash-card { border-radius: 20px; padding: 20px; color: white; margin-bottom: 15px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .dash-green { background: linear-gradient(135deg, #10b981, #059669); }
         .dash-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
         .dash-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-        
         .dash-val { font-size: 2em; font-weight: 800; display: block; line-height: 1.1; }
         .dash-lbl { font-size: 0.9em; opacity: 0.9; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         .dash-icon { position: absolute; right: -10px; bottom: -10px; font-size: 5em; opacity: 0.2; transform: rotate(-10deg); }
 
+        /* CHART CONTAINER (MOBILE FRIENDLY FIX) */
         .chart-box { background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .chart-title { font-size: 0.85em; color: #6b7280; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .chart-wrapper { position: relative; height: 250px; width: 100%; } /* Fixed Height for Mobile */
 
-        /* LIST & TASKS */
-        .client-card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
-        .task-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        /* TASK CARD & DROPDOWN */
+        .task-card { 
+            background: white; border-radius: 16px; padding: 16px; margin-bottom: 15px; 
+            border-left: 6px solid #ccc; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .task-actions { display: flex; gap: 8px; align-items: center; }
+        .task-btn { width: 40px; height: 40px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.1em; cursor: pointer; text-decoration: none; color: white; transition: transform 0.2s; }
+        .task-btn:active { transform: scale(0.9); }
+        .btn-wa { background: #25D366; } 
+        .btn-ph { background: #3b82f6; } 
+        .btn-opt { background: #6b7280; color: white; } /* Dropdown Trigger */
         
-        /* BUTTONS */
-        .btn-action-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .btn-big { padding: 15px; border-radius: 15px; border: none; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.9em; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s; }
-        .btn-big:active { transform: scale(0.98); }
-        .btn-print { background: #fff1f2; color: #be123c; }
-        .btn-excel { background: #ecfdf5; color: #047857; }
+        /* Dropdown Styling Fix */
+        .dropdown-menu { border-radius: 15px; padding: 10px; border: none; box-shadow: 0 5px 25px rgba(0,0,0,0.15); }
+        .dropdown-item { padding: 10px 15px; font-weight: 500; border-radius: 10px; margin-bottom: 2px; }
+        .dropdown-item:active { background-color: #f3f4f6; color: black; }
+        .dropdown-item i { width: 25px; text-align: center; margin-right: 10px; }
 
-        /* COMMON */
-        .status-badge { font-size: 0.75em; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
-        .badge-paid { background: #d1fae5; color: #065f46; } .badge-unpaid { background: #fee2e2; color: #991b1b; }
-        
-        .task-info { flex-grow: 1; } .task-actions { display: flex; gap: 10px; }
-        .task-btn { width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.1em; cursor: pointer; }
-        .btn-wa { background: #25D366; color: white; } .btn-ph { background: #3b82f6; color: white; } .btn-dn { background: #f3f4f6; color: #374151; }
-        
-        /* NAV */
+        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 10px; border-top: 1px solid #e5e7eb; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
         .nav-item { text-align: center; color: #9ca3af; text-decoration: none; font-size: 0.75em; font-weight: 500; transition: color 0.3s; cursor: pointer; } 
         .nav-item.active { color: var(--primary); font-weight: 700; } .nav-item i { font-size: 1.4em; display: block; margin-bottom: 3px; }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
-        
+
         /* UTILS */
+        .client-card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
         .user-avatar { width: 40px; height: 40px; background: #e0e7ff; color: #3730a3; font-weight: 700; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
         .search-container { position: relative; margin-bottom: 20px; }
         .search-input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 12px; border: 1px solid #e5e7eb; outline: none; }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
-
-        #successPopup, #updateModal { display: none; } /* Simplified for this view */
+        
         #printArea { display: none; }
         @media print { body * { visibility: hidden; } #printArea, #printArea * { visibility: visible; } #printArea { position: absolute; left: 0; top: 0; width: 100%; display: block; padding: 20px; } .no-print { display: none; } }
     </style>
@@ -79,7 +76,7 @@
         <div class="header-content">
             <div>
                 <h5 class="header-title">RCM Pro</h5>
-                <small style="opacity: 0.8;">Business Manager</small>
+                <small style="opacity: 0.8;">Smart Manager</small>
             </div>
             <div class="badge bg-white text-primary" id="connectionStatus">● Online</div>
         </div>
@@ -100,7 +97,7 @@
                 <h6 class="fw-bold m-0 text-secondary">PENDING</h6>
                 <h5 class="fw-bold text-danger m-0">₹<span id="totalUdhari">0</span></h5>
             </div>
-            <h6 class="text-secondary fw-bold mb-3 mt-3">📅 TODAY'S FOLLOW-UPS</h6>
+            <h6 class="text-secondary fw-bold mb-3 mt-3">📅 SMART FOLLOW-UPS</h6>
             <div id="taskListContainer" class="pb-5"><div class="text-center mt-5"><div class="spinner-border text-primary"></div></div></div>
         </div>
 
@@ -129,57 +126,34 @@
         </div>
 
         <div id="view-reports" class="section-view">
-            <h5 class="fw-bold mb-4">Business Insights</h5>
+            <h5 class="fw-bold mb-4">Performance Report</h5>
             
             <div class="dash-card dash-green">
-                <span class="dash-lbl">Total Sale</span>
-                <span class="dash-val" id="repTotalSale">₹0</span>
-                <i class="fas fa-chart-line dash-icon"></i>
+                <span class="dash-lbl">Total Sale</span><span class="dash-val" id="repTotalSale">₹0</span><i class="fas fa-chart-line dash-icon"></i>
             </div>
-
             <div class="row">
-                <div class="col-6">
-                    <div class="dash-card dash-red p-3">
-                        <span class="dash-lbl" style="font-size:0.7em;">Pending</span>
-                        <span class="dash-val" style="font-size:1.5em;" id="repTotalUdhari">₹0</span>
-                        <i class="fas fa-exclamation-circle dash-icon" style="font-size:3em;"></i>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="dash-card dash-blue p-3">
-                        <span class="dash-lbl" style="font-size:0.7em;">Cash In</span>
-                        <span class="dash-val" style="font-size:1.5em;" id="repCashIn">₹0</span>
-                        <i class="fas fa-wallet dash-icon" style="font-size:3em;"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="btn-action-panel">
-                <button class="btn-big btn-print" onclick="printReport('udhari')">
-                    <i class="fas fa-print fa-2x"></i>
-                    <span>Print Udhari</span>
-                </button>
-                <button class="btn-big btn-excel" onclick="exportToExcel()">
-                    <i class="fas fa-file-excel fa-2x"></i>
-                    <span>Download Data</span>
-                </button>
+                <div class="col-6"><div class="dash-card dash-red p-3"><span class="dash-lbl" style="font-size:0.7em;">Pending</span><span class="dash-val" style="font-size:1.5em;" id="repTotalUdhari">₹0</span><i class="fas fa-exclamation-circle dash-icon" style="font-size:3em;"></i></div></div>
+                <div class="col-6"><div class="dash-card dash-blue p-3"><span class="dash-lbl" style="font-size:0.7em;">Cash In</span><span class="dash-val" style="font-size:1.5em;" id="repCashIn">₹0</span><i class="fas fa-wallet dash-icon" style="font-size:3em;"></i></div></div>
             </div>
 
             <div class="chart-box">
-                <div class="chart-title">Sales Trend (7 Days)</div>
-                <canvas id="barChart" style="height:150px;"></canvas>
+                <div class="chart-title">Weekly Sales Trend</div>
+                <div class="chart-wrapper">
+                    <canvas id="barChart"></canvas>
+                </div>
             </div>
 
             <div class="chart-box">
                 <div class="chart-title">Top Products</div>
                 <ul class="list-group list-group-flush small" id="topProductsList"></ul>
             </div>
+            
+            <div class="d-grid gap-2 mb-5">
+                <button class="btn btn-outline-danger p-3 fw-bold" onclick="printReport('udhari')"><i class="fas fa-print"></i> Print Udhari List</button>
+                <button class="btn btn-outline-success p-3 fw-bold" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Download Excel</button>
+            </div>
         </div>
     </div>
-
-    <div style="display:none;" id="inventoryLogic"></div>
-
-    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow" style="border-radius:20px;"><div class="modal-body p-4"><h5 class="fw-bold mb-3">Update Task</h5><input type="hidden" id="editClientId"><textarea id="updateRemark" class="form-control bg-light border-0 mb-3 p-3" placeholder="Remark..."></textarea><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label fw-bold text-success" for="markPaidCheck">Mark Paid</label></div><button class="btn btn-primary w-100 rounded-pill py-2" onclick="saveUpdate()">Complete</button></div></div></div></div>
 
     <div class="bottom-nav no-print">
         <a class="nav-item active" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i>Tasks</a>
@@ -210,7 +184,9 @@
                 globalClients = []; let totalUdhari = 0, totalPaid = 0;
                 snapshot.forEach((doc) => {
                     let data = doc.data(); data.docId = doc.id; 
-                    if(data.paymentStatus === 'Unpaid') totalUdhari += parseInt(data.amount || 0); else totalPaid += parseInt(data.amount || 0);
+                    // Calculate totals (Completed tasks count as paid/history if we want, but for pending list we filter later)
+                    if(data.paymentStatus === 'Unpaid' && data.status !== 'Done') totalUdhari += parseInt(data.amount || 0); 
+                    if(data.paymentStatus === 'Paid' || data.status === 'Done') totalPaid += parseInt(data.amount || 0);
                     globalClients.push(data);
                 });
                 document.getElementById('totalUdhari').innerText = totalUdhari;
@@ -218,7 +194,6 @@
             });
         }
 
-        // LOAD PRODUCTS (Logic kept for Add Sale dropdown)
         function loadProducts() {
             const dd = document.getElementById('cProd');
             fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r => r.text()).then(csv => {
@@ -235,15 +210,16 @@
             });
         }
 
+        // --- CORE UI LOGIC ---
         function renderUI() {
             const listDiv = document.getElementById('clientListContainer'); listDiv.innerHTML = '';
             const tDiv = document.getElementById('taskListContainer'); tDiv.innerHTML = '';
             const term = document.getElementById('searchInput').value.toLowerCase();
             const today = new Date(); today.setHours(0,0,0,0);
 
-            // 1. List
+            // 1. List View (Shows All)
             globalClients.filter(c => c.name.toLowerCase().includes(term)).forEach(c => {
-                let badge = c.paymentStatus === 'Paid' ? '<span class="status-badge badge-paid">PAID</span>' : '<span class="status-badge badge-unpaid">UNPAID</span>';
+                let badge = c.status === 'Done' ? '<span class="status-badge bg-secondary text-white">DONE</span>' : (c.paymentStatus === 'Paid' ? '<span class="status-badge badge-paid">PAID</span>' : '<span class="status-badge badge-unpaid">UNPAID</span>');
                 listDiv.innerHTML += `
                 <div class="client-card">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -255,8 +231,8 @@
                 </div>`;
             });
 
-            // 2. Tasks
-            let pendingTasks = globalClients.filter(c => c.status === 'Pending' && c.nextFollowUp);
+            // 2. Tasks View (Smart Dropdown Logic)
+            let pendingTasks = globalClients.filter(c => c.status !== 'Done' && c.nextFollowUp);
             pendingTasks.sort((a, b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
             
             pendingTasks.forEach(c => {
@@ -268,15 +244,49 @@
 
                 tDiv.innerHTML += `
                 <div class="task-card" style="border-left-color:${color}">
-                    <div class="task-info"><span style="color:${color};font-weight:bold;font-size:0.8em;">${dayTxt}</span><h6 class="fw-bold m-0">${c.name}</h6><small class="text-muted">₹${c.amount}</small></div>
+                    <div class="task-info">
+                        <span style="color:${color};font-weight:bold;font-size:0.8em;">${dayTxt}</span>
+                        <h6 class="fw-bold m-0">${c.name}</h6>
+                        <small class="text-muted">₹${c.amount} • ${c.nextFollowUp}</small>
+                    </div>
                     <div class="task-actions">
                         <button class="task-btn btn-ph" onclick="window.open('tel:${c.phone}')"><i class="fas fa-phone"></i></button>
                         <button class="task-btn btn-wa" onclick="window.open('${waLink}')"><i class="fab fa-whatsapp"></i></button>
-                        <button class="task-btn btn-dn" onclick="openUpdateModal('${c.docId}')"><i class="fas fa-check"></i></button>
+                        
+                        <div class="dropdown">
+                            <button class="task-btn btn-opt" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#" onclick="updateTask('${c.docId}', 7)"><i class="fas fa-calendar-week text-primary"></i> 7 Days Later</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="updateTask('${c.docId}', 15)"><i class="fas fa-calendar-alt text-warning"></i> 15 Days Later</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="updateTask('${c.docId}', 30)"><i class="fas fa-calendar text-info"></i> 1 Month Later</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item fw-bold text-success" href="#" onclick="completeTask('${c.docId}')"><i class="fas fa-check-circle"></i> Mark Done</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>`;
             });
-            if(pendingTasks.length==0) tDiv.innerHTML = "<div class='text-center p-3 text-muted'>No Tasks</div>";
+            if(pendingTasks.length==0) tDiv.innerHTML = "<div class='text-center p-3 text-muted'>No Pending Tasks</div>";
+        }
+
+        // --- NEW TASK ACTIONS ---
+        function updateTask(id, days) {
+            let newDate = new Date();
+            newDate.setDate(newDate.getDate() + days);
+            let ds = newDate.toISOString().split('T')[0];
+            db.collection("clients").doc(id).update({ nextFollowUp: ds }).then(() => {
+                showPopup(`Updated to ${days} days later!`);
+            });
+        }
+
+        function completeTask(id) {
+            if(confirm("Mark this task as Done? It will move out of Pending.")) {
+                db.collection("clients").doc(id).update({ status: 'Done', paymentStatus: 'Paid' }).then(() => {
+                    showPopup("Task Completed! ✅");
+                });
+            }
         }
 
         let barChart=null;
@@ -285,7 +295,7 @@
             document.getElementById('repTotalUdhari').innerText = '₹' + udhari;
             document.getElementById('repCashIn').innerText = '₹' + paid;
 
-            // Bar Chart
+            // Bar Chart (Mobile Friendly)
             const last7Days = {}; 
             const dates = []; 
             for(let i=6; i>=0; i--) { let d = new Date(); d.setDate(d.getDate() - i); let ds = d.toISOString().split('T')[0]; dates.push(ds); last7Days[ds] = 0; }
@@ -293,7 +303,18 @@
             
             const ctxBar = document.getElementById('barChart').getContext('2d');
             if(barChart) barChart.destroy();
-            barChart = new Chart(ctxBar, { type: 'bar', data: { labels: dates.map(d=>d.substring(5)), datasets: [{ label: 'Sales', data: Object.values(last7Days), backgroundColor: '#3b82f6', borderRadius: 4 }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display:false }, x: { grid: { display: false } } } } });
+            
+            // NOTE: maintainAspectRatio: false is key for mobile responsiveness
+            barChart = new Chart(ctxBar, { 
+                type: 'bar', 
+                data: { labels: dates.map(d=>d.substring(5)), datasets: [{ label: 'Sales', data: Object.values(last7Days), backgroundColor: '#3b82f6', borderRadius: 4 }] }, 
+                options: { 
+                    responsive: true,
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }, 
+                    scales: { y: { display:false }, x: { grid: { display: false } } } 
+                } 
+            });
 
             // Top Products
             let prodCounts = {};
@@ -302,9 +323,10 @@
             document.getElementById('topProductsList').innerHTML = sortedProds.map((p,i) => `<li class="list-group-item d-flex justify-content-between align-items-center border-0 p-1"><span>${i+1}. ${p[0]}</span><span class="badge bg-primary rounded-pill">${p[1]}</span></li>`).join('');
         }
 
-        // Logic Helpers
+        // Common Logic
         function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); updateCartUI(); }
         function updateCartUI() { let t=0; document.getElementById('cartList').innerHTML = currentCart.map(i=> {t+=i.price; return `${i.name}, `}).join(''); document.getElementById('cartTotal').innerText=t; }
+        
         function saveClient() {
             let name = document.getElementById('cName').value; if(!name) return alert("Name?");
             let id = document.getElementById('editDocId').value; 
@@ -312,19 +334,20 @@
             let pStr = currentCart.map(i=>i.name).join(", ") || "Sale";
             let data = { name: name, phone: document.getElementById('cPhone').value, product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), paymentStatus: document.getElementById('payStatus').value, nextFollowUp: document.getElementById('followUpDate').value, status: 'Pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() };
             let action = id ? db.collection("clients").doc(id).update(data) : db.collection("clients").add(data);
-            action.then(() => { document.getElementById('successPopup').style.display='flex'; setTimeout(()=>{document.getElementById('successPopup').style.display='none'},1500); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); });
+            action.then(() => { showPopup("Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); });
         }
+        
+        function showPopup(msg) { document.getElementById('popupMsg').innerText = msg; document.getElementById('successPopup').style.display='flex'; setTimeout(()=>{document.getElementById('successPopup').style.display='none'},1500); }
         function getGPS() { if (!navigator.geolocation) { alert("No GPS"); return; } navigator.geolocation.getCurrentPosition(p => { document.getElementById('gpsCoords').value = `${p.coords.latitude},${p.coords.longitude}`; alert("Location Tagged!"); }); }
         function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); }
         function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateDashboard(parseInt(document.getElementById('repCashIn').innerText.replace('₹','')), parseInt(document.getElementById('repTotalUdhari').innerText.replace('₹',''))); }
         function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; document.getElementById('followUpDate').value=c.nextFollowUp; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } updateCartUI(); switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
-        function openUpdateModal(id){ document.getElementById('editClientId').value=id; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
-        function saveUpdate() { let id = document.getElementById('editClientId').value; let u = { status: 'Done' }; if(document.getElementById('markPaidCheck').checked) u.paymentStatus='Paid'; db.collection("clients").doc(id).update(u).then(()=>{ bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); }
+        
         function printReport(type) {
             let html = `<div style="padding:20px;"><h2>PENDING REPORT</h2><table style="width:100%;text-align:left;"><tr><th>Name</th><th>Amount</th></tr>${globalClients.filter(c=>c.paymentStatus=='Unpaid').map(c=>`<tr><td>${c.name}<br>${c.phone}</td><td style="color:red;font-weight:bold;">${c.amount}</td></tr>`).join('')}</table></div>`;
             document.getElementById('printArea').innerHTML = html; window.print();
         }
-        function exportToExcel() { let csv = "Name,Phone,Amount,Status\n" + globalClients.map(c => `${c.name},${c.phone},${c.amount},${c.paymentStatus}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click(); }
+        function exportToExcel() { let csv = "Name,Phone,Amount,Status\n" + globalClients.map(c => `${c.name},${c.phone},${c.amount},${c.status}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click(); }
     </script>
 </body>
 </html>
