@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="mr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Professional UI)</title>
+    <title>RCM Pro (GPS & Tasks)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
         .header-content { display: flex; justify-content: space-between; align-items: center; color: white; }
         .header-title { font-weight: 700; margin: 0; letter-spacing: 0.5px; }
         
-        /* ---------------- PROFESSIONAL LIST CARD UI ---------------- */
+        /* CARDS */
         .client-card { 
             background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05);
@@ -32,7 +32,6 @@
         .client-card:active { transform: scale(0.98); }
         
         .card-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        
         .user-info { display: flex; align-items: center; gap: 12px; }
         .user-avatar { 
             width: 45px; height: 45px; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); 
@@ -42,9 +41,7 @@
         .user-details h6 { margin: 0; font-weight: 700; color: #111827; font-size: 1rem; }
         .user-details small { color: #6b7280; font-size: 0.85em; }
 
-        .status-badge { 
-            font-size: 0.75em; padding: 4px 10px; border-radius: 20px; font-weight: 600; letter-spacing: 0.3px;
-        }
+        .status-badge { font-size: 0.75em; padding: 4px 10px; border-radius: 20px; font-weight: 600; letter-spacing: 0.3px; }
         .badge-paid { background: #d1fae5; color: #065f46; }
         .badge-unpaid { background: #fee2e2; color: #991b1b; }
 
@@ -61,6 +58,12 @@
         .btn-edit { background: #eff6ff; color: #2563eb; }
         .btn-del { width: 40px; flex: none; background: #fef2f2; color: #dc2626; }
 
+        /* TASK CARD STYLES */
+        .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .task-urgent { border-left-color: #ef4444; background-color: #fff5f5; }
+        .task-today { border-left-color: #f59e0b; background-color: #fffbf0; }
+        .task-future { border-left-color: #2563eb; }
+
         /* SEARCH BAR */
         .search-container { position: relative; margin-bottom: 20px; }
         .search-input { 
@@ -70,8 +73,7 @@
         .search-input:focus { border-color: var(--primary); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
 
-        /* ---------------- OTHER STYLES ---------------- */
-        .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        /* OTHER */
         .inventory-card { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 10px; }
         .inv-table { width: 100%; font-size: 0.9em; } .inv-table th { background: #1e3a8a; color: white; padding: 10px; text-align: left; } .inv-table td { padding: 10px; border-bottom: 1px solid #eee; }
         .stock-badge { padding: 3px 8px; border-radius: 5px; font-weight: bold; font-size: 0.8em; } .stock-ok { background: #e8f5e9; color: green; } .stock-low { background: #ffebee; color: red; }
@@ -81,7 +83,6 @@
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 10px; border-top: 1px solid #e5e7eb; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
         .nav-item { text-align: center; color: #9ca3af; text-decoration: none; font-size: 0.75em; font-weight: 500; transition: color 0.3s; } 
         .nav-item.active { color: var(--primary); font-weight: 700; } .nav-item i { font-size: 1.4em; display: block; margin-bottom: 3px; }
-        .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--primary); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5em; z-index: 999; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
         
         /* Modals */
@@ -122,7 +123,7 @@
                 <h5 class="fw-bold text-danger m-0">₹<span id="totalUdhari">0</span></h5>
             </div>
             <hr class="text-muted my-2">
-            <h6 class="text-secondary fw-bold mb-3 mt-3">📅 TODAY'S FOLLOW-UPS</h6>
+            <h6 class="text-secondary fw-bold mb-3 mt-3">📅 PRIORITIZED FOLLOW-UPS</h6>
             <div id="taskListContainer" class="pb-5"><div class="text-center mt-5"><div class="spinner-border text-primary"></div></div></div>
         </div>
 
@@ -165,7 +166,20 @@
                     </div>
 
                     <div class="col-6"><label class="small fw-bold text-muted">Payment Status</label><select class="form-select bg-light border-0 text-danger fw-bold" id="payStatus" style="padding:12px; border-radius:10px;"><option value="Paid">✅ Paid</option><option value="Unpaid" selected>🔴 Unpaid</option></select></div>
-                    <div class="col-6"><label class="small fw-bold text-muted">Next Follow-up</label><select class="form-select bg-light border-0" id="followUpTiming" style="padding:12px; border-radius:10px;"><option value="24h">24 Hours</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="15d">15 Days</option></select></div>
+                    <div class="col-6"><label class="small fw-bold text-muted">Next Follow-up</label><input type="date" class="form-control bg-light border-0" id="followUpDate" style="padding:12px; border-radius:10px;"></div>
+                    
+                    <div class="col-6">
+                        <label class="small fw-bold text-muted">Shop Photo</label>
+                        <input type="file" class="form-control bg-light border-0" id="shopPhoto" accept="image/*" capture="camera" style="padding:9px; border-radius:10px;">
+                    </div>
+                    <div class="col-6">
+                        <label class="small fw-bold text-muted">GPS Location</label>
+                        <button type="button" class="btn btn-outline-primary w-100" onclick="getGPS()" style="border-radius:10px; padding:9px;">
+                            <i class="fas fa-map-marker-alt"></i> <span id="gpsStatus">Tag Location</span>
+                        </button>
+                        <input type="hidden" id="gpsCoords">
+                    </div>
+
                     <div class="col-12 mt-4"><button type="button" class="btn btn-primary w-100 fw-bold p-3 shadow-sm" style="border-radius:15px;" onclick="saveClient()">SAVE ENTRY</button></div>
                 </form>
             </div>
@@ -206,7 +220,7 @@
 
     <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow" style="border-radius:20px;"><div class="modal-body p-4"><h5 class="fw-bold mb-3">Update Task</h5><input type="hidden" id="editClientId"><textarea id="updateRemark" class="form-control bg-light border-0 mb-3 p-3" placeholder="Add remark..." style="border-radius:12px;"></textarea><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label fw-bold text-success" for="markPaidCheck">Mark Payment Received</label></div><button class="btn btn-primary w-100 rounded-pill py-2" onclick="saveUpdate('complete')">Complete Task</button></div></div></div></div>
     <div id="invoiceTemplate" style="display:none;"></div><canvas id="cardCanvas" style="display:none;"></canvas>
-    <div id="reportOverlay"><div class="modal-box"><div class="d-flex justify-content-between mb-3"><h5 class="fw-bold">Report</h5><button class="btn-close" onclick="document.getElementById('reportOverlay').style.display='none'"></button></div><div id="reportContent"></div><button class="btn btn-danger w-100 mt-3" onclick="window.print()">Print</button></div></div>
+    <div id="printArea"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -219,6 +233,8 @@
         let currentCart = []; let globalClients = []; let globalProductList = []; let scannedStockItems = [];
         
         document.getElementById('cDate').valueAsDate = new Date();
+        document.getElementById('followUpDate').valueAsDate = new Date();
+
         document.addEventListener('DOMContentLoaded', () => { loadProducts(); listenToData(); });
 
         function listenToData() {
@@ -234,7 +250,7 @@
             });
         }
 
-        // --- 1. LOAD PRODUCTS (SHEET + FIREBASE STOCK) ---
+        // --- 1. LOAD PRODUCTS ---
         function loadProducts() {
             const dd = document.getElementById('cProd');
             const invList = document.getElementById('inventoryList');
@@ -256,35 +272,24 @@
             });
         }
 
-        // --- 2. RENDER PROFESSIONAL LIST UI ---
+        // --- 2. RENDER UI WITH SORTING & DAYS LEFT ---
         function renderUI() {
             const listDiv = document.getElementById('clientListContainer'); listDiv.innerHTML = '';
             const tDiv = document.getElementById('taskListContainer'); tDiv.innerHTML = '';
             const term = document.getElementById('searchInput').value.toLowerCase();
-            const today = new Date().toISOString().split('T')[0];
+            const today = new Date(); today.setHours(0,0,0,0);
 
+            // 1. List View
             globalClients.filter(c => c.name.toLowerCase().includes(term)).forEach(c => {
-                // Initial Letter Avatar
                 let initial = c.name.charAt(0).toUpperCase();
                 let statusBadge = c.paymentStatus === 'Paid' ? '<span class="status-badge badge-paid">PAID</span>' : '<span class="status-badge badge-unpaid">UNPAID</span>';
-
-                // Professional Card
                 listDiv.innerHTML += `
                 <div class="client-card">
                     <div class="card-header-row">
-                        <div class="user-info">
-                            <div class="user-avatar">${initial}</div>
-                            <div class="user-details">
-                                <h6>${c.name}</h6>
-                                <small>${c.phone || 'No Contact'}</small>
-                            </div>
-                        </div>
+                        <div class="user-info"><div class="user-avatar">${initial}</div><div class="user-details"><h6>${c.name}</h6><small>${c.phone || 'No Contact'}</small></div></div>
                         ${statusBadge}
                     </div>
-                    <div class="card-body-row">
-                        <span>${c.product}</span>
-                        <span class="amt-text">₹${c.amount}</span>
-                    </div>
+                    <div class="card-body-row"><span>${c.product}</span><span class="amt-text">₹${c.amount}</span></div>
                     <div class="card-actions">
                         <button class="btn-action btn-call" onclick="window.open('tel:${c.phone}')"><i class="fas fa-phone-alt"></i> Call</button>
                         <button class="btn-action btn-bill" onclick="printInvoice('${c.docId}')"><i class="fas fa-file-invoice"></i> Bill</button>
@@ -292,50 +297,51 @@
                         <button class="btn-action btn-del" onclick="if(confirm('Delete?')) db.collection('clients').doc('${c.docId}').delete()"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`;
+            });
 
-                // Task Card
-                if(c.status === 'Pending') {
-                    let isLate = c.nextFollowUp < today;
-                    let cardClass = isLate ? 'border-left-color: #ef4444;' : 'border-left-color: #2563eb;';
-                    tDiv.innerHTML += `
-                    <div class="task-card" style="${cardClass}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div><h6 class="fw-bold m-0">${c.name}</h6><small class="text-muted">Due: ${c.nextFollowUp}</small></div>
-                            <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="openUpdateModal('${c.docId}')">Action</button>
+            // 2. Task View (Sorted & Days Left)
+            let pendingTasks = globalClients.filter(c => c.status === 'Pending' && c.nextFollowUp);
+            pendingTasks.sort((a, b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
+
+            if(pendingTasks.length === 0) { tDiv.innerHTML = '<div class="text-center p-4 text-muted">No pending tasks!</div>'; return; }
+
+            pendingTasks.forEach(c => {
+                let due = new Date(c.nextFollowUp);
+                let diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+                
+                let dayTxt = "", cls = "";
+                if(diff < 0) { dayTxt = `⚠️ Overdue by ${Math.abs(diff)} days`; cls = "task-urgent"; }
+                else if(diff === 0) { dayTxt = "🔥 Today"; cls = "task-today"; }
+                else { dayTxt = `⏳ ${diff} Days Left`; cls = "task-future"; }
+
+                tDiv.innerHTML += `
+                <div class="task-card ${cls}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fw-bold m-0">${c.name}</h6>
+                            <small class="fw-bold text-dark">${dayTxt}</small><br>
+                            <small class="text-muted" style="font-size:0.8em">Due: ${c.nextFollowUp}</small>
                         </div>
-                    </div>`;
-                }
+                        <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="openUpdateModal('${c.docId}')">Action</button>
+                    </div>
+                </div>`;
             });
         }
 
-        // --- 3. LOGIC (Save, Cart, PDF, etc) ---
-        async function processPDF(input) {
-            if(!input.files[0]) return;
-            const pdf = await pdfjsLib.getDocument(await input.files[0].arrayBuffer()).promise;
-            let txt = ""; for(let i=1; i<=pdf.numPages; i++) txt += (await (await pdf.getPage(i)).getTextContent()).items.map(s=>s.str).join(" ") + " ";
-            txt = txt.replace(/\s+/g, ' '); scannedStockItems = [];
-            globalProductList.forEach(prod => {
-                let key = prod.name.split(' ')[0];
-                if(txt.toLowerCase().includes(key.toLowerCase())) {
-                    let qty = 0;
-                    if(txt.match(new RegExp(key + ".*?(\\d+)\\s+(\\d+\\.\\d{2})", "i"))) qty = parseInt(txt.match(new RegExp(key + ".*?(\\d+)\\s+(\\d+\\.\\d{2})", "i"))[1]);
-                    else if (prod.name.includes("Oil")) qty = 12; else qty = 5;
-                    if(qty > 0) {
-                        scannedStockItems.push({name: prod.name, qty: qty});
-                        document.getElementById('scannedItemsList').innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${prod.name}</span><span class="badge bg-success">+${qty}</span></li>`;
-                    }
-                }
-            });
-            if(scannedStockItems.length > 0) document.getElementById('pdfPreviewModal').style.display = 'flex'; else alert("No match found.");
-        }
-        function confirmStockUpdate() {
-            let b = db.batch(); scannedStockItems.forEach(i => b.set(db.collection("inventory").doc(i.name), {qty: firebase.firestore.FieldValue.increment(i.qty)}, {merge:true}));
-            b.commit().then(()=>{ document.getElementById('pdfPreviewModal').style.display='none'; showPopup("Stock Updated!"); loadProducts(); });
+        // --- 3. LOGIC (Save, GPS, Cart) ---
+        function getGPS() {
+            const status = document.getElementById('gpsStatus');
+            if (!navigator.geolocation) { alert("Geolocation unsupported"); return; }
+            status.innerText = "Locating...";
+            navigator.geolocation.getCurrentPosition(p => {
+                document.getElementById('gpsCoords').value = `${p.coords.latitude},${p.coords.longitude}`;
+                status.innerText = "✅ Tagged"; status.parentElement.className = "btn btn-success w-100";
+            }, () => { status.innerText = "❌ Failed"; alert("Check permissions"); });
         }
 
         function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); updateCartUI(); }
         function removeFromCart(idx) { currentCart.splice(idx, 1); updateCartUI(); }
-        function updateCartUI() { let t=0; document.getElementById('cartList').innerHTML = currentCart.map((i,x)=> {t+=i.price; return `<div class="cart-item"><span>${i.name}</span><span class="cart-remove" onclick="removeFromCart(${x})">×</span></div>`}).join(''); document.getElementById('cartTotal').innerText=t; }
+        function updateCartUI() { let t=0; document.getElementById('cartList').innerHTML = currentCart.map((i,x)=> {t+=i.price; return `<div class="d-flex justify-content-between border-bottom p-1"><span>${i.name}</span><span class="text-danger" style="cursor:pointer" onclick="removeFromCart(${x})">×</span></div>`}).join(''); document.getElementById('cartTotal').innerText=t; }
 
         function saveClient() {
             let name = document.getElementById('cName').value; if(!name) return alert("Name?");
@@ -345,21 +351,48 @@
             
             if(!id && currentCart.length > 0) { let b = db.batch(); currentCart.forEach(i => b.set(db.collection("inventory").doc(i.name), {qty: firebase.firestore.FieldValue.increment(-1)}, {merge:true})); b.commit(); }
 
-            let data = { name: name, phone: document.getElementById('cPhone').value, product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), paymentStatus: document.getElementById('payStatus').value, nextFollowUp: document.getElementById('cDate').value, status: 'Pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+            let data = { 
+                name: name, phone: document.getElementById('cPhone').value, 
+                product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), 
+                paymentStatus: document.getElementById('payStatus').value, 
+                nextFollowUp: document.getElementById('followUpDate').value,
+                gpsLocation: document.getElementById('gpsCoords').value,
+                status: 'Pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+            };
             let action = id ? db.collection("clients").doc(id).update(data) : db.collection("clients").add(data);
             action.then(() => { showPopup("Data Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); loadProducts(); });
         }
 
-        // Utils
+        // PDF & Utils
+        async function processPDF(input) {
+            if(!input.files[0]) return;
+            const pdf = await pdfjsLib.getDocument(await input.files[0].arrayBuffer()).promise;
+            let txt = ""; for(let i=1; i<=pdf.numPages; i++) txt += (await (await pdf.getPage(i)).getTextContent()).items.map(s=>s.str).join(" ") + " ";
+            txt = txt.replace(/\s+/g, ' '); scannedStockItems = [];
+            globalProductList.forEach(prod => {
+                let key = prod.name.split(' ')[0];
+                if(txt.toLowerCase().includes(key.toLowerCase())) {
+                    let qty = 5; // Default logic
+                    scannedStockItems.push({name: prod.name, qty: qty});
+                    document.getElementById('scannedItemsList').innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${prod.name}</span><span class="badge bg-success">+${qty}</span></li>`;
+                }
+            });
+            if(scannedStockItems.length > 0) document.getElementById('pdfPreviewModal').style.display = 'flex'; else alert("No match found.");
+        }
+        function confirmStockUpdate() {
+            let b = db.batch(); scannedStockItems.forEach(i => b.set(db.collection("inventory").doc(i.name), {qty: firebase.firestore.FieldValue.increment(i.qty)}, {merge:true}));
+            b.commit().then(()=>{ document.getElementById('pdfPreviewModal').style.display='none'; showPopup("Stock Updated!"); loadProducts(); });
+        }
+
         function showPopup(msg) { document.getElementById('popupMsg').innerText = msg; document.getElementById('successPopup').style.display='flex'; setTimeout(()=>document.getElementById('successPopup').style.display='none', 2000); }
-        function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); document.getElementById('formTitle').innerText="New Sale"; }
+        function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); document.getElementById('formTitle').innerText="New Sale"; document.getElementById('gpsStatus').innerText="Tag Location"; document.getElementById('gpsStatus').parentElement.className="btn btn-outline-primary w-100"; }
         function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateChart(0,0); }
-        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } else { currentCart = []; } updateCartUI(); document.getElementById('formTitle').innerText = "Editing: " + c.name; switchTab('view-add', document.querySelectorAll('.nav-item')[2]); } }
+        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; document.getElementById('followUpDate').value=c.nextFollowUp; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } else { currentCart = []; } updateCartUI(); document.getElementById('formTitle').innerText = "Editing: " + c.name; switchTab('view-add', document.querySelectorAll('.nav-item')[2]); } }
         let myChart=null; function updateChart(p,u){ const ctx=document.getElementById('myChart').getContext('2d'); if(myChart)myChart.destroy(); myChart=new Chart(ctx,{type:'doughnut',data:{labels:['Paid','Unpaid'],datasets:[{data:[p,u],backgroundColor:['#10b981','#ef4444']}]}}); }
-        function printInvoice(docId) { let c = globalClients.find(x => x.docId == docId); if(!c) return; document.getElementById('printArea').innerHTML=`<div style='text-align:center; padding:20px;'><h2>INVOICE</h2><p>${c.name}</p><hr><p>Total: ₹${c.amount}</p></div>`; window.print(); }
+        function printInvoice(docId) { let c = globalClients.find(x => x.docId == docId); if(!c) return; document.getElementById('printArea').innerHTML=`<div style='text-align:center; padding:20px; font-family:sans-serif;'><h2>INVOICE</h2><h3>RCM Store</h3><p>${c.name}</p><p>Date: ${new Date().toLocaleDateString()}</p><hr><table style="width:100%; text-align:left;"><tr><th>Item</th><th style="text-align:right">Price</th></tr>${c.cartJson ? JSON.parse(c.cartJson).map(i=>`<tr><td>${i.name}</td><td style="text-align:right">${i.price}</td></tr>`).join('') : ''}</table><hr><h3>Total: ₹${c.amount}</h3><p style="margin-top:20px;">Thank You!</p></div>`; window.print(); }
         function saveUpdate(type) { let id = document.getElementById('editClientId').value; let u = { status: 'Done' }; if(document.getElementById('markPaidCheck').checked) u.paymentStatus='Paid'; db.collection("clients").doc(id).update(u).then(()=>{ bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); }
         function openUpdateModal(id){ document.getElementById('editClientId').value=id; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
-        function exportToExcel() { let csv = "Name,Phone,Product,Amount,Payment\n" + globalClients.map(c => `${c.name},${c.phone},"${c.product}",${c.amount},${c.paymentStatus}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click(); }
+        function exportToExcel() { let csv = "Name,Phone,Product,Amount,Payment,GPS\n" + globalClients.map(c => `${c.name},${c.phone},"${c.product}",${c.amount},${c.paymentStatus},"${c.gpsLocation||''}"`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click(); }
     </script>
 </body>
 </html>
