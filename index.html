@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Ultimate Task UI)</title>
+    <title>RCM Pro (Advanced Reports)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -23,45 +23,26 @@
         .header-content { display: flex; justify-content: space-between; align-items: center; color: white; }
         .header-title { font-weight: 700; margin: 0; letter-spacing: 0.5px; }
         
-        /* GENERAL CARDS */
-        .client-card { 
-            background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05);
-            transition: transform 0.2s; position: relative; overflow: hidden;
-        }
+        /* CARDS & UI */
+        .client-card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; overflow: hidden; }
         .client-card:active { transform: scale(0.98); }
         
-        /* === NEW TASK UI STYLES === */
-        .task-card { 
-            background: white; border-radius: 16px; padding: 16px; margin-bottom: 15px; 
-            border-left: 6px solid #ccc; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        /* TASK UI */
+        .task-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .task-info { flex-grow: 1; }
         .task-actions { display: flex; gap: 10px; }
-        
-        .task-btn {
-            width: 42px; height: 42px; border-radius: 50%; border: none; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 1.1em; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .task-btn:active { transform: scale(0.9); }
-        .btn-wa { background: #25D366; color: white; } /* WhatsApp Green */
-        .btn-ph { background: #3b82f6; color: white; } /* Phone Blue */
-        .btn-dn { background: #f3f4f6; color: #374151; } /* Done Grey */
+        .task-btn { width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.1em; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-wa { background: #25D366; color: white; } .btn-ph { background: #3b82f6; color: white; } .btn-dn { background: #f3f4f6; color: #374151; }
+        .task-urgent { border-left-color: #ef4444; background: linear-gradient(to right, #fff5f5, #fff); } .task-today { border-left-color: #f59e0b; background: linear-gradient(to right, #fffbf0, #fff); } .task-future { border-left-color: #2563eb; }
+        .days-pill { font-size: 0.75em; padding: 3px 10px; border-radius: 12px; font-weight: 700; display: inline-block; margin-bottom: 5px; }
+        .pill-red { background: #fee2e2; color: #991b1b; } .pill-yellow { background: #fef3c7; color: #92400e; } .pill-blue { background: #dbeafe; color: #1e40af; }
 
-        .task-urgent { border-left-color: #ef4444; background: linear-gradient(to right, #fff5f5, #fff); }
-        .task-today { border-left-color: #f59e0b; background: linear-gradient(to right, #fffbf0, #fff); }
-        .task-future { border-left-color: #2563eb; }
+        /* REPORT DASHBOARD CARDS */
+        .stat-card { background: white; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); flex: 1; }
+        .stat-val { font-size: 1.2em; font-weight: 800; display: block; margin-top: 5px; }
+        .stat-lbl { font-size: 0.75em; color: #6b7280; font-weight: 600; text-transform: uppercase; }
         
-        .days-pill {
-            font-size: 0.75em; padding: 3px 10px; border-radius: 12px; font-weight: 700; display: inline-block; margin-bottom: 5px;
-        }
-        .pill-red { background: #fee2e2; color: #991b1b; }
-        .pill-yellow { background: #fef3c7; color: #92400e; }
-        .pill-blue { background: #dbeafe; color: #1e40af; }
-
-        /* LIST & OTHER STYLES (Kept Same) */
+        /* OTHER UI */
         .card-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .user-info { display: flex; align-items: center; gap: 12px; }
         .user-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #3730a3; font-weight: 700; font-size: 1.2em; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
@@ -75,8 +56,7 @@
         .btn-action { flex: 1; border: none; padding: 8px; border-radius: 8px; font-size: 0.9em; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: background 0.2s; }
         .btn-call { background: #ecfdf5; color: #059669; } .btn-bill { background: #fff7ed; color: #ea580c; } .btn-edit { background: #eff6ff; color: #2563eb; } .btn-del { width: 40px; flex: none; background: #fef2f2; color: #dc2626; }
         .search-container { position: relative; margin-bottom: 20px; }
-        .search-input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 12px; border: 1px solid #e5e7eb; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.02); outline: none; transition: border 0.3s; }
-        .search-input:focus { border-color: var(--primary); }
+        .search-input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 12px; border: 1px solid #e5e7eb; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.02); outline: none; transition: border 0.3s; } .search-input:focus { border-color: var(--primary); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
         .inventory-card { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 10px; }
         .inv-table { width: 100%; font-size: 0.9em; } .inv-table th { background: #1e3a8a; color: white; padding: 10px; text-align: left; } .inv-table td { padding: 10px; border-bottom: 1px solid #eee; }
@@ -165,17 +145,8 @@
                     <div class="col-6"><label class="small fw-bold text-muted">Payment Status</label><select class="form-select bg-light border-0 text-danger fw-bold" id="payStatus" style="padding:12px; border-radius:10px;"><option value="Paid">✅ Paid</option><option value="Unpaid" selected>🔴 Unpaid</option></select></div>
                     <div class="col-6"><label class="small fw-bold text-muted">Next Follow-up</label><input type="date" class="form-control bg-light border-0" id="followUpDate" style="padding:12px; border-radius:10px;"></div>
                     
-                    <div class="col-6">
-                        <label class="small fw-bold text-muted">Shop Photo</label>
-                        <input type="file" class="form-control bg-light border-0" id="shopPhoto" accept="image/*" capture="camera" style="padding:9px; border-radius:10px;">
-                    </div>
-                    <div class="col-6">
-                        <label class="small fw-bold text-muted">GPS Location</label>
-                        <button type="button" class="btn btn-outline-primary w-100" onclick="getGPS()" style="border-radius:10px; padding:9px;">
-                            <i class="fas fa-map-marker-alt"></i> <span id="gpsStatus">Tag Location</span>
-                        </button>
-                        <input type="hidden" id="gpsCoords">
-                    </div>
+                    <div class="col-6"><label class="small fw-bold text-muted">Shop Photo</label><input type="file" class="form-control bg-light border-0" id="shopPhoto" accept="image/*" capture="camera" style="padding:9px; border-radius:10px;"></div>
+                    <div class="col-6"><label class="small fw-bold text-muted">GPS Location</label><button type="button" class="btn btn-outline-primary w-100" onclick="getGPS()" style="border-radius:10px; padding:9px;"><i class="fas fa-map-marker-alt"></i> <span id="gpsStatus">Tag Location</span></button><input type="hidden" id="gpsCoords"></div>
 
                     <div class="col-12 mt-4"><button type="button" class="btn btn-primary w-100 fw-bold p-3 shadow-sm" style="border-radius:15px;" onclick="saveClient()">SAVE ENTRY</button></div>
                 </form>
@@ -190,7 +161,35 @@
             <div id="clientListContainer" class="pb-5"></div>
         </div>
 
-        <div id="view-reports" class="section-view"><div class="card p-4 border-0 shadow-sm" style="border-radius:20px;"><h6 class="fw-bold text-center mb-3">Business Overview</h6><canvas id="myChart" style="max-height: 200px;"></canvas></div><button class="btn btn-dark w-100 mt-3 p-3 rounded-pill" onclick="exportToExcel()"><i class="fas fa-download me-2"></i> Download Excel Report</button></div>
+        <div id="view-reports" class="section-view">
+            <h5 class="fw-bold mb-3">📊 Business Dashboard</h5>
+            
+            <div class="d-flex gap-2 mb-3">
+                <div class="stat-card"><span class="stat-lbl">Total Sale</span><span class="stat-val text-primary" id="repTotalSale">₹0</span></div>
+                <div class="stat-card"><span class="stat-lbl">Pending</span><span class="stat-val text-danger" id="repTotalUdhari">₹0</span></div>
+            </div>
+            
+            <div class="card p-3 border-0 shadow-sm mb-3" style="border-radius:15px;">
+                <h6 class="small fw-bold text-muted mb-2">PAYMENT STATUS</h6>
+                <div style="height:150px; display:flex; justify-content:center;"><canvas id="pieChart"></canvas></div>
+            </div>
+
+            <div class="card p-3 border-0 shadow-sm mb-3" style="border-radius:15px;">
+                <h6 class="small fw-bold text-muted mb-2">DAILY SALES (Last 7 Days)</h6>
+                <canvas id="barChart" style="height:150px;"></canvas>
+            </div>
+
+            <div class="card p-3 border-0 shadow-sm mb-3" style="border-radius:15px;">
+                <h6 class="small fw-bold text-muted mb-2">🏆 TOP SELLING PRODUCTS</h6>
+                <ul class="list-group list-group-flush small" id="topProductsList"></ul>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button class="btn btn-outline-danger fw-bold" onclick="printReport('udhari')"><i class="fas fa-print"></i> Print Udhari List (Vasuli)</button>
+                <button class="btn btn-outline-dark fw-bold" onclick="printReport('stock')"><i class="fas fa-boxes"></i> Print Stock Report</button>
+                <button class="btn btn-primary fw-bold" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Download Excel</button>
+            </div>
+        </div>
     </div>
 
     <div id="pdfPreviewModal" style="display:flex;">
@@ -216,7 +215,6 @@
     </div>
 
     <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow" style="border-radius:20px;"><div class="modal-body p-4"><h5 class="fw-bold mb-3">Update Task</h5><input type="hidden" id="editClientId"><textarea id="updateRemark" class="form-control bg-light border-0 mb-3 p-3" placeholder="Add remark..." style="border-radius:12px;"></textarea><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label fw-bold text-success" for="markPaidCheck">Mark Payment Received</label></div><button class="btn btn-primary w-100 rounded-pill py-2" onclick="saveUpdate('complete')">Complete Task</button></div></div></div></div>
-    <div id="invoiceTemplate" style="display:none;"></div><canvas id="cardCanvas" style="display:none;"></canvas>
     <div id="printArea"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -243,7 +241,8 @@
                     globalClients.push(data);
                 });
                 document.getElementById('totalUdhari').innerText = totalUdhari;
-                renderUI(); updateChart(totalPaid, totalUdhari);
+                renderUI(); 
+                updateDashboard(totalPaid, totalUdhari); // New Dashboard Logic
             });
         }
 
@@ -268,7 +267,7 @@
             });
         }
 
-        // --- RENDER UI (UPDATED TASKS) ---
+        // --- RENDER UI ---
         function renderUI() {
             const listDiv = document.getElementById('clientListContainer'); listDiv.innerHTML = '';
             const tDiv = document.getElementById('taskListContainer'); tDiv.innerHTML = '';
@@ -295,7 +294,7 @@
                 </div>`;
             });
 
-            // 2. Task View (With Call & WhatsApp)
+            // 2. Task View
             let pendingTasks = globalClients.filter(c => c.status === 'Pending' && c.nextFollowUp);
             pendingTasks.sort((a, b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
 
@@ -304,7 +303,6 @@
             pendingTasks.forEach(c => {
                 let due = new Date(c.nextFollowUp);
                 let diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
-                
                 let dayTxt = "", cls = "", pillCls = "";
                 if(diff < 0) { dayTxt = `Overdue (${Math.abs(diff)} Days)`; cls = "task-urgent"; pillCls = "pill-red"; }
                 else if(diff === 0) { dayTxt = "Today"; cls = "task-today"; pillCls = "pill-yellow"; }
@@ -315,20 +313,76 @@
 
                 tDiv.innerHTML += `
                 <div class="task-card ${cls}">
-                    <div class="task-info">
-                        <span class="days-pill ${pillCls}">${dayTxt}</span>
-                        <h6 class="fw-bold m-0">${c.name}</h6>
-                        <small class="text-muted">Due: ${c.nextFollowUp}</small>
-                    </div>
-                    <div class="task-actions">
-                        <button class="task-btn btn-ph" onclick="window.open('tel:${c.phone}')"><i class="fas fa-phone-alt"></i></button>
-                        <button class="task-btn btn-wa" onclick="window.open('${waLink}')"><i class="fab fa-whatsapp"></i></button>
-                        <button class="task-btn btn-dn" onclick="openUpdateModal('${c.docId}')"><i class="fas fa-check"></i></button>
-                    </div>
+                    <div class="task-info"><span class="days-pill ${pillCls}">${dayTxt}</span><h6 class="fw-bold m-0">${c.name}</h6><small class="text-muted">Due: ${c.nextFollowUp}</small></div>
+                    <div class="task-actions"><button class="task-btn btn-ph" onclick="window.open('tel:${c.phone}')"><i class="fas fa-phone-alt"></i></button><button class="task-btn btn-wa" onclick="window.open('${waLink}')"><i class="fab fa-whatsapp"></i></button><button class="task-btn btn-dn" onclick="openUpdateModal('${c.docId}')"><i class="fas fa-check"></i></button></div>
                 </div>`;
             });
         }
 
+        // --- DASHBOARD & REPORTS LOGIC (NEW) ---
+        let pieChart=null, barChart=null;
+        function updateDashboard(paid, udhari) {
+            // 1. Stat Cards
+            document.getElementById('repTotalSale').innerText = '₹' + (paid + udhari);
+            document.getElementById('repTotalUdhari').innerText = '₹' + udhari;
+
+            // 2. Pie Chart (Payment Status)
+            const ctxPie = document.getElementById('pieChart').getContext('2d');
+            if(pieChart) pieChart.destroy();
+            pieChart = new Chart(ctxPie, { type: 'doughnut', data: { labels: ['Paid','Pending'], datasets: [{ data: [paid, udhari], backgroundColor: ['#10b981','#ef4444'], borderWidth: 0 }] }, options: { maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } });
+
+            // 3. Bar Chart (Last 7 Days Sales)
+            const last7Days = {}; 
+            const dates = []; 
+            for(let i=6; i>=0; i--) { 
+                let d = new Date(); d.setDate(d.getDate() - i); 
+                let ds = d.toISOString().split('T')[0]; dates.push(ds); last7Days[ds] = 0; 
+            }
+            globalClients.forEach(c => {
+                let d = c.nextFollowUp; // Using Date field for simplicity
+                if(last7Days[d] !== undefined) last7Days[d] += parseInt(c.amount);
+            });
+            const ctxBar = document.getElementById('barChart').getContext('2d');
+            if(barChart) barChart.destroy();
+            barChart = new Chart(ctxBar, { type: 'bar', data: { labels: dates.map(d=>d.substring(5)), datasets: [{ label: 'Sales', data: Object.values(last7Days), backgroundColor: '#3b82f6', borderRadius: 4 }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } } } });
+
+            // 4. Top Products Calculation
+            let prodCounts = {};
+            globalClients.forEach(c => {
+                if(c.cartJson) {
+                    try { JSON.parse(c.cartJson).forEach(item => { prodCounts[item.name] = (prodCounts[item.name] || 0) + 1; }); } catch(e){}
+                }
+            });
+            let sortedProds = Object.entries(prodCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            document.getElementById('topProductsList').innerHTML = sortedProds.map((p,i) => `<li class="list-group-item d-flex justify-content-between align-items-center"><span>${i+1}. ${p[0]}</span><span class="badge bg-secondary rounded-pill">${p[1]} Sold</span></li>`).join('');
+        }
+
+        function printReport(type) {
+            let html = `<div style="padding:30px; font-family: sans-serif;">`;
+            if(type === 'udhari') {
+                html += `<h2>⚠️ PENDING PAYMENT LIST (UDHARI)</h2><p>Date: ${new Date().toLocaleDateString()}</p><hr><table style="width:100%; border-collapse: collapse;"><thead><tr style="background:#eee; text-align:left;"><th style="padding:10px;">Name</th><th style="padding:10px;">Mobile</th><th style="padding:10px;">Amount</th></tr></thead><tbody>`;
+                let udhariList = globalClients.filter(c => c.paymentStatus === 'Unpaid');
+                if(udhariList.length === 0) html += "<tr><td colspan='3'>No Pending Payments!</td></tr>";
+                let total = 0;
+                udhariList.forEach(c => {
+                    html += `<tr style="border-bottom:1px solid #ddd;"><td style="padding:10px;">${c.name}</td><td>${c.phone}</td><td style="font-weight:bold; color:red;">₹${c.amount}</td></tr>`;
+                    total += parseInt(c.amount);
+                });
+                html += `</tbody></table><h3 style="text-align:right; margin-top:20px;">Total Pending: ₹${total}</h3>`;
+            } else if (type === 'stock') {
+                html += `<h2>📦 STOCK REPORT</h2><p>Date: ${new Date().toLocaleDateString()}</p><hr><table style="width:100%; border-collapse: collapse;"><thead><tr style="background:#eee; text-align:left;"><th style="padding:10px;">Product</th><th style="padding:10px; text-align:right;">Stock Qty</th></tr></thead><tbody>`;
+                globalProductList.forEach(p => {
+                   let color = p.stock < 5 ? 'red' : 'green';
+                   html += `<tr style="border-bottom:1px solid #ddd;"><td style="padding:10px;">${p.name}</td><td style="text-align:right; font-weight:bold; color:${color}">${p.stock}</td></tr>`; 
+                });
+                html += "</tbody></table>";
+            }
+            html += `</div>`;
+            document.getElementById('printArea').innerHTML = html;
+            window.print();
+        }
+
+        // --- STANDARD LOGIC ---
         function getGPS() {
             const status = document.getElementById('gpsStatus');
             if (!navigator.geolocation) { alert("Geolocation unsupported"); return; }
@@ -385,9 +439,8 @@
 
         function showPopup(msg) { document.getElementById('popupMsg').innerText = msg; document.getElementById('successPopup').style.display='flex'; setTimeout(()=>document.getElementById('successPopup').style.display='none', 2000); }
         function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); document.getElementById('formTitle').innerText="New Sale"; document.getElementById('gpsStatus').innerText="Tag Location"; document.getElementById('gpsStatus').parentElement.className="btn btn-outline-primary w-100"; }
-        function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateChart(0,0); }
+        function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateDashboard(parseInt(document.getElementById('repTotalSale').innerText.replace('₹',''))-parseInt(document.getElementById('repTotalUdhari').innerText.replace('₹','')), parseInt(document.getElementById('repTotalUdhari').innerText.replace('₹',''))); }
         function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; document.getElementById('followUpDate').value=c.nextFollowUp; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } else { currentCart = []; } updateCartUI(); document.getElementById('formTitle').innerText = "Editing: " + c.name; switchTab('view-add', document.querySelectorAll('.nav-item')[2]); } }
-        let myChart=null; function updateChart(p,u){ const ctx=document.getElementById('myChart').getContext('2d'); if(myChart)myChart.destroy(); myChart=new Chart(ctx,{type:'doughnut',data:{labels:['Paid','Unpaid'],datasets:[{data:[p,u],backgroundColor:['#10b981','#ef4444']}]}}); }
         function printInvoice(docId) { let c = globalClients.find(x => x.docId == docId); if(!c) return; document.getElementById('printArea').innerHTML=`<div style='text-align:center; padding:20px; font-family:sans-serif;'><h2>INVOICE</h2><h3>RCM Store</h3><p>${c.name}</p><p>Date: ${new Date().toLocaleDateString()}</p><hr><table style="width:100%; text-align:left;"><tr><th>Item</th><th style="text-align:right">Price</th></tr>${c.cartJson ? JSON.parse(c.cartJson).map(i=>`<tr><td>${i.name}</td><td style="text-align:right">${i.price}</td></tr>`).join('') : ''}</table><hr><h3>Total: ₹${c.amount}</h3><p style="margin-top:20px;">Thank You!</p></div>`; window.print(); }
         function saveUpdate(type) { let id = document.getElementById('editClientId').value; let u = { status: 'Done' }; if(document.getElementById('markPaidCheck').checked) u.paymentStatus='Paid'; db.collection("clients").doc(id).update(u).then(()=>{ bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); }
         function openUpdateModal(id){ document.getElementById('editClientId').value=id; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
