@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Secure)</title>
+    <title>RCM Pro (Payment Update)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -116,7 +116,15 @@
                     <div class="col-12"><label class="small fw-bold text-muted">Product (Loading...)</label><select class="form-select bg-light border-0" id="cProd" style="padding:12px; border-radius:10px;"><option value="">Select...</option></select></div>
                     <div class="col-12"><div id="cartList" class="small text-muted mb-2"></div><button type="button" class="btn btn-sm btn-outline-primary" onclick="addToCart()">+ Add Product</button> <span class="float-end fw-bold">Total: ₹<span id="cartTotal">0</span></span></div>
                     
-                    <div class="col-6"><label class="small fw-bold text-muted">Payment</label><select class="form-select bg-light border-0" id="payStatus" style="padding:12px; border-radius:10px;"><option value="Paid">✅ Paid</option><option value="Unpaid" selected>🔴 Unpaid</option></select></div>
+                    <div class="col-6">
+                        <label class="small fw-bold text-muted">Payment Type</label>
+                        <select class="form-select bg-light border-0" id="payStatus" style="padding:12px; border-radius:10px;">
+                            <option value="Cash">💵 Cash</option>
+                            <option value="Online">📱 Online</option>
+                            <option value="Unpaid" selected>🔴 Unpaid</option>
+                        </select>
+                    </div>
+
                     <div class="col-6"><label class="small fw-bold text-muted">Follow-up</label><input type="date" class="form-control bg-light border-0" id="followUpDate" style="padding:12px; border-radius:10px;"></div>
                     <div class="col-6"><label class="small fw-bold text-muted">Photo</label><input type="file" class="form-control bg-light border-0" id="shopPhoto" accept="image/*" capture="camera"></div>
                     <div class="col-6"><label class="small fw-bold text-muted">GPS</label><button type="button" class="btn btn-outline-primary w-100" onclick="getGPS()"><i class="fas fa-map-marker-alt"></i> Tag</button><input type="hidden" id="gpsCoords"></div>
@@ -190,8 +198,12 @@
                 globalClients = []; let totalUdhari = 0, totalPaid = 0;
                 snapshot.forEach((doc) => {
                     let data = doc.data(); data.docId = doc.id; 
-                    if(data.paymentStatus === 'Unpaid' && data.status !== 'Done') totalUdhari += parseInt(data.amount || 0); 
-                    if(data.paymentStatus === 'Paid' || data.status === 'Done') totalPaid += parseInt(data.amount || 0);
+                    // Calculate totals: Cash/Online/Paid = Paid. Unpaid = Pending.
+                    let isPaid = ['Cash', 'Online', 'Paid'].includes(data.paymentStatus) || data.status === 'Done';
+                    
+                    if(!isPaid) totalUdhari += parseInt(data.amount || 0); 
+                    else totalPaid += parseInt(data.amount || 0);
+                    
                     globalClients.push(data);
                 });
                 document.getElementById('totalUdhari').innerText = totalUdhari;
@@ -221,16 +233,23 @@
             const term = document.getElementById('searchInput').value.toLowerCase();
             const today = new Date(); today.setHours(0,0,0,0);
 
-            // 1. List View (With Proposer & Secure Delete)
+            // 1. List View (With Payment Status Check)
             globalClients.filter(c => c.name.toLowerCase().includes(term)).forEach(c => {
-                let badge = c.status === 'Done' ? '<span class="status-badge bg-secondary text-white">DONE</span>' : (c.paymentStatus === 'Paid' ? '<span class="status-badge badge-paid">PAID</span>' : '<span class="status-badge badge-unpaid">UNPAID</span>');
+                let badgeClass = 'badge-unpaid';
+                let badgeText = 'UNPAID';
+                
+                if(c.status === 'Done') { badgeClass = 'bg-secondary text-white'; badgeText = 'DONE'; }
+                else if(c.paymentStatus === 'Cash') { badgeClass = 'badge-paid'; badgeText = 'CASH'; }
+                else if(c.paymentStatus === 'Online') { badgeClass = 'badge-paid'; badgeText = 'ONLINE'; }
+                else if(c.paymentStatus === 'Paid') { badgeClass = 'badge-paid'; badgeText = 'PAID'; }
+
                 let proposerTxt = c.proposer ? `<small class="d-block text-primary">Proposer: ${c.proposer}</small>` : '';
 
                 listDiv.innerHTML += `
                 <div class="client-card">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div class="d-flex align-items-center gap-2"><div class="user-avatar">${c.name.charAt(0)}</div><div><h6 class="m-0 fw-bold">${c.name}</h6><small class="text-muted">${c.phone}</small></div></div>
-                        ${badge}
+                        <span class="status-badge ${badgeClass}">${badgeText}</span>
                     </div>
                     ${proposerTxt}
                     <div class="bg-light p-2 rounded d-flex justify-content-between mb-2 small text-muted"><span>${c.product}</span><span class="fw-bold text-primary fs-6">₹${c.amount}</span></div>
@@ -243,7 +262,7 @@
             });
 
             // 2. Tasks View
-            let pendingTasks = globalClients.filter(c => c.status !== 'Done' && c.nextFollowUp);
+            let pendingTasks = globalClients.filter(c => c.status !== 'Done' && c.paymentStatus === 'Unpaid');
             pendingTasks.sort((a, b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
             
             pendingTasks.forEach(c => {
@@ -279,17 +298,13 @@
             if(pendingTasks.length==0) tDiv.innerHTML = "<div class='text-center p-3 text-muted'>No Pending Tasks</div>";
         }
 
-        // --- SECURE DELETE FUNCTION ---
+        // --- SECURE DELETE ---
         function deleteSecure(id) {
             if(confirm("⚠ Are you sure you want to delete this client permanently?")) {
                 let pin = prompt("🔒 Enter Security PIN to confirm deletion:");
                 if(pin === "2708") {
-                    db.collection("clients").doc(id).delete().then(() => {
-                        showPopup("Client Deleted Successfully!");
-                    }).catch(e => alert("Error: " + e));
-                } else {
-                    alert("❌ Incorrect PIN! Deletion cancelled.");
-                }
+                    db.collection("clients").doc(id).delete().then(() => showPopup("Client Deleted Successfully!")).catch(e => alert("Error: " + e));
+                } else { alert("❌ Incorrect PIN!"); }
             }
         }
 
@@ -301,7 +316,7 @@
 
         function completeTask(id) {
             if(confirm("Mark this task as Done?")) {
-                db.collection("clients").doc(id).update({ status: 'Done', paymentStatus: 'Paid' }).then(() => showPopup("Task Completed! ✅"));
+                db.collection("clients").doc(id).update({ status: 'Done', paymentStatus: 'Cash' }).then(() => showPopup("Task Completed! ✅"));
             }
         }
 
@@ -332,19 +347,14 @@
             let id = document.getElementById('editDocId').value; 
             let amt = currentCart.reduce((s,i)=>s+i.price,0); 
             let pStr = currentCart.map(i=>i.name).join(", ") || "Sale";
-            let proposer = document.getElementById('cProposer').value || ""; // Capture Proposer
+            let proposer = document.getElementById('cProposer').value || ""; 
             
             let data = { 
-                name: name, 
-                proposer: proposer, // Save Proposer
-                phone: document.getElementById('cPhone').value, 
-                product: pStr, 
-                amount: amt, 
-                cartJson: JSON.stringify(currentCart), 
+                name: name, proposer: proposer, phone: document.getElementById('cPhone').value, 
+                product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), 
                 paymentStatus: document.getElementById('payStatus').value, 
                 nextFollowUp: document.getElementById('followUpDate').value, 
-                status: 'Pending', 
-                timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+                status: 'Pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() 
             };
             let action = id ? db.collection("clients").doc(id).update(data) : db.collection("clients").add(data);
             action.then(() => { showPopup("Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); });
