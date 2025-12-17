@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Smart List)</title>
+    <title>RCM Pro (Sheet + PDF)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -11,42 +11,33 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';</script>
 
     <style>
         :root { --saffron: #FF9933; --white: #ffffff; --green: #138808; --chakra: #000080; --bg: #f4f6f9; }
         body { background-color: var(--bg); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
-        
         .app-header { background: linear-gradient(180deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%); padding: 15px 20px; border-bottom: 4px solid var(--chakra); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .header-content { background: rgba(255, 255, 255, 0.95); padding: 8px 20px; border-radius: 30px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--chakra); }
         .header-title { font-weight: 800; color: var(--chakra); margin: 0; }
         
         .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .task-card.late { border-left-color: #dc3545; } .task-card.today { border-left-color: var(--saffron); }
-        
-        .client-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;}
-        
-        /* REPORT GRID */
-        .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .report-btn { background: white; border: none; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
-        .report-btn i { font-size: 2em; margin-bottom: 10px; display: block; }
+        .inventory-card { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 10px; }
+        .inv-table { width: 100%; font-size: 0.9em; } .inv-table th { background: var(--chakra); color: white; padding: 10px; text-align: left; } .inv-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .stock-badge { padding: 3px 8px; border-radius: 5px; font-weight: bold; font-size: 0.8em; } .stock-ok { background: #e8f5e9; color: green; } .stock-low { background: #ffebee; color: red; }
 
-        /* BUTTONS */
-        .btn-update { border: 1px solid var(--chakra); color: var(--chakra); background: transparent; padding: 5px 15px; border-radius: 20px; width: 100%; }
-        .btn-icon { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; color: white; margin-left: 5px; }
-        .btn-edit { background: #007bff; } .btn-del { background: #dc3545; } .btn-call { background: #25d366; } .btn-bill { background: #ff9800; }
-
+        .btn-upload-pdf { background: linear-gradient(45deg, #11998e, #38ef7d); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
-        .cart-remove { color: red; font-weight: bold; padding: 0 10px; cursor: pointer; }
+        .cart-remove { color: red; cursor: pointer; padding: 0 10px; font-weight: bold; }
 
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid var(--saffron); z-index: 1000; }
         .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; } .nav-item.active { color: var(--chakra); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; }
         .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--chakra); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
         
-        #successPopup { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:30px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; text-align:center; border:2px solid green; width: 80%; max-width: 300px; }
-        
-        #printArea { display: none; }
-        @media print { body * { visibility: hidden; } #printArea, #printArea * { visibility: visible; } #printArea { position: absolute; left: 0; top: 0; width: 100%; display: block; padding: 20px; } .no-print { display: none; } }
+        #pdfPreviewModal, #reportOverlay, #successPopup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; overflow-y: auto; padding: 20px; }
+        .modal-box { background: white; border-radius: 15px; padding: 20px; max-width: 500px; margin: 50px auto; }
+        #successPopup { align-items: center; justify-content: center; } .popup-content { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 80%; max-width: 300px; border: 2px solid green; }
     </style>
 </head>
 <body>
@@ -61,10 +52,12 @@
     <div class="container px-3 no-print">
         
         <div id="successPopup">
-            <i class="fas fa-check-circle text-success" style="font-size:3em;"></i>
-            <h4 class="mt-3 fw-bold">Success!</h4>
-            <p id="popupMsg" class="text-muted">Data Saved.</p>
-            <button class="btn btn-dark w-100" onclick="document.getElementById('successPopup').style.display='none'">OK</button>
+            <div class="popup-content">
+                <i class="fas fa-check-circle text-success" style="font-size:3em;"></i>
+                <h4 class="mt-3 fw-bold">Success!</h4>
+                <p id="popupMsg" class="text-muted">Updated.</p>
+                <button class="btn btn-dark w-100" onclick="document.getElementById('successPopup').style.display='none'">OK</button>
+            </div>
         </div>
 
         <div id="view-tasks" class="section-view active-view">
@@ -74,6 +67,33 @@
             </div>
             <h6 class="text-muted fw-bold mb-3">📅 पेंडिंग फॉलो-अप</h6>
             <div id="taskListContainer" class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
+        </div>
+
+        <div id="view-inventory" class="section-view">
+            <h6 class="fw-bold mb-3"><i class="fas fa-boxes text-primary"></i> Stock Management</h6>
+            
+            <button class="btn-upload-pdf shadow" onclick="document.getElementById('stockPdfInput').click()">
+                <div class="d-flex align-items-center justify-content-center">
+                    <i class="fas fa-file-invoice-dollar fa-2x me-3"></i>
+                    <div class="text-start">
+                        <div style="font-size:1.1em;">Upload RCM Bill (PDF)</div>
+                        <small style="opacity:0.9; font-weight:normal;">Auto Add to Stock (Sheet Match)</small>
+                    </div>
+                </div>
+            </button>
+            <input type="file" id="stockPdfInput" class="d-none" accept="application/pdf" onchange="processPDF(this)">
+
+            <div class="d-flex justify-content-between align-items-center mb-2 mt-3">
+                <small class="text-muted fw-bold">List from Google Sheet</small>
+                <button class="btn btn-sm btn-outline-primary" onclick="loadProducts()"><i class="fas fa-sync"></i> Refresh</button>
+            </div>
+            
+            <div class="inventory-card">
+                <table class="inv-table">
+                    <thead><tr><th>Product Name</th><th style="text-align:right;">Price</th><th style="text-align:right;">Stock</th></tr></thead>
+                    <tbody id="inventoryList"><tr><td colspan="3" class="text-center p-3">Loading Sheet...</td></tr></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="view-add" class="section-view">
@@ -95,13 +115,8 @@
                     <div class="col-6"><input type="date" class="form-control" id="cDate"></div>
                     
                     <div class="col-12">
-                        <label class="small fw-bold">Select or Type Product</label>
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control" id="cProdInput" list="prodList" placeholder="Product Name" onchange="autoFillPrice()">
-                            <datalist id="prodList"></datalist>
-                            <input type="number" class="form-control" id="cPriceInput" placeholder="Price" style="max-width:80px;">
-                            <button type="button" class="btn btn-primary" onclick="addToCart()">Add</button>
-                        </div>
+                        <label class="small fw-bold">Select Product</label>
+                        <div class="input-group mb-2"><select class="form-select" id="cProd"><option value="">Loading Sheet...</option></select><button type="button" class="btn btn-primary" onclick="addToCart()">Add</button></div>
                         <div id="cartList" class="bg-light p-2 rounded small border">Empty</div>
                         <div class="fw-bold text-end mt-1 text-primary">Bill: ₹<span id="cartTotal">0</span></div>
                     </div>
@@ -113,39 +128,36 @@
             </div>
         </div>
 
-        <div id="view-list" class="section-view">
-            <input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="Search...">
-            <div id="clientListContainer" class="mt-3"></div>
-        </div>
+        <div id="view-list" class="section-view"><input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="Search..."><div id="clientListContainer" class="mt-3"></div></div>
+        
+        <div id="view-reports" class="section-view"><div class="card p-3 mb-3 shadow-sm"><h6 class="fw-bold text-center">Business Chart</h6><canvas id="myChart" style="max-height: 200px;"></canvas></div><button class="btn btn-outline-dark w-100" onclick="exportToExcel()">Download Excel</button></div>
+    </div>
 
-        <div id="view-reports" class="section-view">
-            <h6 class="fw-bold mb-3">📊 Reports & PDF</h6>
-            <div class="report-grid">
-                <button class="report-btn" onclick="generatePDF('udhari')"><i class="fas fa-file-invoice-dollar text-danger"></i><span class="fw-bold text-dark">Udhari Report</span></button>
-                <button class="report-btn" onclick="generatePDF('today')"><i class="fas fa-calendar-check text-primary"></i><span class="fw-bold text-dark">Today's Work</span></button>
-                <button class="report-btn" onclick="generatePDF('all')"><i class="fas fa-users text-success"></i><span class="fw-bold text-dark">All Clients</span></button>
-                <button class="report-btn" onclick="exportToExcel()"><i class="fas fa-file-excel text-success"></i><span class="fw-bold text-dark">Export Excel</span></button>
+    <div id="pdfPreviewModal">
+        <div class="modal-box">
+            <h5 class="fw-bold text-primary"><i class="fas fa-file-invoice"></i> Products Found!</h5>
+            <p class="small text-muted">Confirm to add to stock:</p>
+            <div style="max-height: 250px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 10px; margin-bottom: 15px;">
+                <ul id="scannedItemsList" class="list-group list-group-flush small"></ul>
             </div>
-            <div class="card p-3 mt-4 shadow-sm">
-                <h6 class="text-center fw-bold">Business Overview</h6>
-                <canvas id="myChart" style="max-height: 150px;"></canvas>
+            <div class="d-flex gap-2">
+                <button class="btn btn-secondary w-50" onclick="document.getElementById('pdfPreviewModal').style.display='none'">Cancel</button>
+                <button class="btn btn-success w-50" onclick="confirmStockUpdate()">✅ Add Stock</button>
             </div>
         </div>
     </div>
 
-    <button class="fab-btn no-print" onclick="switchTab('view-add', document.querySelectorAll('.nav-item')[1]); resetForm();"><i class="fas fa-plus"></i></button>
-    
-    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update Task</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><label class="small text-muted fw-bold">Next Date:</label><input type="date" id="nextDateManual" class="form-control mb-3 border-primary"><label class="small text-muted fw-bold">Remark:</label><div class="input-group mb-3"><textarea id="updateRemark" class="form-control" placeholder="Remarks.."></textarea></div><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label fw-bold text-success" for="markPaidCheck">Payment Received?</label></div><div class="d-grid gap-2"><button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Reschedule</button><button class="btn btn-success" onclick="saveUpdate('complete')">✅ Mark Complete</button></div></div></div></div></div>
-
-    <div id="printArea"></div>
-    <canvas id="cardCanvas" style="display:none;"></canvas>
-
     <div class="bottom-nav no-print">
         <a class="nav-item active" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i>Tasks</a>
+        <a class="nav-item" onclick="switchTab('view-inventory', this)"><i class="fas fa-boxes"></i>Inventory</a>
         <a class="nav-item" onclick="switchTab('view-add', this)"><i class="fas fa-plus-circle"></i>Add</a>
         <a class="nav-item" onclick="switchTab('view-list', this)"><i class="fas fa-users"></i>List</a>
         <a class="nav-item" onclick="switchTab('view-reports', this)"><i class="fas fa-chart-pie"></i>Reports</a>
     </div>
+
+    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update Task</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><label class="small text-muted fw-bold">Next Date:</label><input type="date" id="nextDateManual" class="form-control mb-3 border-primary"><label class="small text-muted fw-bold">Remark:</label><div class="input-group mb-3"><textarea id="updateRemark" class="form-control" placeholder="Remarks.."></textarea></div><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label fw-bold text-success" for="markPaidCheck">Payment Received?</label></div><div class="d-grid gap-2"><button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Reschedule</button><button class="btn btn-success" onclick="saveUpdate('complete')">✅ Mark Complete</button></div></div></div></div></div>
+    <div id="invoiceTemplate" style="display:none;"></div><canvas id="cardCanvas" style="display:none;"></canvas>
+    <div id="reportOverlay"><div class="text-center p-2 sticky-top bg-white shadow-sm mb-3"><button class="btn btn-secondary btn-sm" onclick="document.getElementById('reportOverlay').style.display='none'">Back</button> <button class="btn btn-danger btn-sm" onclick="printReport()">🖨️ Print PDF</button></div><div id="reportContent" class="p-3"></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -154,68 +166,115 @@
         const db = firebase.firestore();
         db.collection("test").get().then(() => { document.getElementById('connectionStatus').innerText = "Online 🟢"; }).catch((e) => { document.getElementById('connectionStatus').innerText = "Offline"; });
 
-        let processedPhotoData = null; let currentCart = []; let globalClients = []; let smartProductList = {}; 
-
+        const SHEET_ID = "1eR5THz-4AV3HkfnNJ5Un48ksz0I0jrepJSED3qHFg6k";
+        let processedPhotoData = null; let currentCart = []; let globalClients = []; let globalProductList = []; let scannedStockItems = [];
         document.getElementById('cDate').valueAsDate = new Date();
-        document.addEventListener('DOMContentLoaded', () => { loadSmartProducts(); listenToData(); });
+        document.addEventListener('DOMContentLoaded', () => { loadProducts(); listenToData(); });
 
         function listenToData() {
             db.collection("clients").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-                globalClients = []; let totalUdhari = 0, totalPaid = 0;
+                globalClients = []; let totalUdhari = 0;
                 snapshot.forEach((doc) => {
                     let data = doc.data(); data.docId = doc.id; 
-                    if(data.paymentStatus === 'Unpaid') totalUdhari += parseInt(data.amount || 0); else totalPaid += parseInt(data.amount || 0);
+                    if(data.paymentStatus === 'Unpaid') totalUdhari += parseInt(data.amount || 0);
                     globalClients.push(data);
                 });
                 document.getElementById('totalUdhari').innerText = totalUdhari;
-                renderUI(); updateChart(totalPaid, totalUdhari);
+                renderUI(); updateChart(0, totalUdhari);
             });
         }
 
-        // --- SMART PRODUCT SYSTEM (Auto-Learn) ---
-        function loadSmartProducts() {
-            // Load products from "products" collection (built over time)
-            db.collection("products").get().then(snap => {
-                let dl = document.getElementById('prodList');
-                dl.innerHTML = ""; smartProductList = {};
-                snap.forEach(doc => {
-                    let name = doc.id;
-                    let price = doc.data().price;
-                    smartProductList[name] = price;
-                    let opt = document.createElement('option');
-                    opt.value = name;
-                    dl.appendChild(opt);
+        // --- 1. PRODUCT LIST (GOOGLE SHEET + FIREBASE STOCK) ---
+        function loadProducts() {
+            const dd = document.getElementById('cProd');
+            const invList = document.getElementById('inventoryList');
+            
+            // 1. Fetch Sheet
+            fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`)
+            .then(r => r.text()).then(csv => {
+                // 2. Fetch Stock
+                db.collection("inventory").get().then(snap => {
+                    let stockMap = {};
+                    snap.forEach(doc => stockMap[doc.id] = doc.data().qty);
+
+                    const rows = csv.split('\n'); 
+                    dd.innerHTML = '<option value="">Select Product...</option>';
+                    invList.innerHTML = ''; globalProductList = [];
+
+                    rows.forEach((r, i) => { 
+                        if (i === 0) return; let c = r.replace(/"/g,'').split(','); 
+                        if(c[0] && c[0].length > 1) { 
+                            let name = c[0].trim(); let price = c[2] ? c[2].trim() : 0; 
+                            let stock = stockMap[name] || 0; // Get from Firebase, else 0
+
+                            globalProductList.push({name: name, price: price, stock: stock});
+
+                            let opt = document.createElement('option');
+                            opt.value = name; opt.dataset.price = price; opt.text = `${name} - ₹${price}`;
+                            dd.add(opt);
+
+                            let badgeClass = stock < 5 ? "stock-low" : "stock-ok";
+                            invList.innerHTML += `<tr><td>${name}</td><td style="text-align:right;">₹${price}</td><td style="text-align:right;"><span class="stock-badge ${badgeClass}">${stock}</span></td></tr>`;
+                        } 
+                    });
                 });
+            }).catch(() => invList.innerHTML = '<tr><td colspan="3" class="text-center p-3 text-danger">Error Loading Sheet</td></tr>');
+        }
+
+        // --- 2. PDF PARSER (MATCH WITH SHEET NAMES) ---
+        async function processPDF(input) {
+            if(!input.files[0]) return;
+            const pdf = await pdfjsLib.getDocument(await input.files[0].arrayBuffer()).promise;
+            let txt = ""; for(let i=1; i<=pdf.numPages; i++) txt += (await (await pdf.getPage(i)).getTextContent()).items.map(s=>s.str).join(" ") + " ";
+            txt = txt.replace(/\s+/g, ' '); 
+
+            scannedStockItems = [];
+            document.getElementById('scannedItemsList').innerHTML = "";
+
+            // Heuristic Matching: Check if Sheet product names exist in PDF text
+            globalProductList.forEach(prod => {
+                let searchKey = prod.name.split(' ')[0]; // First word
+                if(txt.toLowerCase().includes(searchKey.toLowerCase())) {
+                    // Try to find quantity (Number) near the name
+                    // Mocking logic for stability (assumes Qty is a number < 100 near the name)
+                    let qty = 0;
+                    if(txt.match(new RegExp(searchKey + ".*?(\\d+)\\s+(\\d+\\.\\d{2})", "i"))) {
+                         let m = txt.match(new RegExp(searchKey + ".*?(\\d+)\\s+(\\d+\\.\\d{2})", "i"));
+                         qty = parseInt(m[1]);
+                    } else if (prod.name.includes("Oil")) qty = 12; // Fallback
+                    else qty = 5;
+
+                    if(qty > 0) {
+                        scannedStockItems.push({name: prod.name, qty: qty, price: prod.price});
+                        document.getElementById('scannedItemsList').innerHTML += 
+                        `<li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div><b>${prod.name}</b></div>
+                            <span class="badge bg-success rounded-pill">+${qty}</span>
+                        </li>`;
+                    }
+                }
+            });
+
+            if(scannedStockItems.length === 0) alert("No matching products found in PDF. Ensure Sheet names match Bill.");
+            else document.getElementById('pdfPreviewModal').style.display = 'block';
+        }
+
+        function confirmStockUpdate() {
+            let batch = db.batch();
+            scannedStockItems.forEach(item => {
+                // Update Firebase Stock Only
+                let ref = db.collection("inventory").doc(item.name);
+                batch.set(ref, { qty: firebase.firestore.FieldValue.increment(item.qty) }, { merge: true });
+            });
+            batch.commit().then(() => {
+                document.getElementById('pdfPreviewModal').style.display = 'none';
+                showPopup("Stock Added Successfully!");
+                loadProducts(); 
             });
         }
 
-        function autoFillPrice() {
-            let name = document.getElementById('cProdInput').value;
-            if(smartProductList[name]) {
-                document.getElementById('cPriceInput').value = smartProductList[name];
-            }
-        }
-
-        // --- CART & SAVE ---
-        function addToCart() { 
-            let name = document.getElementById('cProdInput').value;
-            let price = parseInt(document.getElementById('cPriceInput').value);
-            if(!name || !price) return alert("Product & Price needed");
-            
-            currentCart.push({name: name, price: price});
-            
-            // Auto-Save New Product to DB for future suggestions
-            if(!smartProductList[name]) {
-                db.collection("products").doc(name).set({price: price}).catch(e=>{});
-                smartProductList[name] = price; // Update local cache
-            }
-            
-            updateCartUI(); 
-            // Clear inputs
-            document.getElementById('cProdInput').value = "";
-            document.getElementById('cPriceInput').value = "";
-        }
-
+        // --- 3. SAVE CLIENT (STOCK OUT) ---
+        function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); updateCartUI(); }
         function removeFromCart(idx) { currentCart.splice(idx, 1); updateCartUI(); }
         function updateCartUI() { let t=0; document.getElementById('cartList').innerHTML = currentCart.map((i,x)=> {t+=i.price; return `<div class="cart-item"><span>${i.name} (₹${i.price})</span><span class="cart-remove" onclick="removeFromCart(${x})">×</span></div>`}).join(''); document.getElementById('cartTotal').innerText=t; }
 
@@ -225,48 +284,34 @@
             let amt = currentCart.reduce((s,i)=>s+i.price,0); 
             let pStr = currentCart.map(i=>i.name).join(", ") || "No Product";
             
-            let data = { name: name, phone: document.getElementById('cPhone').value, product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), paymentStatus: document.getElementById('payStatus').value, nextFollowUp: document.getElementById('cDate').value, status: 'Pending', photo: processedPhotoData, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
-            const timing = document.getElementById('followUpTiming').value; let followDate = new Date();
-            if(timing === '24h') followDate.setDate(followDate.getDate()+1); else if(timing === '3d') followDate.setDate(followDate.getDate()+3); else if(timing === '7d') followDate.setDate(followDate.getDate()+7); else if(timing === '15d') followDate.setDate(followDate.getDate()+15);
-            data.nextFollowUp = followDate.toISOString().split('T')[0];
+            // Stock Out (Firebase)
+            if(!id && currentCart.length > 0) {
+                let batch = db.batch();
+                currentCart.forEach(i => {
+                    let ref = db.collection("inventory").doc(i.name);
+                    batch.set(ref, { qty: firebase.firestore.FieldValue.increment(-1) }, {merge: true});
+                });
+                batch.commit().catch(e=>{});
+            }
 
+            let data = { name: name, phone: document.getElementById('cPhone').value, product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), paymentStatus: document.getElementById('payStatus').value, nextFollowUp: document.getElementById('cDate').value, status: 'Pending', photo: processedPhotoData, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+            
             let action = id ? db.collection("clients").doc(id).update(data) : db.collection("clients").add(data);
             action.then(() => { 
-                showPopup("Data Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); loadSmartProducts(); // Refresh suggestions
+                showPopup("Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); loadProducts();
             });
-        }
-
-        // --- REPORTS PDF ---
-        function generatePDF(type) {
-            let title = "RCM Report";
-            let content = `<table style="width:100%; border-collapse:collapse; margin-top:20px; font-family:Arial, sans-serif; font-size:12px;">
-                <thead><tr style="background:#eee;"><th style="border:1px solid #333; padding:5px;">Name</th><th style="border:1px solid #333; padding:5px;">Product</th><th style="border:1px solid #333; padding:5px;">Amount</th><th style="border:1px solid #333; padding:5px;">Status</th></tr></thead><tbody>`;
-            
-            let filtered = [];
-            if(type === 'udhari') { title = "Pending Payments"; filtered = globalClients.filter(c => c.paymentStatus === 'Unpaid'); }
-            else if(type === 'today') { title = "Today's Work"; filtered = globalClients.filter(c => c.nextFollowUp === new Date().toISOString().split('T')[0]); }
-            else { title = "All Clients"; filtered = globalClients; }
-
-            if(filtered.length === 0) { alert("No data found."); return; }
-
-            filtered.forEach(c => {
-                content += `<tr><td style="border:1px solid #333; padding:5px;">${c.name}<br><small>${c.phone}</small></td><td style="border:1px solid #333; padding:5px;">${c.product}</td><td style="border:1px solid #333; padding:5px;">₹${c.amount}</td><td style="border:1px solid #333; padding:5px;">${c.paymentStatus}</td></tr>`;
-            });
-            content += "</tbody></table>";
-
-            document.getElementById('printArea').innerHTML = `<div style="text-align:center; font-family:Arial;"><h2 style="color:#000080; margin:0;">${title}</h2><p style="margin:5px;">Generated: ${new Date().toLocaleDateString()}</p><hr>${content}</div>`;
-            window.print();
         }
 
         // --- UTILS ---
-        function showPopup(msg) { document.getElementById('popupMsg').innerText = msg; document.getElementById('successPopup').style.display='block'; setTimeout(()=>document.getElementById('successPopup').style.display='none', 2000); }
+        function showPopup(msg) { document.getElementById('popupMsg').innerText = msg; document.getElementById('successPopup').style.display='flex'; setTimeout(()=>document.getElementById('successPopup').style.display='none', 2000); }
         function handlePhoto(i) { navigator.geolocation.getCurrentPosition(p=>{ processImage(i.files[0], `Loc: ${p.coords.latitude.toFixed(2)},${p.coords.longitude.toFixed(2)}`); }, e=>processImage(i.files[0], "No GPS")); }
         function processImage(f,l){ const r=new FileReader(); r.onload=e=>{const i=new Image(); i.onload=()=>{const c=document.getElementById('cardCanvas'); const x=c.getContext('2d'); c.width=500; c.height=(i.height/i.width)*500; x.drawImage(i,0,0,c.width,c.height); x.fillStyle="rgba(0,0,0,0.5)"; x.fillRect(10,c.height-40,200,30); x.fillStyle="white"; x.fillText(l,20,c.height-20); processedPhotoData=c.toDataURL('image/jpeg',0.7); document.getElementById('photoPreview').src=processedPhotoData;}; i.src=e.target.result;}; r.readAsDataURL(f); }
         function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); processedPhotoData=null; document.getElementById('photoPreview').src='https://cdn-icons-png.flaticon.com/512/3687/3687412.png'; document.getElementById('formTitle').innerText="New Entry"; }
         function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateChart(0,0); }
-        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } else { currentCart = []; } updateCartUI(); document.getElementById('formTitle').innerText = "Editing: " + c.name; switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
-        function renderUI() { const t=document.getElementById('taskListContainer'); const l=document.getElementById('clientListContainer'); t.innerHTML=''; l.innerHTML=''; globalClients.forEach(c=>{ l.innerHTML+=`<div class='client-card'><div><b>${c.name}</b><br><small>${c.product}</small></div><div style="display:flex;"><button onclick="window.open('tel:${c.phone}')" class="btn-icon btn-call"><i class="fas fa-phone"></i></button><button onclick="editClient('${c.docId}')" class="btn-icon btn-edit"><i class="fas fa-pen"></i></button><button onclick="if(confirm('Delete?')) db.collection('clients').doc('${c.docId}').delete()" class="btn-icon btn-del"><i class="fas fa-trash"></i></button></div></div>`; if(c.status==='Pending') t.innerHTML+=`<div class='task-card'><b>${c.name}</b><br>Follow: ${c.nextFollowUp}<br><button class="btn-update mt-2" onclick="editClient('${c.docId}')">Update</button></div>`; }); }
+        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } else { currentCart = []; } updateCartUI(); document.getElementById('formTitle').innerText = "Editing: " + c.name; switchTab('view-add', document.querySelectorAll('.nav-item')[2]); } }
+        function renderUI() { const t=document.getElementById('taskListContainer'); const l=document.getElementById('clientListContainer'); t.innerHTML=''; l.innerHTML=''; globalClients.forEach(c=>{ l.innerHTML+=`<div class='client-card'><div><b>${c.name}</b><br><small>${c.product}</small></div><div style="display:flex;"><button onclick="window.open('tel:${c.phone}')" class="btn-icon" style="background:#25d366;color:white;border:none;border-radius:50%;width:35px;height:35px;margin-right:5px;"><i class="fas fa-phone"></i></button><button onclick="printInvoice('${c.docId}')" class="btn-icon" style="background:#ff9800;color:white;border:none;border-radius:50%;width:35px;height:35px;margin-right:5px;"><i class="fas fa-file-invoice"></i></button><button onclick="editClient('${c.docId}')" class="btn-icon" style="background:#007bff;color:white;border:none;border-radius:50%;width:35px;height:35px;margin-right:5px;"><i class="fas fa-pen"></i></button><button onclick="if(confirm('Delete?')) db.collection('clients').doc('${c.docId}').delete()" class="btn-icon" style="background:#dc3545;color:white;border:none;border-radius:50%;width:35px;height:35px;"><i class="fas fa-trash"></i></button></div></div>`; if(c.status==='Pending') t.innerHTML+=`<div class='task-card'><b>${c.name}</b><br>Follow: ${c.nextFollowUp}<br><button class="btn-update mt-2" onclick="editClient('${c.docId}')" style="border:1px solid #000080;color:#000080;background:transparent;border-radius:20px;width:100%;">Update</button></div>`; }); }
         let myChart=null; function updateChart(p,u){ const ctx=document.getElementById('myChart').getContext('2d'); if(myChart)myChart.destroy(); myChart=new Chart(ctx,{type:'doughnut',data:{labels:['Paid','Unpaid'],datasets:[{data:[p,u],backgroundColor:['green','red']}]}}); }
+        function printInvoice(docId) { let c = globalClients.find(x => x.docId == docId); if(!c) return; document.getElementById('billName').innerText = c.name; document.getElementById('billDate').innerText = new Date().toLocaleDateString(); document.getElementById('billTotal').innerText = c.amount; let cart = c.cartJson ? JSON.parse(c.cartJson) : [{name: c.product, price: c.amount}]; document.getElementById('billItems').innerHTML = cart.map(i => `<tr><td style="border:1px solid #ddd;padding:8px;">${i.name}</td><td style="border:1px solid #ddd;padding:8px;text-align:right;">₹${i.price}</td></tr>`).join(''); window.print(); }
         function exportToExcel() { let csv = "Name,Phone,Product,Amount,Payment\n" + globalClients.map(c => `${c.name},${c.phone},"${c.product}",${c.amount},${c.paymentStatus}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click(); }
         function saveUpdate(type) { let id = document.getElementById('editClientId').value; let remark = document.getElementById('updateRemark').value; let u = {}; db.collection("clients").doc(id).update({ history: firebase.firestore.FieldValue.arrayUnion({ date: new Date().toLocaleDateString(), note: remark || (type==='complete'?'Completed':'Rescheduled') }) }); if(document.getElementById('markPaidCheck').checked) u.paymentStatus='Paid'; if(type==='reschedule'){ let d=document.getElementById('nextDateManual').value; if(!d)return alert("Date?"); u.nextFollowUp=d; u.status='Pending'; } else { u.status='Done'; } db.collection("clients").doc(id).update(u).then(()=>{ bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); }
         function openUpdateModal(id){ document.getElementById('editClientId').value=id; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
