@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Contact Picker)</title>
+    <title>RCM Pro (Qty & Followup)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -16,12 +16,10 @@
         :root { --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --bg: #f3f4f6; --card-bg: #ffffff; --text-dark: #1f2937; }
         body { background-color: var(--bg); font-family: 'Inter', sans-serif; padding-bottom: 90px; color: var(--text-dark); }
         
-        /* HEADER */
         .app-header { background: linear-gradient(135deg, #1e3a8a, #3b82f6); padding: 15px 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 0 0 20px 20px; }
         .header-content { display: flex; justify-content: space-between; align-items: center; color: white; }
         .header-title { font-weight: 700; margin: 0; letter-spacing: 0.5px; }
         
-        /* DASHBOARD CARDS */
         .dash-card { border-radius: 20px; padding: 20px; color: white; margin-bottom: 15px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .dash-green { background: linear-gradient(135deg, #10b981, #059669); }
         .dash-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
@@ -30,30 +28,21 @@
         .dash-lbl { font-size: 0.9em; opacity: 0.9; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         .dash-icon { position: absolute; right: -10px; bottom: -10px; font-size: 5em; opacity: 0.2; transform: rotate(-10deg); }
 
-        /* CHART CONTAINER */
         .chart-box { background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .chart-wrapper { position: relative; height: 250px; width: 100%; }
 
-        /* TASK & LIST CARDS */
         .client-card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
         
-        .task-card { 
-            background: white; border-radius: 16px; padding: 16px; margin-bottom: 15px; 
-            border-left: 6px solid #ccc; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            display: flex; justify-content: space-between; align-items: center; 
-        }
+        .task-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .task-actions { display: flex; gap: 8px; align-items: center; }
         .task-btn { width: 40px; height: 40px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.1em; cursor: pointer; text-decoration: none; color: white; transition: transform 0.2s; }
         .task-btn:active { transform: scale(0.9); }
         .btn-wa { background: #25D366; } .btn-ph { background: #3b82f6; } .btn-opt { background: #6b7280; color: white; }
         
-        /* DROPDOWN */
         .dropdown-menu { border-radius: 15px; padding: 10px; border: none; box-shadow: 0 5px 25px rgba(0,0,0,0.15); }
         .dropdown-item { padding: 10px 15px; font-weight: 500; border-radius: 10px; margin-bottom: 2px; }
         .dropdown-item:active { background-color: #f3f4f6; color: black; }
-        .dropdown-item i { width: 25px; text-align: center; margin-right: 10px; }
 
-        /* NAV & UTILS */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 10px; border-top: 1px solid #e5e7eb; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
         .nav-item { text-align: center; color: #9ca3af; text-decoration: none; font-size: 0.75em; font-weight: 500; transition: color 0.3s; cursor: pointer; } 
         .nav-item.active { color: var(--primary); font-weight: 700; } .nav-item i { font-size: 1.4em; display: block; margin-bottom: 3px; }
@@ -114,16 +103,21 @@
                         <label class="small fw-bold text-muted">Mobile</label>
                         <div class="input-group">
                             <input type="tel" class="form-control bg-light border-0" id="cPhone" style="padding:12px; border-radius:10px 0 0 10px;">
-                            <button type="button" class="btn btn-secondary" onclick="pickContact()" style="border-radius:0 10px 10px 0;">
-                                <i class="fas fa-address-book"></i>
-                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="pickContact()" style="border-radius:0 10px 10px 0;"><i class="fas fa-address-book"></i></button>
                         </div>
                     </div>
-
                     <div class="col-6"><label class="small fw-bold text-muted">Date</label><input type="date" class="form-control bg-light border-0" id="cDate" style="padding:12px; border-radius:10px;"></div>
                     
-                    <div class="col-12"><label class="small fw-bold text-muted">Product (Loading...)</label><select class="form-select bg-light border-0" id="cProd" style="padding:12px; border-radius:10px;"><option value="">Select...</option></select></div>
-                    <div class="col-12"><div id="cartList" class="small text-muted mb-2"></div><button type="button" class="btn btn-sm btn-outline-primary" onclick="addToCart()">+ Add Product</button> <span class="float-end fw-bold">Total: ₹<span id="cartTotal">0</span></span></div>
+                    <div class="col-12">
+                        <label class="small fw-bold text-muted">Select Product & Qty</label>
+                        <div class="input-group">
+                            <select class="form-select bg-light border-0" id="cProd" style="padding:12px; border-radius:10px 0 0 10px; flex-grow: 2;"><option value="">Loading...</option></select>
+                            <input type="number" class="form-control bg-light border-0" id="cQty" value="1" placeholder="Qty" style="max-width: 80px; text-align: center;">
+                            <button type="button" class="btn btn-primary" onclick="addToCart()" style="border-radius:0 10px 10px 0;">Add</button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12"><div id="cartList" class="small text-muted mb-2"></div><span class="float-end fw-bold">Total: ₹<span id="cartTotal">0</span></span></div>
                     
                     <div class="col-6">
                         <label class="small fw-bold text-muted">Payment Type</label>
@@ -134,7 +128,17 @@
                         </select>
                     </div>
 
-                    <div class="col-6"><label class="small fw-bold text-muted">Follow-up</label><input type="date" class="form-control bg-light border-0" id="followUpDate" style="padding:12px; border-radius:10px;"></div>
+                    <div class="col-6">
+                        <label class="small fw-bold text-muted">Follow-up In</label>
+                        <select class="form-select bg-light border-0" id="followUpTiming" style="padding:12px; border-radius:10px;">
+                            <option value="1">1 Day</option>
+                            <option value="3">3 Days</option>
+                            <option value="7" selected>7 Days</option>
+                            <option value="15">15 Days</option>
+                            <option value="30">1 Month</option>
+                        </select>
+                    </div>
+
                     <div class="col-6"><label class="small fw-bold text-muted">Photo</label><input type="file" class="form-control bg-light border-0" id="shopPhoto" accept="image/*" capture="camera"></div>
                     <div class="col-6"><label class="small fw-bold text-muted">GPS</label><button type="button" class="btn btn-outline-primary w-100" onclick="getGPS()"><i class="fas fa-map-marker-alt"></i> Tag</button><input type="hidden" id="gpsCoords"></div>
                     
@@ -198,7 +202,6 @@
         let currentCart = []; let globalClients = []; let globalProductList = [];
         
         document.getElementById('cDate').valueAsDate = new Date();
-        document.getElementById('followUpDate').valueAsDate = new Date();
 
         document.addEventListener('DOMContentLoaded', () => { loadProducts(); listenToData(); });
 
@@ -304,20 +307,22 @@
             if(pendingTasks.length==0) tDiv.innerHTML = "<div class='text-center p-3 text-muted'>No Pending Tasks</div>";
         }
 
-        // --- CONTACT PICKER LOGIC ---
         async function pickContact() {
-            if ('contacts' in navigator && 'ContactsManager' in window) {
-                try {
-                    const props = ['tel'];
-                    const contacts = await navigator.contacts.select(props, { multiple: false });
-                    if (contacts.length) {
-                        let num = contacts[0].tel[0].replace(/\s/g, '').replace(/-/g, '');
-                        if(num.startsWith('+91')) num = num.substring(3);
-                        if(num.startsWith('0')) num = num.substring(1);
-                        document.getElementById('cPhone').value = num;
-                    }
-                } catch (ex) { console.log(ex); }
-            } else { alert("Contact Picker works on Android Chrome or iPhone Safari only."); }
+            if (!('contacts' in navigator && 'ContactsManager' in window)) {
+                alert("This feature is only for Android/iPhone Phones. Not supported on this browser.");
+                return;
+            }
+            try {
+                const props = ['tel'];
+                const contacts = await navigator.contacts.select(props, { multiple: false });
+                if (contacts.length) {
+                    let num = contacts[0].tel[0];
+                    num = num.replace(/\s/g, '').replace(/-/g, '');
+                    if(num.startsWith('+91')) num = num.substring(3);
+                    if(num.startsWith('0')) num = num.substring(1);
+                    document.getElementById('cPhone').value = num;
+                }
+            } catch (ex) { console.error(ex); if(ex.name !== 'TypeError') alert("Error: " + ex.message); }
         }
 
         function deleteSecure(id) {
@@ -360,21 +365,46 @@
             document.getElementById('topProductsList').innerHTML = sortedProds.map((p,i) => `<li class="list-group-item d-flex justify-content-between align-items-center border-0 p-1"><span>${i+1}. ${p[0]}</span><span class="badge bg-primary rounded-pill">${p[1]}</span></li>`).join('');
         }
 
-        function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); updateCartUI(); }
-        function updateCartUI() { let t=0; document.getElementById('cartList').innerHTML = currentCart.map(i=> {t+=i.price; return `${i.name}, `}).join(''); document.getElementById('cartTotal').innerText=t; }
+        function addToCart() { 
+            const dd=document.getElementById('cProd'); 
+            const qtyIn = document.getElementById('cQty');
+            let qty = parseInt(qtyIn.value) || 1;
+            
+            if(!dd.value) return; 
+            let price = parseInt(dd.options[dd.selectedIndex].dataset.price||0);
+            
+            currentCart.push({name:dd.value, price: price * qty, unitPrice: price, qty: qty}); 
+            updateCartUI();
+            qtyIn.value = 1; // Reset Qty
+        }
+        
+        function updateCartUI() { 
+            let t=0; 
+            document.getElementById('cartList').innerHTML = currentCart.map(i=> {
+                t+=i.price; 
+                return `<div class="d-flex justify-content-between border-bottom p-1"><span>${i.name} (x${i.qty})</span><span class="fw-bold">₹${i.price}</span></div>`;
+            }).join(''); 
+            document.getElementById('cartTotal').innerText=t; 
+        }
         
         function saveClient() {
             let name = document.getElementById('cName').value; if(!name) return alert("Name?");
             let id = document.getElementById('editDocId').value; 
             let amt = currentCart.reduce((s,i)=>s+i.price,0); 
-            let pStr = currentCart.map(i=>i.name).join(", ") || "Sale";
+            let pStr = currentCart.map(i=>`${i.name}(x${i.qty})`).join(", ") || "Sale";
             let proposer = document.getElementById('cProposer').value || ""; 
             
+            // Calculate Date
+            let days = parseInt(document.getElementById('followUpTiming').value);
+            let nextDate = new Date();
+            nextDate.setDate(nextDate.getDate() + days);
+            let followUpDate = nextDate.toISOString().split('T')[0];
+
             let data = { 
                 name: name, proposer: proposer, phone: document.getElementById('cPhone').value, 
                 product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), 
                 paymentStatus: document.getElementById('payStatus').value, 
-                nextFollowUp: document.getElementById('followUpDate').value, 
+                nextFollowUp: followUpDate, 
                 status: 'Pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() 
             };
             let action = id ? db.collection("clients").doc(id).update(data) : db.collection("clients").add(data);
@@ -385,7 +415,7 @@
         function getGPS() { if (!navigator.geolocation) { alert("No GPS"); return; } navigator.geolocation.getCurrentPosition(p => { document.getElementById('gpsCoords').value = `${p.coords.latitude},${p.coords.longitude}`; alert("Location Tagged!"); }); }
         function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); }
         function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateDashboard(parseInt(document.getElementById('repCashIn').innerText.replace('₹','')), parseInt(document.getElementById('repTotalUdhari').innerText.replace('₹',''))); }
-        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cProposer').value=c.proposer||''; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; document.getElementById('followUpDate').value=c.nextFollowUp; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } updateCartUI(); switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
+        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cProposer').value=c.proposer||''; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } updateCartUI(); switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
         
         function printReport(type) {
             let html = `<div style="padding:20px;"><h2>PENDING REPORT</h2><table style="width:100%;text-align:left;"><tr><th>Name</th><th>Proposer</th><th>Amount</th></tr>${globalClients.filter(c=>c.paymentStatus=='Unpaid').map(c=>`<tr><td>${c.name}<br>${c.phone}</td><td>${c.proposer||'-'}</td><td style="color:red;font-weight:bold;">${c.amount}</td></tr>`).join('')}</table></div>`;
