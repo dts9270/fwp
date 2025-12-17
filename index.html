@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Business Growth)</title>
+    <title>RCM Pro (Edit & Print Fixed)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,86 +15,63 @@
     <style>
         :root { --saffron: #FF9933; --white: #ffffff; --green: #138808; --chakra: #000080; --bg: #f4f6f9; }
         body { background-color: var(--bg); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
-        
         .app-header { background: linear-gradient(180deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%); padding: 15px 20px; border-bottom: 4px solid var(--chakra); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .header-content { background: rgba(255, 255, 255, 0.95); padding: 8px 20px; border-radius: 30px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--chakra); }
         .header-title { font-weight: 800; color: var(--chakra); margin: 0; }
-
-        /* CARDS */
+        
         .task-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .task-card.late { border-left-color: #dc3545; } .task-card.today { border-left-color: var(--saffron); } .task-card.reorder { border-left-color: #6f42c1; border-right: 6px solid #6f42c1; } 
         .client-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;}
+        .udhari-box { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
         
-        /* GROWTH REPORT CARDS */
-        .growth-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .target-box { background: linear-gradient(to right, #11998e, #38ef7d); color: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
-        .lost-client-item { border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; }
-        .stat-box { text-align: center; padding: 10px; background: #f8f9fa; border-radius: 10px; border: 1px solid #eee; }
+        /* CART EDIT STYLES */
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 5px 0; font-size: 0.9em; }
+        .cart-remove { color: red; cursor: pointer; padding: 0 5px; font-weight: bold; }
 
-        /* BADGES & BUTTONS */
-        .badge-unpaid { background: #ffebee; color: #c62828; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; border: 1px solid #ffcdd2; }
-        .badge-paid { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; border: 1px solid #c8e6c9; }
-        .badge-hot { background: #ffebee; color: #dc3545; border: 1px solid red; padding: 2px 5px; font-size: 0.7em; border-radius: 5px; }
-        .badge-warm { background: #fff3cd; color: #856404; border: 1px solid orange; padding: 2px 5px; font-size: 0.7em; border-radius: 5px; }
-        .badge-cold { background: #e2e3e5; color: #383d41; border: 1px solid gray; padding: 2px 5px; font-size: 0.7em; border-radius: 5px; }
         .btn-update { border: 1px solid var(--chakra); color: var(--chakra); background: transparent; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; font-weight: bold; width: 100%; }
         .action-btn { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; }
         .btn-edit { background: #e3f2fd; color: #0d47a1; } .btn-del { background: #ffebee; color: #c62828; } .btn-hist { background: #e0f7fa; color: #006064; }
         
-        /* UI ELEMENTS */
-        .input-group-text { background: white; border-left: 0; cursor: pointer; color: var(--chakra); } .form-control { border-right: 0; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid var(--saffron); z-index: 1000; }
         .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; } .nav-item.active { color: var(--chakra); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; }
         .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--chakra); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
         
-        /* PRINT */
-        @media print { .no-print { display: none !important; } #reportOverlay { display: block !important; position: static; } .print-btn-area { display: none; } }
         #reportOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto; padding: 20px; }
         .report-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; } .report-table th { background: var(--saffron); color: white; padding: 8px; text-align: left; } .report-table td { border-bottom: 1px solid #ddd; padding: 8px; }
-        .report-img { width: 100%; max-width: 400px; height: auto; border-radius: 10px; border: 2px solid #ddd; display: block; margin: 10px auto; }
+        .report-img { width: 100%; max-width: 300px; height: auto; border-radius: 10px; border: 2px solid #ddd; display: block; margin: 5px auto; }
     </style>
 </head>
 <body>
 
-    <header class="app-header no-print">
+    <header class="app-header">
         <div class="header-content">
             <h5 class="header-title"><i class="fas fa-cloud"></i> RCM Ultimate</h5>
             <small class="fw-bold text-success" id="connectionStatus">Checking...</small>
         </div>
     </header>
 
-    <div class="container px-3 no-print">
+    <div class="container px-3">
         <div id="view-tasks" class="section-view active-view">
-            <div id="bdayAlert" class="growth-card" style="background:#fff3cd; display:none; border:1px solid orange;">
-                <div class="d-flex justify-content-between text-warning">
-                    <span><i class="fas fa-birthday-cake"></i> <b>Happy Birthday:</b></span>
-                    <i class="fas fa-times" onclick="this.parentElement.parentElement.style.display='none'"></i>
-                </div>
-                <div id="bdayNames" class="fw-bold mt-1 text-dark"></div>
-            </div>
-
-            <div class="growth-card text-center" style="background: #ffebee; border: 1px solid #ffcdd2;">
-                <h6 class="m-0 text-danger">मार्केटमधील उधारी (Pending)</h6>
-                <h2 class="fw-bold m-0">₹<span id="totalUdhari">0</span></h2>
-            </div>
-            
+            <div class="udhari-box shadow-sm"><h6 class="m-0">मार्केटमधील उधारी (Pending)</h6><h2 class="fw-bold m-0">₹<span id="totalUdhari">0</span></h2></div>
             <h6 class="text-muted fw-bold mb-3">📅 फॉलो-अप & ऑर्डर्स</h6>
             <div id="taskListContainer" class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
         </div>
 
         <div id="view-add" class="section-view">
             <div class="card p-4 border-0 shadow-sm" style="border-radius:15px;">
-                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold">New Entry (Map Cam)</h6><button class="btn btn-sm btn-warning" onclick="resetForm()">Clear</button></div>
+                <div class="d-flex justify-content-between mb-3">
+                    <h6 class="text-primary fw-bold" id="formTitle">New Entry</h6>
+                    <button class="btn btn-sm btn-warning" onclick="resetForm()">Clear</button>
+                </div>
                 <form id="crmForm" class="row g-3">
                     <input type="hidden" id="editDocId"> 
                     
                     <div class="col-12 text-center bg-light p-3 rounded border">
-                        <label class="small text-muted fw-bold d-block mb-2"><i class="fas fa-map-marker-alt text-danger"></i> GPS Map Photo</label>
                         <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
                         <div onclick="document.getElementById('meetingPhoto').click()" style="cursor:pointer; display: inline-block;">
-                            <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" style="width:120px; height:120px; object-fit:cover; border-radius:10px; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                            <div id="photoStatus" class="small text-muted mt-2 fw-bold">Tap to Click</div>
+                            <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" style="width:100px; height:100px; object-fit:cover; border-radius:10px; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            <div id="photoStatus" class="small text-muted mt-1 fw-bold">GPS Photo</div>
                         </div>
                     </div>
                     
@@ -104,11 +81,20 @@
                     <div class="col-6"><input type="tel" class="form-control" id="cPhone" placeholder="Mobile"></div>
                     <div class="col-6"><input type="text" class="form-control" id="cProposer" placeholder="Proposer"></div>
                     <div class="col-6"><label class="small text-muted fw-bold">Date</label><input type="date" class="form-control px-1" id="cDate" style="font-size: 0.9em;"></div>
-                    <div class="col-6"><label class="small text-muted fw-bold">DOB 🎂</label><input type="date" class="form-control px-1" id="cDob"></div>
-                    <div class="col-12"><div class="input-group mb-2"><select class="form-select" id="cProd"><option value="">Select Product</option></select><button type="button" class="btn btn-primary" onclick="addToCart()">Add</button></div><div id="cartList" class="bg-light p-2 rounded small text-muted">No items</div><div class="fw-bold text-end mt-2 text-primary">Bill: ₹<span id="cartTotal">0</span></div></div>
+                    
+                    <div class="col-12">
+                        <label class="small text-muted fw-bold">Products (Add/Remove)</label>
+                        <div class="input-group mb-2">
+                            <select class="form-select" id="cProd"><option value="">Select Product</option></select>
+                            <button type="button" class="btn btn-primary" onclick="addToCart()">Add</button>
+                        </div>
+                        <div id="cartList" class="bg-light p-2 rounded small text-muted">No items</div>
+                        <div class="fw-bold text-end mt-2 text-primary">Bill: ₹<span id="cartTotal">0</span></div>
+                    </div>
+
                     <div class="col-6"><label class="small text-muted fw-bold">Payment:</label><select class="form-select border-danger fw-bold" id="payStatus"><option value="Paid">✅ Paid</option><option value="Unpaid" selected>🔴 Unpaid</option></select></div>
                     <div class="col-6"><label class="small text-muted fw-bold">Follow-up:</label><select class="form-select border-warning fw-bold text-dark" id="followUpTiming"><option value="24h">⏰ 24 Hours</option><option value="3d">📅 3 Days</option><option value="7d">🗓️ 7 Days</option><option value="15d">🗓️ 15 Days</option></select></div>
-                    <div class="col-12 mt-3"><button type="button" class="btn btn-success w-100 fw-bold shadow" onclick="saveClient()">Save to Cloud ☁️</button></div>
+                    <div class="col-12 mt-3"><button type="button" class="btn btn-success w-100 fw-bold shadow" onclick="saveClient()">Save / Update Data 💾</button></div>
                 </form>
             </div>
         </div>
@@ -119,65 +105,35 @@
         </div>
 
         <div id="view-reports" class="section-view">
-            
-            <div class="target-box shadow">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="m-0"><i class="fas fa-bullseye"></i> Monthly Target</h5>
-                    <small>Goal: ₹50,000</small>
-                </div>
-                <h2 class="fw-bold mt-2">₹<span id="monthSale">0</span> <small style="font-size:0.5em; opacity:0.8;">Achieved</small></h2>
-                <div class="progress mt-2" style="height: 8px; background: rgba(255,255,255,0.3);">
-                    <div id="targetBar" class="progress-bar bg-white" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div class="growth-card">
-                <h6 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> Action Needed (Inactive Clients)</h6>
-                <div id="lostClientsList">
-                    <small class="text-muted">Loading analysis...</small>
-                </div>
-                <small class="text-muted d-block mt-2" style="font-size:0.75em;">*Clients who haven't purchased in 30 days.</small>
-            </div>
-
-            <div class="growth-card">
-                <div class="row">
-                    <div class="col-6">
-                        <h6 class="fw-bold text-center" style="font-size:0.8em;">Recovery Analysis</h6>
-                        <canvas id="myChart" style="max-height: 120px;"></canvas>
-                    </div>
-                    <div class="col-6">
-                        <div class="stat-box h-100 d-flex flex-column justify-content-center">
-                            <small class="text-muted">Top Product 🏆</small>
-                            <h6 class="fw-bold text-primary mt-1" id="topProdName">-</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="growth-card">
-                <h6 class="fw-bold mb-3">🛠️ Business Tools</h6>
-                <div class="row g-2">
-                    <div class="col-6"><button class="btn btn-outline-primary w-100 btn-sm" onclick="generateCard()">📇 Visiting Card</button></div>
-                    <div class="col-6"><button class="btn btn-outline-danger w-100 btn-sm" onclick="exportToExcel()">📊 Excel Data</button></div>
-                    <div class="col-12"><button class="btn btn-dark w-100 btn-sm mt-1" onclick="window.print()">🖨️ Print Full Report</button></div>
-                </div>
-            </div>
-
+            <div class="card p-3 mb-3 shadow-sm"><h6 class="fw-bold text-center">📊 बिझनेस स्थिती</h6><canvas id="myChart" style="max-height: 200px;"></canvas></div>
+            <div class="row"><div class="col-6"><div class="card p-3 text-center shadow-sm" onclick="generateReport('followup')"><h5>📅</h5><small>Diary Report</small></div></div><div class="col-6"><div class="card p-3 text-center shadow-sm" onclick="generateReport('growth')"><h5>📈</h5><small>Growth Report</small></div></div></div>
+            <button class="btn btn-outline-dark w-100 mt-3" onclick="exportToExcel()">Download Excel File</button>
         </div>
     </div>
 
-    <button class="fab-btn no-print" onclick="switchTab('view-add', document.querySelectorAll('.nav-item')[1]); resetForm();"><i class="fas fa-plus"></i></button>
+    <button class="fab-btn" onclick="switchTab('view-add', document.querySelectorAll('.nav-item')[1]); resetForm();"><i class="fas fa-plus"></i></button>
+    
     <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update Task</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><label class="small text-muted fw-bold">Next Date:</label><input type="date" id="nextDateManual" class="form-control mb-3 border-primary"><label class="small text-muted fw-bold">Remark:</label><div class="input-group mb-3"><textarea id="updateRemark" class="form-control" placeholder="काय बोलणे झाले?"></textarea><span class="input-group-text" onclick="startVoice('updateRemark')"><i class="fas fa-microphone"></i></span></div><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label fw-bold text-success" for="markPaidCheck">Payment Received?</label></div><div class="d-grid gap-2"><button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Reschedule</button><button class="btn btn-success" onclick="saveUpdate('complete')">✅ Mark Complete</button></div></div></div></div></div>
+    
     <div class="modal fade" id="templateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h6 class="modal-title">Select Message</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="d-grid gap-2" id="templateButtons"></div></div></div></div></div>
+    
     <div class="modal fade" id="historyModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h6 class="modal-title">📜 History</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="historyContent" style="max-height:300px;overflow-y:auto;">Loading...</div></div></div></div></div>
-    <div id="reportOverlay"><div class="text-center p-2 sticky-top bg-white shadow-sm mb-3"><button class="btn btn-secondary btn-sm" onclick="document.getElementById('reportOverlay').style.display='none'">Back</button> <button class="btn btn-danger btn-sm" onclick="window.print()">Print PDF</button></div><div id="reportContent" class="p-3"></div></div>
+    
+    <div id="reportOverlay">
+        <div class="text-center p-2 sticky-top bg-white shadow-sm mb-3">
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('reportOverlay').style.display='none'">Back</button> 
+            <button class="btn btn-danger btn-sm" onclick="printReport()">🖨️ Print PDF</button>
+        </div>
+        <div id="reportContent" class="p-3"></div>
+    </div>
+    
     <canvas id="cardCanvas" style="display:none;"></canvas>
 
-    <div class="bottom-nav no-print">
+    <div class="bottom-nav">
         <a class="nav-item active" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i>Tasks</a>
         <a class="nav-item" onclick="switchTab('view-add', this)"><i class="fas fa-plus-circle"></i>Add</a>
         <a class="nav-item" onclick="switchTab('view-list', this)"><i class="fas fa-users"></i>List</a>
-        <a class="nav-item" onclick="switchTab('view-reports', this)"><i class="fas fa-chart-pie"></i>Analysis</a>
+        <a class="nav-item" onclick="switchTab('view-reports', this)"><i class="fas fa-chart-pie"></i>Reports</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -196,71 +152,16 @@
 
         function listenToData() {
             db.collection("clients").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-                globalClients = []; let totalUdhari = 0, totalPaid = 0, monthSale = 0;
-                let currentMonth = new Date().getMonth();
-                
+                globalClients = []; let totalUdhari = 0, totalPaid = 0;
                 snapshot.forEach((doc) => {
                     let data = doc.data(); data.docId = doc.id; 
-                    let amt = parseInt(data.amount || 0);
-                    if(data.paymentStatus === 'Unpaid') totalUdhari += amt; else totalPaid += amt;
-                    
-                    // Month Sale Calc (approx based on follow-up or added date logic)
-                    // Ideally use 'createdAt' but for now using simple sum
-                    monthSale += amt; 
-
+                    if(data.paymentStatus === 'Unpaid') totalUdhari += parseInt(data.amount || 0); else totalPaid += parseInt(data.amount || 0);
                     globalClients.push(data);
                 });
-                
-                // Update Dashboard & Report Stats
                 document.getElementById('totalUdhari').innerText = totalUdhari;
-                document.getElementById('monthSale').innerText = monthSale.toLocaleString();
-                let target = 50000;
-                let pct = Math.min((monthSale/target)*100, 100);
-                document.getElementById('targetBar').style.width = pct + "%";
-
-                renderUI(); 
-                checkBirthdays(); 
-                updateAnalysis(totalPaid, totalUdhari); 
+                renderUI(); updateChart(totalPaid, totalUdhari);
             });
         }
-
-        // --- NEW ANALYSIS LOGIC ---
-        function updateAnalysis(paid, unpaid) {
-            // 1. Chart
-            const ctx = document.getElementById('myChart').getContext('2d'); if(myChart) myChart.destroy();
-            myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Recovered', 'Pending'], datasets: [{ data: [paid, unpaid], backgroundColor: ['#38ef7d', '#ff6b6b'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: {legend: {display: false}} } });
-
-            // 2. Lost Clients (Inactive > 30 Days)
-            let today = new Date();
-            let lostList = globalClients.filter(c => {
-                let lastDate = new Date(c.nextFollowUp); // Ideally purchase date, using followup for demo
-                let diffTime = Math.abs(today - lastDate);
-                let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                return diffDays > 30 && c.status !== 'Pending'; // Completed tasks older than 30 days
-            }).slice(0, 3); // Top 3
-
-            let lostHTML = lostList.length ? lostList.map(c => 
-                `<div class="lost-client-item">
-                    <div><b>${c.name}</b><br><small class="text-muted">Last: ${c.product}</small></div>
-                    <a href="tel:${c.phone}" class="btn btn-sm btn-outline-danger"><i class="fas fa-phone"></i> Call</a>
-                </div>`
-            ).join('') : '<small class="text-muted text-center d-block">All clients are active! 🎉</small>';
-            document.getElementById('lostClientsList').innerHTML = lostHTML;
-
-            // 3. Top Product
-            let prodCounts = {};
-            globalClients.forEach(c => { 
-                if(c.product) {
-                    c.product.split(',').forEach(p => { 
-                        let pn = p.trim(); 
-                        prodCounts[pn] = (prodCounts[pn] || 0) + 1; 
-                    });
-                }
-            });
-            let topProd = Object.keys(prodCounts).reduce((a, b) => prodCounts[a] > prodCounts[b] ? a : b, "None");
-            document.getElementById('topProdName').innerText = topProd;
-        }
-        let myChart = null;
 
         function loadProducts() { const dd=document.getElementById('cProd'); fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`).then(r=>r.text()).then(c=>{const rows=c.split('\n'); dd.innerHTML='<option value="">Select Product</option>'; rows.forEach((r,i)=>{if(i===0)return; let d=r.replace(/"/g,'').split(','); if(d[0]&&d[0].length>1){let name=d[0]; let p=d[2]?d[2].trim():0; let o=document.createElement('option'); o.value=name; o.dataset.price=p; o.text=`${name} - ₹${p}`; dd.add(o);}});}).catch(()=>{}); }
 
@@ -298,7 +199,26 @@
             if(taskDiv.innerHTML === '') taskDiv.innerHTML = "<div class='text-center text-muted mt-5'>No Pending Tasks!</div>";
         }
 
-        // --- MAP UI OVERLAY ---
+        // --- CART FUNCTIONS (Add/Remove) ---
+        function addToCart() { 
+            const dd=document.getElementById('cProd'); if(!dd.value)return; 
+            currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); 
+            updateCartUI();
+        }
+        function removeFromCart(index) {
+            currentCart.splice(index, 1);
+            updateCartUI();
+        }
+        function updateCartUI() {
+            let t=0; 
+            document.getElementById('cartList').innerHTML = currentCart.map((i, idx)=>{
+                t+=i.price; 
+                return `<div class="cart-item"><span>${i.name} (₹${i.price})</span><span class="cart-remove" onclick="removeFromCart(${idx})">❌</span></div>`;
+            }).join(""); 
+            document.getElementById('cartTotal').innerText=t; 
+        }
+
+        // --- MAP & IMAGE ---
         function handlePhoto(i) {
             const file = i.files[0]; if(!file) return;
             document.getElementById('photoStatus').innerText = "Fetching Address...";
@@ -320,7 +240,7 @@
             const r = new FileReader(); r.onload = e => {
                 const i = new Image(); i.onload = () => {
                     const c = document.getElementById('cardCanvas'); const x = c.getContext('2d');
-                    c.width = 500; c.height = (i.height/i.width)*500; // Better Res
+                    c.width = 500; c.height = (i.height/i.width)*500; 
                     x.drawImage(i,0,0,c.width,c.height);
                     
                     let boxH = 120; let boxY = c.height - boxH - 20;
@@ -331,7 +251,7 @@
                     x.font = "bold 18px Arial"; x.fillText(locName, 130, boxY + 35);
                     x.font = "14px Arial"; x.fillStyle = "#ccc"; x.fillText(`Lat: ${lat.toFixed(5)}°`, 130, boxY + 60); x.fillText(`Long: ${lon.toFixed(5)}°`, 130, boxY + 80);
                     x.fillStyle = "#fff"; x.fillText(new Date().toLocaleString(), 130, boxY + 105);
-                    x.font = "bold 16px Arial"; x.fillStyle = "white"; x.textAlign = "right"; x.fillText("Google", c.width - 30, boxY + 105);
+                    
                     processedPhotoData = c.toDataURL('image/jpeg', 0.8);
                     document.getElementById('photoPreview').src = processedPhotoData;
                     document.getElementById('photoStatus').innerText = "Map Added ✅";
@@ -341,27 +261,46 @@
 
         // --- HELPERS ---
         CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) { if (w < 2 * r) r = w / 2; if (h < 2 * r) r = h / 2; this.beginPath(); this.moveTo(x + r, y); this.arcTo(x + w, y, x + w, y + h, r); this.arcTo(x + w, y + h, x, y + h, r); this.arcTo(x, y + h, x, y, r); this.arcTo(x, y, x + w, y, r); this.closePath(); return this; }
-        function openTemplateModal(phone, name) {
-            let container = document.getElementById('templateButtons');
-            let msgs = [{t: "Offer", m: `नमस्कार ${name}, RCM मध्ये नवीन ऑफर्स आल्या आहेत. एकदा नक्की बघा. - Jaya Shengule`}, {t: "Payment", m: `नमस्कार ${name}, आपले पेमेंट पेंडिंग आहे. कृपया लवकर करा. - Jaya Shengule`}, {t: "Meeting", m: `नमस्कार ${name}, आज रात्री 8 वाजता महत्वाची Zoom मिटिंग आहे. जॉईन करा. - Jaya Shengule`}];
-            container.innerHTML = msgs.map(x => `<button class="btn btn-outline-primary text-start" onclick="window.open('https://wa.me/91${phone}?text=${encodeURIComponent(x.m)}', '_blank')"><b>${x.t}:</b> ${x.m.substring(0,30)}...</button>`).join('');
-            new bootstrap.Modal(document.getElementById('templateModal')).show();
-        }
-        function viewHistory(id) {
-            let c = globalClients.find(x => x.docId == id); let hDiv = document.getElementById('historyContent');
-            if(c && c.history && c.history.length > 0) hDiv.innerHTML = c.history.reverse().map(h => `<div class="history-item"><div class="history-date">${h.date}</div><div>${h.note}</div></div>`).join(''); else hDiv.innerHTML = "<div class='text-center text-muted'>No History Found</div>";
-            new bootstrap.Modal(document.getElementById('historyModal')).show();
-        }
+        function openTemplateModal(phone, name) { let c = document.getElementById('templateButtons'); let msgs = [{t: "Offer", m: `नमस्कार ${name}, RCM मध्ये नवीन ऑफर्स आल्या आहेत. एकदा नक्की बघा. - Jaya Shengule`}, {t: "Payment", m: `नमस्कार ${name}, आपले पेमेंट पेंडिंग आहे. कृपया लवकर करा. - Jaya Shengule`}, {t: "Meeting", m: `नमस्कार ${name}, आज रात्री 8 वाजता महत्वाची Zoom मिटिंग आहे. जॉईन करा. - Jaya Shengule`}]; c.innerHTML = msgs.map(x => `<button class="btn btn-outline-primary text-start" onclick="window.open('https://wa.me/91${phone}?text=${encodeURIComponent(x.m)}', '_blank')"><b>${x.t}:</b> ${x.m.substring(0,30)}...</button>`).join(''); new bootstrap.Modal(document.getElementById('templateModal')).show(); }
+        function viewHistory(id) { let c = globalClients.find(x => x.docId == id); let hDiv = document.getElementById('historyContent'); if(c && c.history && c.history.length > 0) hDiv.innerHTML = c.history.reverse().map(h => `<div class="history-item"><div class="history-date">${h.date}</div><div>${h.note}</div></div>`).join(''); else hDiv.innerHTML = "<div class='text-center text-muted'>No History Found</div>"; new bootstrap.Modal(document.getElementById('historyModal')).show(); }
+        
         function saveClient() {
             let name = document.getElementById('cName').value; if(!name) return alert("Name needed");
-            let id = document.getElementById('editDocId').value; let amt = currentCart.reduce((s,i)=>s+i.price,0); let pStr = currentCart.map(i=>i.name).join(", ") || "No Product";
-            let paySt = document.getElementById('payStatus').value; let dob = document.getElementById('cDob').value; let lead = document.getElementById('cType').value;
-            let reDays = document.getElementById('cReorder').value; let reDate = null; if(reDays) { let d = new Date(); d.setDate(d.getDate() + parseInt(reDays)); reDate = d.toISOString().split('T')[0]; }
+            let id = document.getElementById('editDocId').value; 
+            let amt = currentCart.reduce((s,i)=>s+i.price,0); 
+            let pStr = currentCart.map(i=>i.name).join(", ") || "No Product";
+            
+            let data = { 
+                name: name, 
+                phone: document.getElementById('cPhone').value, 
+                proposer: document.getElementById('cProposer').value, 
+                product: pStr, 
+                amount: amt, 
+                cartJson: JSON.stringify(currentCart), // Save detailed cart
+                paymentStatus: document.getElementById('payStatus').value, 
+                dob: document.getElementById('cDob').value, 
+                leadType: document.getElementById('cType').value, 
+                reOrderDate: null, 
+                nextFollowUp: document.getElementById('cDate').value,
+                status: 'Pending', 
+                photo: processedPhotoData, 
+                history: [], 
+                timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+            };
+            
+            // Calc Next Date logic if needed, simplfied here to save what's picked or default logic
             const timing = document.getElementById('followUpTiming').value; let followDate = new Date();
             if(timing === '24h') followDate.setDate(followDate.getDate() + 1); else if(timing === '3d') followDate.setDate(followDate.getDate() + 3); else if(timing === '7d') followDate.setDate(followDate.getDate() + 7); else if(timing === '15d') followDate.setDate(followDate.getDate() + 15);
-            let data = { name: name, phone: document.getElementById('cPhone').value, proposer: document.getElementById('cProposer').value, product: pStr, amount: amt, paymentStatus: paySt, dob: dob, leadType: lead, reOrderDate: reDate, nextFollowUp: followDate.toISOString().split('T')[0], status: 'Pending', photo: processedPhotoData, history: [], timestamp: firebase.firestore.FieldValue.serverTimestamp() };
-            if(id) { db.collection("clients").doc(id).update(data).then(() => { alert("Updated!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); }); } else { db.collection("clients").add(data).then(() => { alert("Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); }); }
+            data.nextFollowUp = followDate.toISOString().split('T')[0];
+
+            if(id) { 
+                // Keep old history if updating
+                delete data.history; delete data.timestamp; // Don't overwrite history or create time
+                db.collection("clients").doc(id).update(data).then(() => { alert("Updated!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); }); 
+            } 
+            else { db.collection("clients").add(data).then(() => { alert("Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); }); }
         }
+
         function saveUpdate(type) { 
             let id = document.getElementById('editClientId').value; let remark = document.getElementById('updateRemark').value; let u = {}; 
             db.collection("clients").doc(id).update({ history: firebase.firestore.FieldValue.arrayUnion({ date: new Date().toLocaleDateString(), note: remark || (type==='complete'?'Completed':'Rescheduled') }) });
@@ -369,16 +308,69 @@
             if(type==='reschedule'){ let d=document.getElementById('nextDateManual').value; if(!d)return alert("Date?"); u.nextFollowUp=d; u.status='Pending'; } else { u.status='Done'; } 
             db.collection("clients").doc(id).update(u).then(()=>{ bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); 
         }
-        function checkBirthdays() { let t=new Date(); let b=globalClients.filter(c=>{if(!c.dob)return false; let d=new Date(c.dob); return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth();}); if(b.length>0){document.getElementById('bdayAlert').style.display='block'; document.getElementById('bdayNames').innerText=b.map(x=>x.name).join(', ');} }
+        
+        let myChart = null;
+        function updateChart(paid, unpaid) { const ctx = document.getElementById('myChart').getContext('2d'); if(myChart) myChart.destroy(); myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Paid', 'Unpaid'], datasets: [{ data: [paid, unpaid], backgroundColor: ['#198754', '#dc3545'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false } }); }
         function startVoice(id) { if (!('webkitSpeechRecognition' in window)) return alert("Not supported"); const r = new webkitSpeechRecognition(); r.lang = 'mr-IN'; r.start(); r.onresult = e => { document.getElementById(id).value = e.results[0][0].transcript; }; }
-        function generateCard() { let name="Jaya Shengule"; let phone="7020970727"; const c=document.getElementById('cardCanvas'); const x=c.getContext('2d'); c.width=600; c.height=350; let g=x.createLinearGradient(0,0,0,350); g.addColorStop(0,"#FF9933"); g.addColorStop(0.5,"#FFFFFF"); g.addColorStop(1,"#138808"); x.fillStyle=g; x.fillRect(0,0,600,350); x.fillStyle="#000080"; x.font="bold 40px Arial"; x.fillText(name,30,150); x.font="25px Arial"; x.fillStyle="#333"; x.fillText("RCM Business Partner",30,190); x.fillStyle="#000"; x.font="bold 30px Arial"; x.fillText("📞 "+phone,30,280); x.strokeStyle="#000080"; x.lineWidth=10; x.strokeRect(0,0,600,350); let l=document.createElement('a'); l.download='Jaya_RCM_Card.png'; l.href=c.toDataURL(); l.click(); }
-        function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; document.getElementById('cartList').innerHTML='No items'; document.getElementById('cartTotal').innerText='0'; processedPhotoData=null; document.getElementById('photoPreview').src='https://cdn-icons-png.flaticon.com/512/3687/3687412.png'; }
-        function addToCart(){ const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); let t=0; document.getElementById('cartList').innerHTML=currentCart.map(i=>{t+=i.price; return `<div class="d-flex justify-content-between border-bottom p-1"><span>${i.name}</span><span>₹${i.price}</span></div>`}).join(""); document.getElementById('cartTotal').innerText=t; }
-        function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); }
+        
+        function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); processedPhotoData=null; document.getElementById('photoPreview').src='https://cdn-icons-png.flaticon.com/512/3687/3687412.png'; document.getElementById('formTitle').innerText="New Entry"; }
+        function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateChart(0,0); }
         function openUpdateModal(id){ document.getElementById('editClientId').value=id; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
         function deleteClient(id){ if(confirm("Delete?")) db.collection("clients").doc(id).delete(); }
-        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('cProposer').value=c.proposer||''; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; if(c.dob) document.getElementById('cDob').value=c.dob; if(c.photo)document.getElementById('photoPreview').src=c.photo; document.getElementById('cType').value=c.leadType||'Hot'; switchTab('view-add', document.querySelectorAll('.nav-item')[1]); } }
-        function generateReport(type){ let h=`<div class='text-center'><h3>RCM Report</h3><small>${new Date().toLocaleString()}</small></div><table class='report-table w-100' border='1'><thead><tr><th>Client</th><th>Details</th></tr></thead><tbody>`; globalClients.forEach(c=>{ h+=`<tr><td>${c.photo?`<img src='${c.photo}' class='report-img'>`:''}<br><b>${c.name}</b></td><td>Prod: ${c.product}<br>Amt: ₹${c.amount}<br>Date: ${c.nextFollowUp}<br>Status: ${c.status}</td></tr>`; }); h+=`</tbody></table>`; document.getElementById('reportContent').innerHTML=h; document.getElementById('reportOverlay').style.display='block'; }
+        
+        function editClient(id){ 
+            let c=globalClients.find(x=>x.docId==id); 
+            if(c){ 
+                document.getElementById('editDocId').value=c.docId; 
+                document.getElementById('cName').value=c.name; 
+                document.getElementById('cPhone').value=c.phone; 
+                document.getElementById('cProposer').value=c.proposer||''; 
+                document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; 
+                if(c.dob) document.getElementById('cDob').value=c.dob; 
+                if(c.photo) document.getElementById('photoPreview').src=c.photo; 
+                document.getElementById('cType').value=c.leadType||'Hot';
+                
+                // LOAD CART FROM JSON IF EXISTS
+                if(c.cartJson) {
+                    try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; }
+                } else {
+                    currentCart = []; // Fallback for old data
+                }
+                updateCartUI();
+                
+                document.getElementById('formTitle').innerText = "Editing: " + c.name;
+                switchTab('view-add', document.querySelectorAll('.nav-item')[1]); 
+            } 
+        }
+
+        // --- NEW PRINT FUNCTION ---
+        function printReport() {
+            let html = `<html><head><title>RCM Report</title><style>body{font-family:sans-serif;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #333;padding:8px;text-align:left;}img{max-width:150px;}</style></head><body>`;
+            html += `<h2 style="text-align:center;">RCM Business Report</h2><p style="text-align:center;">Date: ${new Date().toLocaleDateString()}</p>`;
+            html += `<table><thead><tr><th>Client</th><th>Order Details</th><th>Status</th></tr></thead><tbody>`;
+            
+            globalClients.forEach(c => {
+                let imgHTML = c.photo ? `<img src="${c.photo}"><br>` : '';
+                html += `<tr>
+                    <td>${imgHTML}<b>${c.name}</b><br>Ph: ${c.phone}</td>
+                    <td>${c.product}<br><b>Amount: ₹${c.amount}</b><br>Follow-up: ${c.nextFollowUp}</td>
+                    <td>${c.status}<br>${c.paymentStatus}</td>
+                </tr>`;
+            });
+            html += `</tbody></table></body></html>`;
+
+            let printWin = window.open('', '', 'width=800,height=600');
+            printWin.document.write(html);
+            printWin.document.close();
+            printWin.focus();
+            setTimeout(() => { printWin.print(); printWin.close(); }, 500);
+        }
+
+        function generateReport(type){ 
+            document.getElementById('reportContent').innerHTML = "<div class='text-center p-5'>Click 'Print PDF' above to see full report 📄</div>";
+            document.getElementById('reportOverlay').style.display='block'; 
+        }
+        
         function exportToExcel() { let csv = "Name,Phone,Product,Amount,Payment,NextDate,Status\n" + globalClients.map(c => `${c.name},${c.phone},"${c.product}",${c.amount},${c.paymentStatus},${c.nextFollowUp},${c.status}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Online_Data.csv"; link.click(); }
         document.getElementById('searchInput').addEventListener('input', renderUI);
     </script>
