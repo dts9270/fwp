@@ -3,332 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCM Pro (Bill Fix)</title>
+    <title>RCM Stock Manager (Bill Scanner)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';</script>
 
     <style>
-        :root { --saffron: #FF9933; --white: #ffffff; --green: #138808; --chakra: #000080; --bg: #f4f6f9; }
-        body { background-color: var(--bg); font-family: 'Poppins', sans-serif; padding-bottom: 90px; }
-        .app-header { background: linear-gradient(180deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%); padding: 15px 20px; border-bottom: 4px solid var(--chakra); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .header-content { background: rgba(255, 255, 255, 0.95); padding: 8px 20px; border-radius: 30px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--chakra); }
-        .header-title { font-weight: 800; color: var(--chakra); margin: 0; }
+        body { background-color: #f4f6f9; font-family: 'Poppins', sans-serif; padding-bottom: 80px; }
+        .app-header { background: linear-gradient(180deg, #FF9933 0%, #ffffff 50%, #138808 100%); padding: 15px; border-bottom: 4px solid #000080; position: sticky; top: 0; z-index: 1000; text-align: center; }
+        .header-title { font-weight: 800; color: #000080; margin: 0; }
         
-        .task-card, .client-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .client-card { border-left: 5px solid var(--chakra); display: flex; justify-content: space-between; align-items: center; }
+        .upload-card { background: white; border-radius: 15px; padding: 20px; text-align: center; border: 2px dashed #007bff; margin-bottom: 20px; cursor: pointer; }
+        .upload-icon { font-size: 40px; color: #007bff; margin-bottom: 10px; }
         
-        .inventory-card { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 10px; }
-        .inv-table { width: 100%; font-size: 0.9em; } 
-        .inv-table th { background: var(--chakra); color: white; padding: 10px; text-align: left; } 
-        .inv-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .inventory-table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .inventory-table th { background: #000080; color: white; padding: 12px; text-align: left; }
+        .inventory-table td { padding: 12px; border-bottom: 1px solid #eee; }
         
-        .btn-upload-pdf { background: linear-gradient(45deg, #11998e, #38ef7d); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; }
-        
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
-        .cart-remove { color: red; font-weight: bold; padding: 0 10px; cursor: pointer; }
+        .stock-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold; }
+        .stock-ok { background: #e8f5e9; color: #2e7d32; }
+        .stock-low { background: #ffebee; color: #c62828; }
 
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid var(--saffron); z-index: 1000; }
-        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.75em; } .nav-item.active { color: var(--chakra); font-weight: bold; } .nav-item i { font-size: 1.5em; display: block; }
-        .fab-btn { position: fixed; bottom: 90px; right: 20px; background: var(--chakra); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .section-view { display: none; padding-top: 20px; } .section-view.active-view { display: block; }
+        /* Modal */
+        #confirmModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-box { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; max-height: 80vh; overflow-y: auto; }
         
-        #pdfPreviewModal, #successPopup, #reportOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; overflow-y: auto; padding: 20px; }
-        .pdf-modal-content { background: white; border-radius: 15px; padding: 20px; max-width: 500px; margin: 50px auto; }
-        #successPopup { align-items: center; justify-content: center; }
-        .popup-box { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 80%; max-width: 300px; }
+        .list-item { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; }
         
-        .btn-icon { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; color: white; margin-left: 5px; }
-        .btn-edit { background: #007bff; } .btn-del { background: #dc3545; } .btn-bill { background: #ff9800; } .btn-call { background: #25d366; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid #FF9933; }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 0.8em; } .nav-item.active { color: #000080; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <header class="app-header no-print">
-        <div class="header-content">
-            <h5 class="header-title"><i class="fas fa-cloud"></i> RCM Ultimate</h5>
-            <small class="fw-bold text-success" id="connectionStatus">Checking...</small>
-        </div>
+    <header class="app-header">
+        <h5 class="header-title">RCM Stock Manager</h5>
+        <small id="status" class="text-dark fw-bold">Connecting...</small>
     </header>
 
-    <div class="container px-3 no-print">
+    <div class="container mt-3">
         
-        <div id="successPopup">
-            <div class="popup-box">
-                <i class="fas fa-check-circle text-success" style="font-size:3em;"></i>
-                <h4 class="mt-3 fw-bold">Success!</h4>
-                <p id="popupMsg" class="text-muted">Done.</p>
-                <button class="btn btn-dark w-100" onclick="document.getElementById('successPopup').style.display='none'">OK</button>
+        <div id="view-upload" class="section-view">
+            <h6 class="fw-bold mb-3">📥 Add Stock via Bill</h6>
+            <div class="upload-card" onclick="document.getElementById('pdfInput').click()">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <h6 class="fw-bold">Upload RCM Bill (PDF)</h6>
+                <small class="text-muted">Auto-detects Name, Qty & Rate</small>
             </div>
-        </div>
-
-        <div id="view-tasks" class="section-view active-view">
-            <div class="alert alert-warning p-2 text-center shadow-sm">
-                <h6 class="m-0 text-danger">मार्केटमधील उधारी (Pending)</h6>
-                <h2 class="fw-bold m-0">₹<span id="totalUdhari">0</span></h2>
-            </div>
-            <h6 class="text-muted fw-bold mb-3">📅 पेंडिंग फॉलो-अप</h6>
-            <div id="taskListContainer" class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
-        </div>
-
-        <div id="view-inventory" class="section-view">
-            <h6 class="fw-bold mb-3"><i class="fas fa-boxes text-primary"></i> Stock Management</h6>
+            <input type="file" id="pdfInput" hidden accept="application/pdf" onchange="parseBill(this)">
             
-            <button class="btn-upload-pdf shadow" onclick="document.getElementById('stockPdfInput').click()">
-                <div class="d-flex align-items-center justify-content-center">
-                    <i class="fas fa-file-invoice-dollar fa-2x me-3"></i>
-                    <div class="text-start">
-                        <div style="font-size:1.1em;">Upload RCM Bill (PDF)</div>
-                        <small style="opacity:0.9; font-weight:normal;">Auto Add Product & Stock</small>
-                    </div>
-                </div>
-            </button>
-            <input type="file" id="stockPdfInput" class="d-none" accept="application/pdf" onchange="processPDF(this)">
-
-            <div class="d-flex justify-content-between align-items-center mb-2 mt-3">
-                <small class="text-muted fw-bold">Current Inventory</small>
-                <button class="btn btn-sm btn-outline-primary" onclick="loadInventory()"><i class="fas fa-sync"></i> Refresh</button>
-            </div>
-            
-            <div class="inventory-card">
-                <table class="inv-table">
-                    <thead><tr><th>Product Name</th><th style="text-align:right;">Price</th><th style="text-align:right;">Qty</th></tr></thead>
-                    <tbody id="inventoryList"><tr><td colspan="3" class="text-center p-3 text-muted">Upload Bill First...</td></tr></tbody>
-                </table>
+            <div class="alert alert-info small">
+                <i class="fas fa-info-circle"></i> This will read "Krushnai Rcm Shoppy" bill format automatically.
             </div>
         </div>
 
-        <div id="view-add" class="section-view">
-            <div class="card p-4 border-0 shadow-sm" style="border-radius:15px;">
-                <div class="d-flex justify-content-between mb-3"><h6 class="text-primary fw-bold" id="formTitle">New Entry</h6><button class="btn btn-sm btn-warning" onclick="resetForm()">New</button></div>
-                <form id="crmForm" class="row g-3">
-                    <input type="hidden" id="editDocId"> 
-                    
-                    <div class="col-12 text-center bg-light p-3 rounded border">
-                        <input type="file" id="meetingPhoto" class="d-none" accept="image/*" capture="environment" onchange="handlePhoto(this)">
-                        <div onclick="document.getElementById('meetingPhoto').click()" style="cursor:pointer;">
-                            <img id="photoPreview" src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png" style="width:80px;height:80px;object-fit:cover;border-radius:10px;">
-                            <div class="small text-muted fw-bold">GPS Photo</div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-12"><label class="small fw-bold">Name</label><input type="text" class="form-control" id="cName" required></div>
-                    <div class="col-6"><input type="tel" class="form-control" id="cPhone" placeholder="Mobile"></div>
-                    <div class="col-6"><input type="date" class="form-control" id="cDate"></div>
-                    
-                    <div class="col-12">
-                        <label class="small fw-bold">Select Product</label>
-                        <div class="input-group mb-2"><select class="form-select" id="cProd"><option value="">Empty List</option></select><button type="button" class="btn btn-primary" onclick="addToCart()">Add</button></div>
-                        <div id="cartList" class="bg-light p-2 rounded small border">Empty</div>
-                        <div class="fw-bold text-end mt-1 text-primary">Total: ₹<span id="cartTotal">0</span></div>
-                    </div>
-
-                    <div class="col-6"><label class="small fw-bold">Payment</label><select class="form-select border-danger" id="payStatus"><option value="Paid">✅ Paid</option><option value="Unpaid" selected>🔴 Unpaid</option></select></div>
-                    <div class="col-6"><label class="small fw-bold">Next Follow-up</label><select class="form-select border-warning" id="followUpTiming"><option value="24h">24 Hours</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="15d">15 Days</option></select></div>
-                    <div class="col-12 mt-3"><button type="button" class="btn btn-success w-100 fw-bold shadow p-3" style="border-radius:30px;" onclick="saveClient()">💾 SAVE DATA</button></div>
-                </form>
+        <div id="view-list" class="section-view" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold m-0">📦 Current Stock</h6>
+                <button class="btn btn-sm btn-primary" onclick="loadStock()">Refresh</button>
             </div>
+            <table class="inventory-table">
+                <thead><tr><th>Product</th><th>Rate</th><th>Stock</th></tr></thead>
+                <tbody id="stockTableBody">
+                    <tr><td colspan="3" class="text-center p-3 text-muted">No products yet. Upload a bill!</td></tr>
+                </tbody>
+            </table>
         </div>
 
-        <div id="view-list" class="section-view">
-            <input type="text" id="searchInput" class="form-control mb-3 rounded-pill" placeholder="Search Client...">
-            <div id="clientListContainer" class="mt-3"></div>
-        </div>
-
-        <div id="view-reports" class="section-view"><div class="card p-3 mb-3 shadow-sm"><h6 class="fw-bold text-center">Business Chart</h6><canvas id="myChart" style="max-height: 200px;"></canvas></div><button class="btn btn-outline-dark w-100" onclick="exportToExcel()">Download Excel</button></div>
     </div>
 
-    <div id="pdfPreviewModal">
-        <div class="pdf-modal-content">
-            <h5 class="fw-bold text-primary"><i class="fas fa-file-invoice"></i> Bill Scanned!</h5>
-            <p class="small text-muted">Confirm products to add:</p>
-            <div style="max-height: 250px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 10px; margin-bottom: 15px;">
-                <ul id="scannedItemsList" class="list-group list-group-flush small"></ul>
-            </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-secondary w-50" onclick="document.getElementById('pdfPreviewModal').style.display='none'">Cancel</button>
-                <button class="btn btn-success w-50" onclick="confirmStockUpdate()">✅ Add Stock</button>
+    <div id="confirmModal">
+        <div class="modal-box">
+            <h5 class="fw-bold text-primary mb-3">Confirm Stock Entry</h5>
+            <div id="scannedData" class="mb-3"></div>
+            <div class="d-grid gap-2">
+                <button class="btn btn-success" onclick="saveToFirebase()">✅ Save to Stock</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button>
             </div>
         </div>
     </div>
 
-    <div class="bottom-nav no-print">
-        <a class="nav-item active" onclick="switchTab('view-tasks', this)"><i class="fas fa-tasks"></i>Tasks</a>
-        <a class="nav-item" onclick="switchTab('view-inventory', this)"><i class="fas fa-boxes"></i>Inventory</a>
-        <a class="nav-item" onclick="switchTab('view-add', this)"><i class="fas fa-plus-circle"></i>Add</a>
-        <a class="nav-item" onclick="switchTab('view-list', this)"><i class="fas fa-users"></i>List</a>
-        <a class="nav-item" onclick="switchTab('view-reports', this)"><i class="fas fa-chart-pie"></i>Reports</a>
+    <div class="bottom-nav">
+        <a class="nav-item active" onclick="switchView('view-upload', this)"><i class="fas fa-file-upload d-block fa-lg"></i> Upload</a>
+        <a class="nav-item" onclick="switchView('view-list', this)"><i class="fas fa-boxes d-block fa-lg"></i> Stock List</a>
     </div>
 
-    <div class="modal fade" id="updateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow"><div class="modal-header border-0"><h6 class="modal-title fw-bold text-primary">Update Task</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editClientId"><label class="small text-muted fw-bold">Next Date:</label><input type="date" id="nextDateManual" class="form-control mb-3 border-primary"><label class="small text-muted fw-bold">Remark:</label><div class="input-group mb-3"><textarea id="updateRemark" class="form-control" placeholder="Remarks.."></textarea></div><div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="markPaidCheck"><label class="form-check-label fw-bold text-success" for="markPaidCheck">Payment Received?</label></div><div class="d-grid gap-2"><button class="btn btn-primary" onclick="saveUpdate('reschedule')">📅 Reschedule</button><button class="btn btn-success" onclick="saveUpdate('complete')">✅ Mark Complete</button></div></div></div></div></div>
-    <div id="invoiceTemplate" style="display:none;"></div><canvas id="cardCanvas" style="display:none;"></canvas>
-    <div id="reportOverlay"><div class="text-center p-2 sticky-top bg-white shadow-sm mb-3"><button class="btn btn-secondary btn-sm" onclick="document.getElementById('reportOverlay').style.display='none'">Back</button> <button class="btn btn-danger btn-sm" onclick="printReport()">🖨️ Print PDF</button></div><div id="reportContent" class="p-3"></div></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // --- FIREBASE CONFIG ---
         const firebaseConfig = { apiKey: "AIzaSyAYfRLpyfVHNYFyTYZaSylGxyoW4UFH-yw", authDomain: "rcmcrm-5ad88.firebaseapp.com", projectId: "rcmcrm-5ad88", storageBucket: "rcmcrm-5ad88.firebasestorage.app", messagingSenderId: "172188965998", appId: "1:172188965998:web:33d65df1549fdb1acb1a7f" };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        db.collection("test").get().then(() => { document.getElementById('connectionStatus').innerText = "Online 🟢"; }).catch((e) => { document.getElementById('connectionStatus').innerText = "Offline"; });
+        db.collection("test").get().then(()=>document.getElementById('status').innerText="● Online").catch(()=>document.getElementById('status').innerText="Offline");
 
-        let processedPhotoData = null; let currentCart = []; let globalClients = []; let scannedStockItems = [];
-        
-        document.getElementById('cDate').valueAsDate = new Date();
-        document.addEventListener('DOMContentLoaded', () => { loadInventory(); listenToData(); });
+        let extractedItems = [];
 
-        function listenToData() {
-            db.collection("clients").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-                globalClients = []; let totalUdhari = 0;
-                snapshot.forEach((doc) => {
-                    let data = doc.data(); data.docId = doc.id; 
-                    if(data.paymentStatus === 'Unpaid') totalUdhari += parseInt(data.amount || 0);
-                    globalClients.push(data);
-                });
-                document.getElementById('totalUdhari').innerText = totalUdhari;
-                renderUI(); updateChart(0, totalUdhari);
-            });
-        }
-
-        // --- 1. INVENTORY (Firebase Only) ---
-        function loadInventory() {
-            const dd = document.getElementById('cProd');
-            const invList = document.getElementById('inventoryList');
-            
-            db.collection("inventory").get().then(snap => {
-                dd.innerHTML = '<option value="">Select Product...</option>';
-                invList.innerHTML = '';
-                
-                if(snap.empty) {
-                    invList.innerHTML = '<tr><td colspan="3" class="text-center p-3 text-muted">List is Empty.<br><b>Upload PDF Bill</b> to add products.</td></tr>';
-                    return;
-                }
-
-                snap.forEach(doc => {
-                    let p = doc.data();
-                    let name = doc.id; 
-                    let price = p.price || 0;
-                    let stock = p.qty || 0;
-
-                    let opt = document.createElement('option');
-                    opt.value = name; opt.dataset.price = price; opt.text = `${name} - ₹${price}`;
-                    dd.add(opt);
-
-                    invList.innerHTML += `<tr><td>${name}</td><td style="text-align:right;">₹${price}</td><td style="text-align:right;"><span class="badge ${stock<5?'bg-danger':'bg-success'}">${stock}</span></td></tr>`;
-                });
-            });
-        }
-
-        // --- 2. ADVANCED PDF PARSER (Regex) ---
-        async function processPDF(input) {
-            if(!input.files[0]) return;
+        // --- 1. BILL PARSER (The Magic Logic) ---
+        async function parseBill(input) {
+            if (!input.files[0]) return;
             const file = input.files[0];
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-            
+            const buffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(buffer).promise;
             let fullText = "";
-            for(let i=1; i<=pdf.numPages; i++) {
+
+            // Read all pages
+            for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
-                const textContent = await page.getTextContent();
-                fullText += textContent.items.map(item => item.str).join(" ") + " "; 
+                const content = await page.getTextContent();
+                fullText += content.items.map(item => item.str).join(" ") + " ";
             }
 
-            // Clean multiple spaces
-            fullText = fullText.replace(/\s+/g, ' ');
+            console.log("Raw Text:", fullText); // Debugging
 
-            scannedStockItems = [];
-            document.getElementById('scannedItemsList').innerHTML = "";
-
-            // REGEX PATTERN:
-            // Matches: [Name string] space [Qty int] space [Rate float] space [HSN int]
-            // Example: "Jasmine Soap 2 8.00 340123"
-            const regex = /([a-zA-Z0-9\s,\.\-()%]+?)\s+(\d+)\s+(\d+\.\d{2})\s+(\d{4,})/g;
+            // --- REGEX EXPLANATION FOR "Krushnai Rcm Shoppy" BILL ---
+            // Pattern: [Name] [Qty] [Rate] ...
+            // Name: Can contain letters, commas, numbers (e.g. "Soap, 38 g")
+            // Qty: Integer (e.g. 2, 12)
+            // Rate: Decimal (e.g. 8.00, 207.00)
+            // We look for a Qty and Rate appearing together, and capture the text BEFORE it as the Name.
+            
+            extractedItems = [];
+            const regex = /([a-zA-Z0-9\s,\.\-()%]+?)\s+(\d+)\s+(\d+\.\d{2})/g;
             
             let match;
             while ((match = regex.exec(fullText)) !== null) {
                 let name = match[1].trim();
                 let qty = parseInt(match[2]);
-                let price = parseFloat(match[3]);
-                
-                // Filter out headers/noise
-                if (name.length > 3 && !name.includes("Total") && !name.includes("Amount")) {
-                    scannedStockItems.push({name: name, qty: qty, price: price});
-                    document.getElementById('scannedItemsList').innerHTML += 
-                    `<li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div><b>${name}</b><br><small>Rate: ₹${price}</small></div>
-                        <span class="badge bg-success rounded-pill">+${qty}</span>
-                    </li>`;
+                let rate = parseFloat(match[3]);
+
+                // Filter junk data (Headers, Footers)
+                if (name.length > 3 && !name.includes("Total") && !name.includes("Amount") && !name.includes("Invoice") && !name.includes("Date")) {
+                    
+                    // Clean up name (sometimes captures extra spaces)
+                    name = name.replace(/\s+/g, ' ').trim();
+                    
+                    extractedItems.push({ name, qty, rate });
                 }
             }
 
-            if(scannedStockItems.length === 0) {
-                alert("Could not detect products. Please ensure the bill format is clear.");
+            if (extractedItems.length === 0) {
+                alert("No products found! Please check if the PDF is clear.");
             } else {
-                document.getElementById('pdfPreviewModal').style.display = 'block';
+                showConfirmModal();
             }
         }
 
-        function confirmStockUpdate() {
-            let batch = db.batch();
-            scannedStockItems.forEach(item => {
-                let ref = db.collection("inventory").doc(item.name);
-                batch.set(ref, { 
-                    qty: firebase.firestore.FieldValue.increment(item.qty),
-                    price: item.price
+        // --- 2. SHOW CONFIRMATION ---
+        function showConfirmModal() {
+            const listDiv = document.getElementById('scannedData');
+            listDiv.innerHTML = "";
+            extractedItems.forEach(item => {
+                listDiv.innerHTML += `
+                <div class="list-item">
+                    <div style="width:60%"><b>${item.name}</b><br><small>₹${item.rate}</small></div>
+                    <div class="text-success fw-bold">+${item.qty} Qty</div>
+                </div>`;
+            });
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        // --- 3. SAVE TO FIREBASE ---
+        function saveToFirebase() {
+            const batch = db.batch();
+            
+            extractedItems.forEach(item => {
+                // Use Product Name as ID (Clean it first)
+                const docId = item.name.replace(/\//g, "-"); 
+                const ref = db.collection("inventory").doc(docId);
+                
+                batch.set(ref, {
+                    name: item.name,
+                    price: item.rate,
+                    qty: firebase.firestore.FieldValue.increment(item.qty) // Add to existing
                 }, { merge: true });
             });
+
             batch.commit().then(() => {
-                document.getElementById('pdfPreviewModal').style.display = 'none';
-                showPopup("Stock Updated Successfully!");
-                loadInventory(); 
-            });
+                document.getElementById('confirmModal').style.display = 'none';
+                alert("Stock Updated Successfully! 🚀");
+                switchView('view-list', document.querySelectorAll('.nav-item')[1]);
+                loadStock();
+            }).catch(e => alert("Error saving: " + e.message));
         }
 
-        // --- 3. SAVE CLIENT (With Cart & Stock Out) ---
-        function addToCart() { const dd=document.getElementById('cProd'); if(!dd.value)return; currentCart.push({name:dd.value, price:parseInt(dd.options[dd.selectedIndex].dataset.price||0)}); updateCartUI(); }
-        function removeFromCart(idx) { currentCart.splice(idx, 1); updateCartUI(); }
-        function updateCartUI() { let t=0; document.getElementById('cartList').innerHTML = currentCart.map((i,x)=> {t+=i.price; return `<div class="cart-item"><span>${i.name} (₹${i.price})</span><span class="cart-remove" onclick="removeFromCart(${x})">×</span></div>`}).join(''); document.getElementById('cartTotal').innerText=t; }
-
-        function saveClient() {
-            let name = document.getElementById('cName').value; if(!name) return alert("Name needed");
-            let id = document.getElementById('editDocId').value; 
-            let amt = currentCart.reduce((s,i)=>s+i.price,0); 
-            let pStr = currentCart.map(i=>i.name).join(", ") || "No Product";
+        // --- 4. LOAD STOCK ---
+        function loadStock() {
+            const tbody = document.getElementById('stockTableBody');
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center">Loading...</td></tr>';
             
-            // Stock Out (Only if New Entry)
-            if(!id && currentCart.length > 0) {
-                let batch = db.batch();
-                currentCart.forEach(i => {
-                    let ref = db.collection("inventory").doc(i.name);
-                    batch.update(ref, { qty: firebase.firestore.FieldValue.increment(-1) });
+            db.collection("inventory").get().then(snap => {
+                if(snap.empty) {
+                    tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Inventory Empty</td></tr>';
+                    return;
+                }
+                
+                let html = "";
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    const badge = d.qty < 5 ? "stock-low" : "stock-ok";
+                    html += `
+                    <tr>
+                        <td><b>${d.name}</b></td>
+                        <td>₹${d.price}</td>
+                        <td><span class="stock-badge ${badge}">${d.qty}</span></td>
+                    </tr>`;
                 });
-                batch.commit().catch(e=>console.log(e));
-            }
-
-            let data = { name: name, phone: document.getElementById('cPhone').value, product: pStr, amount: amt, cartJson: JSON.stringify(currentCart), paymentStatus: document.getElementById('payStatus').value, nextFollowUp: document.getElementById('cDate').value, status: 'Pending', photo: processedPhotoData, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
-            
-            let action = id ? db.collection("clients").doc(id).update(data) : db.collection("clients").add(data);
-            action.then(() => { showPopup("Data Saved!"); resetForm(); switchTab('view-tasks', document.querySelectorAll('.nav-item')[0]); loadInventory(); });
+                tbody.innerHTML = html;
+            });
         }
 
         // --- UTILS ---
-        function showPopup(msg) { document.getElementById('popupMsg').innerText = msg; document.getElementById('successPopup').style.display='flex'; }
-        function handlePhoto(i) { navigator.geolocation.getCurrentPosition(p=>{ processImage(i.files[0], `Loc: ${p.coords.latitude.toFixed(2)},${p.coords.longitude.toFixed(2)}`); }, e=>processImage(i.files[0], "No GPS")); }
-        function processImage(f,l){ const r=new FileReader(); r.onload=e=>{const i=new Image(); i.onload=()=>{const c=document.getElementById('cardCanvas'); const x=c.getContext('2d'); c.width=500; c.height=(i.height/i.width)*500; x.drawImage(i,0,0,c.width,c.height); x.fillStyle="rgba(0,0,0,0.5)"; x.fillRect(10,c.height-40,200,30); x.fillStyle="white"; x.fillText(l,20,c.height-20); processedPhotoData=c.toDataURL('image/jpeg',0.7); document.getElementById('photoPreview').src=processedPhotoData;}; i.src=e.target.result;}; r.readAsDataURL(f); }
-        function resetForm(){ document.getElementById('crmForm').reset(); document.getElementById('editDocId').value=''; currentCart=[]; updateCartUI(); processedPhotoData=null; document.getElementById('photoPreview').src='https://cdn-icons-png.flaticon.com/512/3687/3687412.png'; document.getElementById('formTitle').innerText="New Entry"; }
-        function switchTab(v,el){ document.querySelectorAll('.section-view').forEach(d=>d.classList.remove('active-view')); document.getElementById(v).classList.add('active-view'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(v==='view-reports') updateChart(0,0); }
-        function editClient(id){ let c=globalClients.find(x=>x.docId==id); if(c){ document.getElementById('editDocId').value=c.docId; document.getElementById('cName').value=c.name; document.getElementById('cPhone').value=c.phone; document.getElementById('payStatus').value=c.paymentStatus||'Unpaid'; if(c.cartJson) { try { currentCart = JSON.parse(c.cartJson); } catch(e) { currentCart = []; } } else { currentCart = []; } updateCartUI(); document.getElementById('formTitle').innerText = "Editing: " + c.name; switchTab('view-add', document.querySelectorAll('.nav-item')[2]); } }
-        function renderUI() { const t=document.getElementById('taskListContainer'); const l=document.getElementById('clientListContainer'); t.innerHTML=''; l.innerHTML=''; globalClients.forEach(c=>{ l.innerHTML+=`<div class='client-card'><div><b>${c.name}</b><br><small>${c.product}</small></div><div style="display:flex;"><button onclick="editClient('${c.docId}')" class="btn-icon btn-edit"><i class="fas fa-pen"></i></button><button onclick="printInvoice('${c.docId}')" class="btn-icon btn-bill"><i class="fas fa-file-invoice"></i></button></div></div>`; if(c.status==='Pending') t.innerHTML+=`<div class='task-card'><b>${c.name}</b><br>Follow: ${c.nextFollowUp}<br><button class="btn-update mt-2" onclick="editClient('${c.docId}')">Update</button></div>`; }); }
-        let myChart=null; function updateChart(p,u){ const ctx=document.getElementById('myChart').getContext('2d'); if(myChart)myChart.destroy(); myChart=new Chart(ctx,{type:'doughnut',data:{labels:['Paid','Unpaid'],datasets:[{data:[p,u],backgroundColor:['green','red']}]}}); }
-        function printInvoice(docId) { let c = globalClients.find(x => x.docId == docId); if(!c) return; document.getElementById('billName').innerText = c.name; document.getElementById('billDate').innerText = new Date().toLocaleDateString(); document.getElementById('billTotal').innerText = c.amount; let cart = c.cartJson ? JSON.parse(c.cartJson) : [{name: c.product, price: c.amount}]; document.getElementById('billItems').innerHTML = cart.map(i => `<tr><td style="border:1px solid #ddd;padding:8px;">${i.name}</td><td style="border:1px solid #ddd;padding:8px;text-align:right;">₹${i.price}</td></tr>`).join(''); window.print(); }
-        function exportToExcel() { let csv = "Name,Phone,Product,Amount,Payment\n" + globalClients.map(c => `${c.name},${c.phone},"${c.product}",${c.amount},${c.paymentStatus}`).join("\n"); let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "RCM_Data.csv"; link.click(); }
-        function saveUpdate(type) { let id = document.getElementById('editClientId').value; let remark = document.getElementById('updateRemark').value; let u = {}; db.collection("clients").doc(id).update({ history: firebase.firestore.FieldValue.arrayUnion({ date: new Date().toLocaleDateString(), note: remark || (type==='complete'?'Completed':'Rescheduled') }) }); if(document.getElementById('markPaidCheck').checked) u.paymentStatus='Paid'; if(type==='reschedule'){ let d=document.getElementById('nextDateManual').value; if(!d)return alert("Date?"); u.nextFollowUp=d; u.status='Pending'; } else { u.status='Done'; } db.collection("clients").doc(id).update(u).then(()=>{ bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide(); }); }
-        function openUpdateModal(id){ document.getElementById('editClientId').value=id; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
+        function switchView(viewId, btn) {
+            document.querySelectorAll('.section-view').forEach(el => el.style.display = 'none');
+            document.getElementById(viewId).style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            if(viewId === 'view-list') loadStock();
+        }
     </script>
 </body>
 </html>
